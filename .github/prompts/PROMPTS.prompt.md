@@ -42,36 +42,36 @@ How to Use:
 
 # Copilot Always Rules
 
-1. **Reference the plan**  
+1. **Reference the plan**
    - Always load and consult `ROADMAP.md` for the current phase, step, and deliverables.
-2. **Explain first**  
+2. **Explain first**
    - Before coding, explain in plain language **what** you will do and **why**. Wait for user approval.
-3. **Generate code + comments**  
+3. **Generate code + comments**
    - Produce the necessary code with clear, helpful inline comments for troubleshooting.
-4. **Generate tests automatically**  
+4. **Generate tests automatically**
    - Create/update unit, integration, and/or E2E tests that verify each deliverable meets the acceptance criteria.
-5. **Pass tests before completion**  
+5. **Pass tests before completion**
    - A step is complete only when **all** relevant tests pass.
-6. **Commit workflow**  
-   - After tests pass, generate a descriptive commit message + step checklist.  
+6. **Commit workflow**
+   - After tests pass, generate a descriptive commit message + step checklist.
    - Prompt the user for approval before committing.
-7. **Error handling**  
+7. **Error handling**
    - If code or tests fail, stop, summarize what was attempted, and ask the user for direction or external references.
-8. **Logging**  
-   - After major milestones or hard-to-solve issues, append a summary (decisions, changes, fixes) to `DEVLOG.md`.  
+8. **Logging**
+   - After major milestones or hard-to-solve issues, append a summary (decisions, changes, fixes) to `DEVLOG.md`.
    - Update `CHECKLIST.md` to reflect completed features/milestones, mirroring the structure of `ROADMAP.md`.
-9. **Phase/step gate**  
-   - Always pause and get user confirmation before moving to the next phase or step.  
+9. **Phase/step gate**
+   - Always pause and get user confirmation before moving to the next phase or step.
    - Clearly state what comes next per the Implementation Plan.
-10. **Clarification loop**  
+10. **Clarification loop**
     - If anything is unclear, request clarification or point to relevant docs instead of guessing.
-11. **Code quality**  
+11. **Code quality**
     - Keep code commented, readable, and maintainable.
-12. **Prompt suggestion**  
+12. **Prompt suggestion**
     - If the user gives a command and there is a relevant or related prompt in `PROMPTS.md`, ask the user if they want you to execute that prompt before proceeding.
-13. **Prompt visibility**  
-    - Use an emoji or symbol at the start of any prompt or question you give the user for visibility.  
-    - Use the same emoji for the same type of request (e.g., ✅ for approval, 🚦 for confirmation, 🛠️ for troubleshooting, 🔄 for refresh, etc.) to ensure consistency and quick recognition.  
+13. **Prompt visibility**
+    - Use an emoji or symbol at the start of any prompt or question you give the user for visibility.
+    - Use the same emoji for the same type of request (e.g., ✅ for approval, 🚦 for confirmation, 🛠️ for troubleshooting, 🔄 for refresh, etc.) to ensure consistency and quick recognition.
     - Do not bold or italicize the emoji or prompt.
 
 ---
@@ -82,19 +82,21 @@ How to Use:
 
 ---
 
-**Kickoff Phase <PHASE_NUMBER> Step <STEP_NUMBER>:**  
+**Kickoff Phase <PHASE_NUMBER> Step <STEP_NUMBER>:**
+
 - Hi Copilot Chat. Please load and obey the rules above and follow the roadmap in `ROADMAP.md`.
 - Summarize objectives, planned files, and planned tests.
 - Reference relevant files for this step.
 - State acceptance criteria for completion.
 - List dependencies or prerequisites.
-- State the first action item to execute **Phase <PHASE_NUMBER> Step <STEP_NUMBER>** and wait for user confirmation.
-- After user confirmation update `CHECKLIST.md` with what needs to be done to complete <PHASE_NUMBER> <STEP_NUMBER>.
 - Ensure `CHECKLIST.md` updates match the `ROADMAP.md` for easier comparison.
+- Update `CHECKLIST.md` with what needs to be done to complete <PHASE_NUMBER> <STEP_NUMBER>.
+- State the first action item to execute **Phase <PHASE_NUMBER> Step <STEP_NUMBER>** and only wait for user confirmation before writing code.
 
 ---
 
-**Proceed with Phase <PHASE_NUMBER> Step <STEP_NUMBER>:**  
+**Proceed with Phase <PHASE_NUMBER> Step <STEP_NUMBER>:**
+
 - Proceed with **Phase <PHASE_NUMBER> Step <STEP_NUMBER>** now.
 - Summarize objectives, planned files, and planned tests.
 - Reference relevant files for this step.
@@ -108,7 +110,8 @@ How to Use:
 
 ---
 
-**Troubleshoot Failing Tests:**  
+**Troubleshoot Failing Tests:**
+
 - Summarize the failing tests and suspected root cause.
 - Suggest at least two fixes and ask for my choice.
 - Reference relevant files for this step.
@@ -119,21 +122,23 @@ How to Use:
 
 ---
 
-**Prepare Commit and Checklist Update:**  
+**Prepare Commit and Checklist Update:**
+
 - Show me the diff summary and the commit message.
 - Update `CHECKLIST.md` for this step and create new checklist items for expected next steps if not already represented or update for accuracy. Ensure checklist matches `ROADMAP.md`. Checklist items should contain details of steps taken to complete the step-- including tests to validate step/phase is complete.
-- Update all files in copilotdocs/ to document the changes that were made that is contextually relevant to the document.
+- update all files in `#file:copilotdocs` based on what we've done (e.g., `DEVLOG.md`, `CHECKLIST.md`, `TROUBLESHOOTING.md`, etc.).
 - Reference relevant files for this step.
 - State acceptance criteria for completion.
 - List dependencies or prerequisites.
 - Ask for user confirmation before finalizing the commit.
 - Briefly describe how to revert changes if something goes wrong.
-- Note if any documentation (README, DEVLOG, CHECKLIST, etc.) should be updated as part of this step.
+- Note if any documentation (`README.md`, `DEVLOG.md`, `CHECKLIST.md`, etc.) should be updated as part of this step.
 - Wait for my `commit:` response before running `git commit`.
 
 ---
 
-**Refresh Project Context:**  
+**Refresh Project Context:**
+
 - Refresh your context from the rules above, `ROADMAP.md`, and the latest `DEVLOG.md`.
 - Summarize what has been completed so far and what’s next.
 - Reference relevant files for this step.
@@ -142,7 +147,8 @@ How to Use:
 
 ---
 
-**Propose Deviation or Scope Change:**  
+**Propose Deviation or Scope Change:**
+
 - We’re deviating from the plan: <DESCRIBE_CHANGE>.
 - Update `ROADMAP.md` (if permanent) and make a `DEVLOG.md` entry explaining why.
 - Reference relevant files for this step.
@@ -152,7 +158,8 @@ How to Use:
 
 ---
 
-**Request New Feature:**  
+**Request New Feature:**
+
 - Add a new feature: <FEATURE_DESCRIPTION>.
 - Tell me which phase/step this fits into or propose a new step.
 - Draft required code and tests, then await approval.
@@ -163,7 +170,8 @@ How to Use:
 
 ---
 
-**End-of-Day Wrap-up:**  
+**End-of-Day Wrap-up:**
+
 - Generate a `DEVLOG.md` summary of today’s work (major milestones, issues, resolutions) and a progress snapshot in `CHECKLIST.md`.
 - Do not commit until I confirm.
 - Reference relevant files for this step.
@@ -174,7 +182,8 @@ How to Use:
 
 ---
 
-**Custom Request for Phase <PHASE_NUMBER> Step <STEP_NUMBER>:**  
+**Custom Request for Phase <PHASE_NUMBER> Step <STEP_NUMBER>:**
+
 - <DESCRIBE_YOUR_REQUEST_OR_WORKFLOW_HERE>
 - Reference relevant files for this step.
 - State acceptance criteria for completion.
