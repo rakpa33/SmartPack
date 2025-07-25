@@ -67,6 +67,12 @@ How to Use:
     - If anything is unclear, request clarification or point to relevant docs instead of guessing.
 11. **Code quality**  
     - Keep code commented, readable, and maintainable.
+12. **Prompt suggestion**  
+    - If the user gives a command and there is a relevant or related prompt in `PROMPTS.md`, ask the user if they want you to execute that prompt before proceeding.
+13. **Prompt visibility**  
+    - Use an emoji or symbol at the start of any prompt or question you give the user for visibility.  
+    - Use the same emoji for the same type of request (e.g., ✅ for approval, 🚦 for confirmation, 🛠️ for troubleshooting, 🔄 for refresh, etc.) to ensure consistency and quick recognition.  
+    - Do not bold or italicize the emoji or prompt.
 
 ---
 
@@ -78,8 +84,8 @@ How to Use:
 
 **Kickoff Phase <PHASE_NUMBER> Step <STEP_NUMBER>:**  
 - Hi Copilot Chat. Please load and obey the rules above and follow the roadmap in `ROADMAP.md`.
-- Start with **Phase <PHASE_NUMBER> Step <STEP_NUMBER>**.
-- Explain in plain language what you will do and why, then wait for my approval.
+- Proceed with **Phase <PHASE_NUMBER> Step <STEP_NUMBER>** now.
+- Summarize objectives, planned files, and planned tests.
 - Reference relevant files for this step.
 - State acceptance criteria for completion.
 - List dependencies or prerequisites.
@@ -115,7 +121,7 @@ How to Use:
 **Prepare Commit and Checklist Update:**  
 - Show me the diff summary and the commit message.
 - Wait for my `commit:` response before running `git commit`.
-- Also update `CHECKLIST.md` for this step.
+- Also update `CHECKLIST.md` for this step and create new checklist items for expected next steps.
 - Reference relevant files for this step.
 - State acceptance criteria for completion.
 - List dependencies or prerequisites.
