@@ -1,6 +1,6 @@
 <!-- Project roadmap, phases, deliverables -->
 
-# SmartPack – Implementation Plan
+# SmartPack – Roadmap
 
 **App Name:** SmartPack  
 **Technology Stack:** React + TypeScript + Vite + Tailwind CSS + Headless UI  

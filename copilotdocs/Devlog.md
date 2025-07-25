@@ -1,1 +1,3 @@
-<!-- 	Summary of major changes and troubleshooting -->
+# DEVLOG for SmartPack
+
+<!-- Summary of major changes and troubleshooting -->
