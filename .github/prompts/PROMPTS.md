@@ -84,12 +84,13 @@ How to Use:
 
 **Kickoff Phase <PHASE_NUMBER> Step <STEP_NUMBER>:**  
 - Hi Copilot Chat. Please load and obey the rules above and follow the roadmap in `ROADMAP.md`.
-- Proceed with **Phase <PHASE_NUMBER> Step <STEP_NUMBER>** now.
 - Summarize objectives, planned files, and planned tests.
 - Reference relevant files for this step.
 - State acceptance criteria for completion.
 - List dependencies or prerequisites.
-- Ask for user confirmation before proceeding.
+- State the first action item to execute **Phase <PHASE_NUMBER> Step <STEP_NUMBER>** and wait for user confirmation.
+- After user confirmation update `CHECKLIST.md` with what needs to be done to complete <PHASE_NUMBER> <STEP_NUMBER>.
+- Ensure `CHECKLIST.md` updates match the `ROADMAP.md` for easier comparison.
 
 ---
 
@@ -120,14 +121,15 @@ How to Use:
 
 **Prepare Commit and Checklist Update:**  
 - Show me the diff summary and the commit message.
-- Wait for my `commit:` response before running `git commit`.
-- Also update `CHECKLIST.md` for this step and create new checklist items for expected next steps.
+- Update `CHECKLIST.md` for this step and create new checklist items for expected next steps if not already represented or update for accuracy. Ensure checklist matches `ROADMAP.md`. Checklist items should contain details of steps taken to complete the step-- including tests to validate step/phase is complete.
+- Update all files in copilotdocs/ to document the changes that were made that is contextually relevant to the document.
 - Reference relevant files for this step.
 - State acceptance criteria for completion.
 - List dependencies or prerequisites.
 - Ask for user confirmation before finalizing the commit.
 - Briefly describe how to revert changes if something goes wrong.
 - Note if any documentation (README, DEVLOG, CHECKLIST, etc.) should be updated as part of this step.
+- Wait for my `commit:` response before running `git commit`.
 
 ---
 
