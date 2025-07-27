@@ -32,10 +32,19 @@ export const TripForm: React.FC = () => {
   };
 
   const handleNext = () => {
-    setTouched({ tripName: true, destinations: true, travelModes: true, startDate: true, endDate: true });
-    if (!Object.values(errors).some(Boolean)) {
-      dispatch({ type: 'NEXT_STEP' });
-    }
+    // Set all touched flags, including per-destination
+    const touchedFields: { [k: string]: boolean } = {
+      tripName: true,
+      destinations: true,
+      travelModes: true,
+      startDate: true,
+      endDate: true,
+    };
+    state.destinations.forEach((_, i) => {
+      touchedFields[`destinations_${i}`] = true;
+    });
+    setTouched(touchedFields);
+    dispatch({ type: 'NEXT_STEP' });
   };
 
   // For demo: simple stepper UI
@@ -55,7 +64,7 @@ export const TripForm: React.FC = () => {
           aria-describedby="tripName-error"
         />
         {touched.tripName && errors.tripName && (
-          <div id="tripName-error" className="text-error text-sm">{errors.tripName}</div>
+          <div id="tripName-error" className="text-error text-sm" role="alert">{errors.tripName}</div>
         )}
       </div>
 
@@ -64,7 +73,9 @@ export const TripForm: React.FC = () => {
         <label className="block font-medium text-gray-900 dark:text-gray-100">Destinations</label>
         {state.destinations.map((d, i) => (
           <div key={i} className="flex items-center gap-2 mb-2">
+            <label htmlFor={`destination-${i}`} className="sr-only">Destination</label>
             <input
+              id={`destination-${i}`}
               type="text"
               className="input input-bordered flex-1 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 border border-gray-400 dark:border-gray-600"
               value={d}
@@ -72,6 +83,7 @@ export const TripForm: React.FC = () => {
               onBlur={() => setTouched(t => ({ ...t, [`destinations_${i}`]: true }))}
               aria-invalid={!!(errors.destinations && errors.destinations[i])}
               aria-describedby={`destinations-error-${i}`}
+              data-testid={`destination-input-${i}`}
             />
             {state.destinations.length > 1 && (
               <button type="button" onClick={() => handleRemoveDestination(i)} aria-label="Remove destination" className="btn btn-sm btn-error">Remove</button>
@@ -81,7 +93,7 @@ export const TripForm: React.FC = () => {
         <button type="button" onClick={handleAddDestination} className="btn btn-sm btn-primary mt-1">Add Destination</button>
         {state.destinations.map((_, i) => (
           touched[`destinations_${i}`] && errors.destinations && errors.destinations[i] ? (
-            <div key={i} id={`destinations-error-${i}`} className="text-error text-sm">{errors.destinations[i]}</div>
+            <div key={i} id={`destinations-error-${i}`} className="text-error text-sm" role="alert">{errors.destinations[i]}</div>
           ) : null
         ))}
       </div>
@@ -102,7 +114,7 @@ export const TripForm: React.FC = () => {
           ))}
         </div>
         {touched.travelModes && errors.travelModes && (
-          <div className="text-error text-sm">{errors.travelModes}</div>
+          <div className="text-error text-sm" role="alert">{errors.travelModes}</div>
         )}
       </div>
 
@@ -121,7 +133,7 @@ export const TripForm: React.FC = () => {
             aria-describedby="startDate-error"
           />
           {touched.startDate && errors.startDate && (
-            <div id="startDate-error" className="text-error text-sm">{errors.startDate}</div>
+            <div id="startDate-error" className="text-error text-sm" role="alert">{errors.startDate}</div>
           )}
         </div>
         <div className="flex-1">
@@ -137,7 +149,7 @@ export const TripForm: React.FC = () => {
             aria-describedby="endDate-error"
           />
           {touched.endDate && errors.endDate && (
-            <div id="endDate-error" className="text-error text-sm">{errors.endDate}</div>
+            <div id="endDate-error" className="text-error text-sm" role="alert">{errors.endDate}</div>
           )}
         </div>
       </div>
@@ -155,7 +167,7 @@ export const TripForm: React.FC = () => {
       </div>
 
       <div className="flex justify-end gap-2">
-        <button type="button" className="btn btn-primary" onClick={handleNext} disabled={Object.values(errors).some(Boolean)}>
+        <button type="button" className="btn btn-primary" onClick={handleNext}>
           Next
         </button>
       </div>

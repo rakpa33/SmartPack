@@ -9,6 +9,7 @@ export default defineConfig({
     alias: {
       '\\.(css|less|scss|sass)$': './src/__mocks__/styleMock.js',
     },
+    exclude: ['playwright/**', '**/*.e2e.*', 'node_modules', 'dist'],
   },
   resolve: {
     alias: {

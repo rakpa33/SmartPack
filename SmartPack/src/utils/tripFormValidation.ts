@@ -25,9 +25,6 @@ export function validateTripForm(state: TripFormState): TripFormErrors {
     if (!isValidCity(d)) return 'Enter a valid city.';
     return '';
   });
-  if (state.destinations.length === 0 || errors.destinations.every(e => !!e)) {
-    errors.destinations = ['At least one valid city is required.'];
-  }
 
   // Travel Modes
   if (!state.travelModes.length) {

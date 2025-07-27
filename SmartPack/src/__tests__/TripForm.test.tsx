@@ -16,23 +16,25 @@ describe('TripForm unit/integration', () => {
     expect(screen.getByLabelText(/Trip Name/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/Start Date/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/End Date/i)).toBeInTheDocument();
-    expect(screen.getByLabelText(/Preferences/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/Trip Details/i)).toBeInTheDocument();
     expect(screen.getByText(/Add Destination/i)).toBeInTheDocument();
     expect(screen.getByText(/Travel Modes/i)).toBeInTheDocument();
   });
 
-  it('validates required fields and shows errors', () => {
+  it('validates required fields and shows errors', async () => {
     setup();
     fireEvent.blur(screen.getByLabelText(/Trip Name/i));
     fireEvent.blur(screen.getByLabelText(/Start Date/i));
     fireEvent.blur(screen.getByLabelText(/End Date/i));
     fireEvent.blur(screen.getAllByLabelText(/Destination/i)[0]);
     fireEvent.click(screen.getByText(/Next/i));
+    // Wait for error messages to appear
     expect(screen.getByText(/Trip name is required/i)).toBeInTheDocument();
     expect(screen.getByText(/Start date is required/i)).toBeInTheDocument();
     expect(screen.getByText(/End date is required/i)).toBeInTheDocument();
-    expect(screen.getByText(/Destination is required/i)).toBeInTheDocument();
-    expect(screen.getByText(/Select at least one travel mode/i)).toBeInTheDocument();
+    expect(screen.getAllByText(/Destination is required\./i).length).toBeGreaterThan(0);
+    // Wait for travel mode error
+    expect(await screen.findByText(/Select at least one travel mode/i)).toBeInTheDocument();
   });
 
   it('validates city name (invalid city)', () => {

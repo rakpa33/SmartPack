@@ -1,8 +1,16 @@
+<!--
+This file provides onboarding instructions and key setup steps for new contributors to SmartPack.
+Keep this comment at the top; do not overwrite or remove it when updating the document.
+
+How to update: Update this doc whenever onboarding steps, prerequisites, or key docs change. Review after major project or process changes.
+-->
+
 # Onboarding Guide for SmartPack
 
 Welcome! This guide will help you (or future contributors) get up and running quickly.
 
 ## Prerequisites
+
 - Node.js (LTS)
 - npm
 - AWS CLI (configured)
@@ -10,6 +18,7 @@ Welcome! This guide will help you (or future contributors) get up and running qu
 - (Optional) AWS S3 bucket for frontend deployment
 
 ## Setup Steps
+
 1. Clone the repository
 2. Install dependencies: `npm install`
 3. Copy `.env.example` to `.env` and fill in required values (see ENVIRONMENT.md)
@@ -17,6 +26,7 @@ Welcome! This guide will help you (or future contributors) get up and running qu
 5. Run tests: `npm test` or `npx playwright test`
 
 ## Key Docs
+
 - [copilotdocs/COMMANDS.md](../copilotdocs/COMMANDS.md): Common commands
 - [copilotdocs/CHECKLIST.md](../copilotdocs/CHECKLIST.md): Feature/milestone progress
 - [copilotdocs/DEVLOG.md](../copilotdocs/DEVLOG.md): Major changes and troubleshooting
@@ -24,5 +34,6 @@ Welcome! This guide will help you (or future contributors) get up and running qu
 - [.github/copilot-instructions.md](../.github/copilot-instructions.md): AI coding/workflow rules
 
 ## Updating Docs
+
 - Always update `COMMANDS.md`, `CHECKLIST.md`, and `DEVLOG.md` as you develop.
 - Reference this file for onboarding new contributors.

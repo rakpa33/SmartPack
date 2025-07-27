@@ -1,3 +1,10 @@
+<!--
+This file logs major changes, troubleshooting, and development notes for SmartPack.
+Keep this comment at the top; do not overwrite or remove it when updating the document.
+
+How to update: Add a new dated entry for each major change, bugfix, or troubleshooting session. Review after every sprint, release, or significant refactor.
+-->
+
 # DEVLOG for SmartPack
 
 ## 2025-07-26

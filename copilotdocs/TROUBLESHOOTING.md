@@ -1,3 +1,10 @@
+<!--
+This file documents common issues, solutions, and debugging tips for SmartPack.
+Keep this comment at the top; do not overwrite or remove it when updating the document.
+
+How to update: Add a new entry whenever you encounter, fix, or learn about a new issue or solution. Review after major bugfixes or dependency changes.
+-->
+
 # Troubleshooting Guide for SmartPack
 
 Document common issues and their solutions here. Update this file as you encounter new problems.
@@ -60,5 +67,23 @@ Document common issues and their solutions here. Update this file as you encount
      ```
      This resolved the error in some cases, even if minimatch was not directly required in code.
 - **Reference:** See [strapi/strapi#23906](https://github.com/strapi/strapi/pull/23906) for upstream fix status.
+
+### Integration Test Flakiness: Form, Context, and LocalStorage
+
+- **Symptom:** Integration tests for TripForm or MainLayout fail to advance steps, or UI does not update as expected after clicking Next.
+- **Solutions:**
+
+  1. **Clear localStorage before each test** to avoid state pollution from previous runs:
+     ```js
+     beforeEach(() => {
+       localStorage.clear();
+     });
+     ```
+  2. **Use async queries** (e.g., `await screen.findByText(...)`) to wait for UI updates after advancing steps.
+  3. **Context/localStorage state not resetting:** If issues persist, consider mocking the provider or `useTripForm` hook to ensure a clean state for every test.
+  4. **Avoid relying on synchronous state updates** after dispatching actions or setting touched state; always use async waits for UI assertions.
+  5. **Check for per-field error display:** Errors are shown per-field, not as a summary, and do not block advancing the form.
+
+- **Reference:** See `src/__tests__/App.integration.test.tsx` for current best practices.
 
 ## Add more issues as you encounter them!

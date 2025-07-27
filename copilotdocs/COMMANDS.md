@@ -1,3 +1,10 @@
+<!--
+This file lists all frequently used commands and scripts for SmartPack development, testing, and deployment.
+Keep this comment at the top; do not overwrite or remove it when updating the document.
+
+How to update: Add or update commands whenever you add, remove, or change scripts, workflows, or dev/test/deploy steps. Review after adding new tools or scripts.
+-->
+
 # COMMANDS for SmartPack
 
 Keep this file up-to-date with all frequently used command line prompts and scripts relevant to development, testing, and deployment.
