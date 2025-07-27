@@ -42,31 +42,66 @@ button {
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;
-  background-color: #1a1a1a;
+  background-color: #2563eb; /* Tailwind blue-600 */
+  color: #fff;
   cursor: pointer;
-  transition: border-color 0.25s;
+  transition: border-color 0.25s, background-color 0.25s, color 0.25s, opacity 0.25s;
 }
 
-button:hover {
-  border-color: #646cff;
+button:disabled,
+button[aria-disabled='true'] {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background-color: #a1a1aa; /* Tailwind zinc-400 */
+  color: #fff;
 }
 
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+button:hover:not(:disabled):not([aria-disabled='true']) {
+  border-color: #2563eb;
+  background-color: #1d4ed8; /* Tailwind blue-700 */
 }
 
-@media (prefers-color-scheme: light) {
+.form-container {
+  background: #fff;
+  color: #1a202c; /* Tailwind gray-900 */
+  border-radius: 1rem;
+  box-shadow: 0 2px 16px 0 rgba(0,0,0,0.06);
+  border: 1px solid #e5e7eb; /* Tailwind gray-200 */
+  padding: 2rem;
+}
+
+@media (prefers-color-scheme: dark) {
   :root {
-    color: #213547;
-    background-color: #ffffff;
+    color: #f3f4f6;
+    background-color: #18181b;
   }
 
   a:hover {
-    color: #747bff;
+    color: #93c5fd;
   }
 
   button {
-    background-color: #f9f9f9;
+    background-color: #2563eb;
+    color: #fff;
   }
+  button:disabled,
+  button[aria-disabled='true'] {
+    background-color: #3f3f46; /* Tailwind zinc-700 */
+    color: #a1a1aa;
+  }
+  button:hover:not(:disabled):not([aria-disabled='true']) {
+    background-color: #1e40af; /* Tailwind blue-800 */
+  }
+
+  .form-container {
+    background: #18181b;
+    color: #f3f4f6;
+    border: 1px solid #27272a; /* Tailwind zinc-800 */
+    box-shadow: 0 2px 16px 0 rgba(0,0,0,0.18);
+  }
+}
+
+.text-error {
+  color: #dc2626 !important; /* Tailwind red-600 */
+  font-weight: 500;
 }
