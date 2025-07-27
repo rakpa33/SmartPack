@@ -4,6 +4,14 @@ Document common issues and their solutions here. Update this file as you encount
 
 ## Common Issues
 
+### TripForm state not persisting or updating
+
+- **Symptom:** Trip details form state does not persist across reloads, or updates are not reflected in the UI.
+- **Solution:**
+  - Ensure the TripFormProvider is wrapping your app or relevant component tree.
+  - Check that localStorage is available and not blocked by browser settings.
+  - Verify that the reducer and dispatch actions are used correctly in the form logic.
+
 ### Playwright E2E tests fail due to test runner conflicts
 
 - **Symptom:** Playwright E2E tests fail with errors like `expect is not defined`, or try to run unit/integration tests.

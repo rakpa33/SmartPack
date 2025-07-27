@@ -33,3 +33,16 @@
   - [x] Add/Update component and layout tests (RTL/Vitest)
   - [x] Validate responsive layout and dark mode toggle
   - [x] Acceptance: Responsive layout, placeholders, and dark mode toggle all work across devices
+- [ ] Phase 2: Step 4 – Trip Details Form & State Management
+  - [ ] Design multi-step Trip Details form UI (stepper)
+  - [x] Allow user to add multiple destinations (dynamic list)
+  - [x] Allow user to select multiple travel modes (multi-select/checkboxes)
+  - [ ] Add fields for trip name, dates, preferences
+  - [x] Implement form state management with React context (app-wide access)
+  - [x] Persist form state to localStorage and load on mount
+  - [ ] Validate each step before allowing navigation
+  - [ ] Ensure accessibility: labels, ARIA, keyboard navigation, focus management
+  - [ ] Use Headless UI for stepper/dialog if needed
+  - [x] Create and use TripForm.tsx and useTripForm.ts
+  - [x] Add/Update unit, integration, and accessibility tests for form and state
+  - [ ] Acceptance: User can add multiple destinations and travel modes, form state is accessible app-wide, persists to localStorage, and passes all tests

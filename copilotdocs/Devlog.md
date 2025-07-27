@@ -12,6 +12,11 @@
 - Separated Playwright E2E tests from unit/integration tests and updated Playwright config for correct test discovery.
 - Improved color contrast and accessibility for both light and dark mode.
 - Updated CHECKLIST.md to reflect all completed items for this phase.
+- Added TripForm context/state hook with reducer for app-wide state
+- Supports multiple destinations (dynamic list) and multiple travel modes (multi-select)
+- State persists to localStorage and loads on mount
+- All state logic is unit tested (add, update, remove, step navigation, persistence)
+- Updated checklist for Phase 2 Step 4 to reflect new requirements and progress
 
 ## 2025-07-24
 

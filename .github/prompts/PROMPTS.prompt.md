@@ -103,7 +103,9 @@ How to Use:
 - Reference relevant files for this step.
 - State acceptance criteria for completion.
 - List dependencies or prerequisites.
-- Ask for user confirmation before writing code.
+- Ensure `CHECKLIST.md` updates match the `ROADMAP.md` for easier comparison.
+- Update `CHECKLIST.md` with what needs to be done to complete <PHASE_NUMBER> <STEP_NUMBER>.
+- State the first action item to execute **Phase <PHASE_NUMBER> Step <STEP_NUMBER>** and only wait for user confirmation before writing code.
 
 ---
 
