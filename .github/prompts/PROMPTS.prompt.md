@@ -12,6 +12,7 @@ How to Use:
 - **See `copilotdocs/TROUBLESHOOTING.md` for common issues and solutions.**
 - **See `copilotdocs/ENVIRONMENT.md` for required environment variables and usage.**
 - **See `copilotdocs/ARCHITECTURE.md` for a high-level system overview.**
+- **The project roadmap is in `.github/prompts/ROADMAP.md`.**
 - **Table of Contents:**
   - Kickoff Phase <PHASE_NUMBER> Step <STEP_NUMBER>:
   - Proceed with Phase <PHASE_NUMBER> Step <STEP_NUMBER>:
@@ -43,7 +44,7 @@ How to Use:
 # Copilot Always Rules
 
 1. **Reference the plan**
-   - Always load and consult `ROADMAP.md` for the current phase, step, and deliverables.
+   - Always load and consult `ROADMAP.md` (located in `.github/prompts/ROADMAP.md`) for the current phase, step, and deliverables.
 2. **Explain first**
    - Before coding, explain in plain language **what** you will do and **why**. Wait for user approval.
 3. **Generate code + comments**

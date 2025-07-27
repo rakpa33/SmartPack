@@ -8,7 +8,7 @@
   - [x] Confirmed AWS CLI is installed: `aws --version` → aws-cli/2.27.59
   - [x] Ran `aws configure list` to verify credentials and region
   - [x] Ran `aws s3 ls` to verify S3 access: elasticbeanstalk-us-east-2-725018633275 listed
-- [ ] Phase 1: Step 2 – Create React Vite Project Foundation
+- [x] Phase 1: Step 2 – Create React Vite Project Foundation
   - [x] Scaffold new Vite React TypeScript project (`npm create vite@latest SmartPack -- --template react-ts`)
   - [x] Run `cd SmartPack` and `npm install`
   - [x] Install Tailwind CSS, PostCSS, and Autoprefixer (`npm install -D tailwindcss postcss autoprefixer`)
@@ -22,3 +22,14 @@
   - [x] Documented minimatch type error fix in TROUBLESHOOTING.md
   - [x] Compared SmartPack and packing-app for type error diagnosis
   - [x] Updated troubleshooting steps to recommend installing minimatch
+- [ ] Phase 2: Step 3 – Main Layout & Responsive Design
+  - [ ] Create a mobile-first layout using Tailwind
+  - [ ] Implement 3-column design for desktop, stacked for mobile (Trip Details, Packing Checklist, AI Suggestions)
+  - [ ] Add global navigation/header
+  - [ ] Set up dark mode toggle (Tailwind dark variant)
+  - [ ] Add placeholder content and test with Headless UI modal/dialog
+  - [ ] Create and use MainLayout.tsx, DarkModeToggle.tsx, AppHeader.tsx
+  - [ ] Update App.tsx to use new layout and header
+  - [ ] Add/Update component and layout tests (RTL/Vitest)
+  - [ ] Validate responsive layout and dark mode toggle
+  - [ ] Acceptance: Responsive layout, placeholders, and dark mode toggle all work across devices
