@@ -37,7 +37,7 @@
   - [ ] Design multi-step Trip Details form UI (stepper)
   - [x] Allow user to add multiple destinations (dynamic list)
   - [x] Allow user to select multiple travel modes (multi-select/checkboxes)
-  - [ ] Add fields for trip name, dates, preferences
+  - [x] Add fields for trip name, dates, preferences
   - [x] Implement form state management with React context (app-wide access)
   - [x] Persist form state to localStorage and load on mount
   - [ ] Validate each step before allowing navigation
@@ -45,4 +45,10 @@
   - [ ] Use Headless UI for stepper/dialog if needed
   - [x] Create and use TripForm.tsx and useTripForm.ts
   - [x] Add/Update unit, integration, and accessibility tests for form and state
+  - [x] Add long-form Trip Details field with AI-friendly placeholder
+  - [x] Remove Preferences checklist in favor of freeform text
+  - [x] Update input field borders for better contrast
+  - [x] Ensure all form fields and buttons are theme-aware and accessible
+  - [x] Polish dark/light mode and app-wide CSS for cohesion
+  - [x] All tests (unit, integration, E2E) updated and passing
   - [ ] Acceptance: User can add multiple destinations and travel modes, form state is accessible app-wide, persists to localStorage, and passes all tests
