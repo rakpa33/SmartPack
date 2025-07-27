@@ -3,32 +3,64 @@ import { useTripForm } from '../hooks/useTripForm';
 import { validateTripForm } from '../utils/tripFormValidation';
 
 export const TripForm: React.FC = () => {
-  const { state, dispatch } = useTripForm();
+  const { dispatch } = useTripForm();
+  // Local state for all fields
+  const [tripName, setTripName] = useState('');
+  const [destinations, setDestinations] = useState(['']);
+  const [travelModes, setTravelModes] = useState<string[]>([]);
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
+  const [preferences, setPreferences] = useState(['']);
   const [touched, setTouched] = useState<{ [k: string]: boolean }>({});
-  const errors = validateTripForm(state);
 
-  const handleChange = (field: keyof typeof state, value: string | string[]) => {
-    dispatch({ type: 'SET_FIELD', field, value });
+  // Infer step: if all required fields are filled, step = 2 (checklist), else 1 (form)
+  const isFormComplete = (
+    tripName.trim() &&
+    destinations.every(d => d.trim()) &&
+    travelModes.length > 0 &&
+    startDate &&
+    endDate
+  );
+  const step = isFormComplete ? 2 : 1;
+
+  const errors = validateTripForm({
+    tripName,
+    destinations,
+    travelModes,
+    startDate,
+    endDate,
+    preferences,
+    step,
+  });
+
+  const handleChange = (field: string, value: string | string[]) => {
+    switch (field) {
+      case 'tripName': setTripName(value as string); break;
+      case 'destinations': setDestinations(value as string[]); break;
+      case 'travelModes': setTravelModes(value as string[]); break;
+      case 'startDate': setStartDate(value as string); break;
+      case 'endDate': setEndDate(value as string); break;
+      case 'preferences': setPreferences(value as string[]); break;
+      default: break;
+    }
   };
 
   const handleDestinationChange = (idx: number, value: string) => {
-    dispatch({ type: 'UPDATE_DESTINATION', index: idx, value });
+    setDestinations(dests => dests.map((d, i) => (i === idx ? value : d)));
   };
 
   const handleAddDestination = () => {
-    dispatch({ type: 'ADD_DESTINATION', value: '' });
+    setDestinations(dests => [...dests, '']);
   };
 
   const handleRemoveDestination = (idx: number) => {
-    dispatch({ type: 'REMOVE_DESTINATION', index: idx });
+    setDestinations(dests => dests.filter((_, i) => i !== idx));
   };
 
   const handleTravelModeChange = (mode: string) => {
-    if (state.travelModes.includes(mode)) {
-      dispatch({ type: 'REMOVE_TRAVEL_MODE', value: mode });
-    } else {
-      dispatch({ type: 'ADD_TRAVEL_MODE', value: mode });
-    }
+    setTravelModes(modes =>
+      modes.includes(mode) ? modes.filter(m => m !== mode) : [...modes, mode]
+    );
   };
 
   const handleNext = () => {
@@ -40,16 +72,51 @@ export const TripForm: React.FC = () => {
       startDate: true,
       endDate: true,
     };
-    state.destinations.forEach((_, i) => {
+    destinations.forEach((_, i) => {
       touchedFields[`destinations_${i}`] = true;
     });
     setTouched(touchedFields);
-    dispatch({ type: 'NEXT_STEP' });
+    // Always check for errors and advance if valid, regardless of touched
+    const currentErrors = validateTripForm({
+      tripName,
+      destinations,
+      travelModes,
+      startDate,
+      endDate,
+      preferences,
+      step,
+    });
+    const hasErrors = Object.values(currentErrors).some(err => {
+      if (Array.isArray(err)) return err.some(Boolean);
+      return Boolean(err);
+    });
+    // Debug: log errors and hasErrors
+    // eslint-disable-next-line no-console
+    console.log('TripForm handleNext errors:', currentErrors, 'hasErrors:', hasErrors);
+    if (!hasErrors) {
+      // Filter out empty destinations before syncing to context
+      const filteredDestinations = destinations.filter(d => d.trim() !== '');
+      dispatch({
+        type: 'SET_FORM_STATE',
+        value: {
+          tripName,
+          destinations: filteredDestinations,
+          travelModes,
+          startDate,
+          endDate,
+          preferences,
+          step,
+        },
+      });
+      dispatch({ type: 'NEXT_STEP' });
+    }
   };
 
-  // For demo: simple stepper UI
   return (
-    <form className="space-y-6 max-w-xl mx-auto p-4">
+    <form className="space-y-6 max-w-xl mx-auto p-4" onSubmit={e => {
+      e.preventDefault();
+      handleNext();
+    }}>
       {/* Step 1: Trip Name */}
       <div>
         <label htmlFor="tripName" className="block font-medium text-gray-900 dark:text-gray-100">Trip Name</label>
@@ -57,7 +124,7 @@ export const TripForm: React.FC = () => {
           id="tripName"
           type="text"
           className="input input-bordered w-full bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 border border-gray-400 dark:border-gray-600"
-          value={state.tripName}
+          value={tripName}
           onChange={e => handleChange('tripName', e.target.value)}
           onBlur={() => setTouched(t => ({ ...t, tripName: true }))}
           aria-invalid={!!errors.tripName}
@@ -71,7 +138,7 @@ export const TripForm: React.FC = () => {
       {/* Step 2: Destinations */}
       <div>
         <label className="block font-medium text-gray-900 dark:text-gray-100">Destinations</label>
-        {state.destinations.map((d, i) => (
+        {destinations.map((d, i) => (
           <div key={i} className="flex items-center gap-2 mb-2">
             <label htmlFor={`destination-${i}`} className="sr-only">Destination</label>
             <input
@@ -85,13 +152,13 @@ export const TripForm: React.FC = () => {
               aria-describedby={`destinations-error-${i}`}
               data-testid={`destination-input-${i}`}
             />
-            {state.destinations.length > 1 && (
+            {destinations.length > 1 && (
               <button type="button" onClick={() => handleRemoveDestination(i)} aria-label="Remove destination" className="btn btn-sm btn-error">Remove</button>
             )}
           </div>
         ))}
         <button type="button" onClick={handleAddDestination} className="btn btn-sm btn-primary mt-1">Add Destination</button>
-        {state.destinations.map((_, i) => (
+        {destinations.map((_, i) => (
           touched[`destinations_${i}`] && errors.destinations && errors.destinations[i] ? (
             <div key={i} id={`destinations-error-${i}`} className="text-error text-sm" role="alert">{errors.destinations[i]}</div>
           ) : null
@@ -106,7 +173,7 @@ export const TripForm: React.FC = () => {
             <label key={mode} className="inline-flex items-center gap-1 text-gray-900 dark:text-gray-100">
               <input
                 type="checkbox"
-                checked={state.travelModes.includes(mode)}
+                checked={travelModes.includes(mode)}
                 onChange={() => handleTravelModeChange(mode)}
               />
               {mode}
@@ -126,7 +193,7 @@ export const TripForm: React.FC = () => {
             id="startDate"
             type="date"
             className="input input-bordered w-full bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 border border-gray-400 dark:border-gray-600"
-            value={state.startDate}
+            value={startDate}
             onChange={e => handleChange('startDate', e.target.value)}
             onBlur={() => setTouched(t => ({ ...t, startDate: true }))}
             aria-invalid={!!errors.startDate}
@@ -142,7 +209,7 @@ export const TripForm: React.FC = () => {
             id="endDate"
             type="date"
             className="input input-bordered w-full bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 border border-gray-400 dark:border-gray-600"
-            value={state.endDate}
+            value={endDate}
             onChange={e => handleChange('endDate', e.target.value)}
             onBlur={() => setTouched(t => ({ ...t, endDate: true }))}
             aria-invalid={!!errors.endDate}
@@ -160,14 +227,14 @@ export const TripForm: React.FC = () => {
         <textarea
           id="tripDetails"
           className="input input-bordered w-full bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 border border-gray-400 dark:border-gray-600 min-h-[100px]"
-          value={state.preferences[0] || ''}
+          value={preferences[0] || ''}
           onChange={e => handleChange('preferences', [e.target.value])}
           placeholder="E.g. Accessibility needs, tech needs, access to laundry, pet/child-friendly, language/translation support, attending special event, outdoor/adventure activities, business travel, minimalist packing, health & wellness needs, medication required, sun/insect protection, water activities, hiking, gifts/souvenirs, or anything else that will help us personalize your packing list."
         />
       </div>
 
       <div className="flex justify-end gap-2">
-        <button type="button" className="btn btn-primary" onClick={handleNext}>
+        <button type="submit" className="btn btn-primary">
           Next
         </button>
       </div>

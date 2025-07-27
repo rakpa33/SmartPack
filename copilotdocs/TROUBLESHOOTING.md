@@ -86,4 +86,31 @@ Document common issues and their solutions here. Update this file as you encount
 
 - **Reference:** See `src/__tests__/App.integration.test.tsx` for current best practices.
 
+### TripForm Double-Click/Context Sync Issue (2025-07-27)
+
+- **Symptom:** Packing Checklist only appears after clicking Next twice in integration tests and manual testing.
+- **Root Cause:** Multiple context dispatches for each field are batched and not reflected in context state before navigation. The checklist UI reads from context, so it sees stale data after the first click.
+- **Best Practice:**
+  - Use local useState for all form fields, sync to context only on submit or blur.
+  - If context must be updated, batch all field updates into a single dispatch (SET_FORM_STATE) before navigation.
+- **Actions:**
+  - Refactored TripForm to use local state for all fields.
+  - Will refactor to use a single SET_FORM_STATE dispatch before navigation to guarantee atomic context update.
+- **References:**
+  - [React Docs: Forms](https://react.dev/reference/react/useState#controlling-an-input-with-a-state-variable)
+  - [Kent C. Dodds: Application State Management with React](https://kentcdodds.com/blog/application-state-management-with-react)
+
+### MemoryRouter Navigation Assertion Issue in Integration Tests (2025-07-27)
+
+- **Symptom:** Integration tests for navigation to `/MainLayout` fail when asserting on `window.location.pathname` in MemoryRouter tests, even though the app works in the browser.
+- **Root Cause:** React Router's MemoryRouter does not update `window.location.pathname` in tests. Navigation is managed in-memory and not reflected in the global location object.
+- **Best Practice:**
+  - Do not assert on `window.location.pathname` in MemoryRouter tests.
+  - Instead, assert on UI elements unique to the route (e.g., headings or sections that only appear on `/MainLayout`).
+- **Actions:**
+  - Updated all integration tests to assert on UI elements unique to the route instead of `window.location.pathname`.
+- **References:**
+  - [Kent C. Dodds: Testing React Router](https://kentcdodds.com/blog/testing-react-router)
+  - [React Router Testing Docs](https://reactrouter.com/en/main/guides/testing)
+
 ## Add more issues as you encounter them!

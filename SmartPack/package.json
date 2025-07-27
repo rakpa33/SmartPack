@@ -8,7 +8,10 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "test": "vitest"
+    "test": "vitest",
+    "test:unit": "cd SmartPack && vitest --include src/__tests__/*.test.tsx src/__tests__/*.unit.test.ts src/__tests__/*.test.ts src/__tests__/*.unit.test.tsx",
+    "test:int": "vitest --include src/__tests__/integration/**/*.test.ts",
+    "test:e2e": "playwright test"
   },
   "dependencies": {
     "@headlessui/react": "^2.2.6",
@@ -21,11 +24,13 @@
     "@playwright/test": "^1.54.1",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.3.0",
+    "@testing-library/user-event": "^14.6.1",
     "@types/jest": "^30.0.0",
     "@types/jest-axe": "^3.5.9",
     "@types/minimatch": "^6.0.0",
     "@types/react": "^19.1.8",
     "@types/react-dom": "^19.1.6",
+    "@types/react-router-dom": "^5.3.3",
     "@types/testing-library__react": "^10.2.0",
     "@vitejs/plugin-react": "^4.6.0",
     "autoprefixer": "^10.4.21",
@@ -37,6 +42,7 @@
     "jsdom": "^26.1.0",
     "postcss": "^8.5.6",
     "prettier": "^3.6.2",
+    "react-router-dom": "^7.7.1",
     "tailwindcss": "^3.4.17",
     "typescript": "~5.8.3",
     "typescript-eslint": "^8.35.1",

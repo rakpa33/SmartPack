@@ -18,6 +18,8 @@ This document provides a high-level overview of the system architecture, major c
 ## Major Components
 
 - `src/` - Frontend code (see ROADMAP.md for structure)
+  - Includes robust checklist logic: add, check, uncheck, and remove items/categories, with state persisted to localStorage and reflected in UI.
+  - E2E/integration tests validate all checklist acceptance criteria and UI flows.
 - `lambda/` - Backend Lambda functions (see ROADMAP.md)
 - `copilotdocs/` - Project docs, logs, and commands
 
@@ -28,12 +30,20 @@ This document provides a high-level overview of the system architecture, major c
 - Trip + weather data sent to `/generate` Lambda endpoint
 - Lambda connects to Ollama for AI suggestions
 - Checklist and suggestions returned to frontend
+- Checklist state changes (add/remove/check/uncheck) are persisted to localStorage and reflected in UI immediately
 
 ## Integration Points
 
 - REST API: `/generate` endpoint
-- LocalStorage: persists user data
+- LocalStorage: persists user data (including checklist state)
 - Open-Meteo API: weather data
+
+## Testing & Validation Protocol
+
+- All checklist and trip flows are covered by robust E2E/integration tests (see TESTING_GUIDELINES.md).
+- When diagnosing test failures, always validate the behavior live (via `npm run dev`) before assuming the test is incorrect.
+- Validate against external sources for best practices (e.g., React Testing Library, accessibility, and E2E patterns).
+- Only update tests if the live UI matches the intended acceptance criteria and best practices.
 
 ## See Also
 

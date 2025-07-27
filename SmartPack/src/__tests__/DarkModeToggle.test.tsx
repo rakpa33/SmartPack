@@ -1,15 +1,17 @@
-import { render, screen, fireEvent } from '@testing-library/react';
+import React from 'react';
+import { renderWithProviders } from '../../tests/testing-utils';
 import DarkModeToggle from '../components/DarkModeToggle';
+import { screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
 
 describe('DarkModeToggle', () => {
   it('renders the toggle button', () => {
-    render(<DarkModeToggle />);
+    renderWithProviders(<DarkModeToggle />);
     expect(screen.getByRole('button', { name: /toggle dark mode/i })).toBeInTheDocument();
   });
 
   it('toggles dark mode class on html element', () => {
-    render(<DarkModeToggle />);
+    renderWithProviders(<DarkModeToggle />);
     const button = screen.getByRole('button', { name: /toggle dark mode/i });
     document.documentElement.classList.remove('dark');
     fireEvent.click(button);

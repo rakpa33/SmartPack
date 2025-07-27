@@ -1,4 +1,5 @@
-import { render } from '@testing-library/react';
+import React from 'react';
+import { renderWithProviders } from '../../tests/testing-utils';
 import { axe } from 'jest-axe';
 import MainLayout from '../components/MainLayout';
 import '@testing-library/jest-dom';
@@ -6,7 +7,7 @@ import { expect, describe, it } from 'vitest';
 
 describe('MainLayout accessibility', () => {
   it('has no accessibility violations (including color contrast)', async () => {
-    const { container } = render(
+    const { container } = renderWithProviders(
       <MainLayout>
         <div>Test Child</div>
       </MainLayout>

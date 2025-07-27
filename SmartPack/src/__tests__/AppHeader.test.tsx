@@ -1,14 +1,16 @@
-import { render, screen } from '@testing-library/react';
+import React from 'react';
+import { renderWithProviders } from '../../tests/testing-utils';
 import AppHeader from '../components/AppHeader';
+import { screen } from '@testing-library/react';
 
 describe('AppHeader', () => {
   it('renders the SmartPack title', () => {
-    render(<AppHeader />);
+    renderWithProviders(<AppHeader />);
     expect(screen.getByText('SmartPack')).toBeInTheDocument();
   });
 
   it('renders the dark mode toggle button', () => {
-    render(<AppHeader />);
+    renderWithProviders(<AppHeader />);
     expect(screen.getByRole('button', { name: /toggle dark mode/i })).toBeInTheDocument();
   });
 });

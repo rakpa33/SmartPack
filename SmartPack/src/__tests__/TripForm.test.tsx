@@ -1,10 +1,12 @@
-import { render, screen, fireEvent } from '@testing-library/react';
-import { TripFormProvider } from '../hooks/useTripForm';
+import React from 'react';
+import { renderWithProviders } from '../../tests/testing-utils';
+import { TripFormProvider } from '../hooks/TripFormContext';
 import { TripForm } from '../components/TripForm';
+import { screen, fireEvent } from '@testing-library/react';
 
 describe('TripForm unit/integration', () => {
   function setup() {
-    return render(
+    return renderWithProviders(
       <TripFormProvider>
         <TripForm />
       </TripFormProvider>
@@ -52,6 +54,8 @@ describe('TripForm unit/integration', () => {
     yesterday.setDate(today.getDate() - 1);
     const tomorrow = new Date(today);
     tomorrow.setDate(today.getDate() + 1);
+    const dayAfterTomorrow = new Date(today);
+    dayAfterTomorrow.setDate(today.getDate() + 2);
     const startInput = screen.getByLabelText(/Start Date/i);
     const endInput = screen.getByLabelText(/End Date/i);
     fireEvent.change(startInput, { target: { value: yesterday.toISOString().slice(0, 10) } });
@@ -61,26 +65,32 @@ describe('TripForm unit/integration', () => {
     fireEvent.change(endInput, { target: { value: today.toISOString().slice(0, 10) } });
     fireEvent.blur(endInput);
     expect(screen.getByText(/End date cannot be before start date/i)).toBeInTheDocument();
+    // Also test valid case
+    fireEvent.change(endInput, { target: { value: dayAfterTomorrow.toISOString().slice(0, 10) } });
+    fireEvent.blur(endInput);
+    expect(screen.queryByText(/End date cannot be before start date/i)).not.toBeInTheDocument();
   });
 
   it('allows adding/removing destinations', () => {
     setup();
     fireEvent.click(screen.getByText(/Add Destination/i));
-    expect(screen.getAllByRole('textbox').length).toBeGreaterThan(1);
+    expect(screen.getAllByTestId(/destination-input-/i).length).toBeGreaterThan(1);
     fireEvent.click(screen.getAllByLabelText(/Remove destination/i)[0]);
-    expect(screen.getAllByRole('textbox').length).toBe(2); // Trip Name + 1 destination
+    expect(screen.getAllByTestId(/destination-input-/i).length).toBe(1); // Only 1 destination input left
   });
 
   it('submits when all fields are valid', () => {
     setup();
     fireEvent.change(screen.getByLabelText(/Trip Name/i), { target: { value: 'My Trip' } });
-    fireEvent.change(screen.getAllByRole('textbox')[1], { target: { value: 'Paris' } });
+    fireEvent.change(screen.getAllByRole('textbox')[1], { target: { value: 'New York' } });
     fireEvent.click(screen.getByLabelText(/Car/i));
     const today = new Date();
     const tomorrow = new Date(today);
     tomorrow.setDate(today.getDate() + 1);
-    fireEvent.change(screen.getByLabelText(/Start Date/i), { target: { value: today.toISOString().slice(0, 10) } });
-    fireEvent.change(screen.getByLabelText(/End Date/i), { target: { value: tomorrow.toISOString().slice(0, 10) } });
+    const dayAfterTomorrow = new Date(today);
+    dayAfterTomorrow.setDate(today.getDate() + 2);
+    fireEvent.change(screen.getByLabelText(/Start Date/i), { target: { value: tomorrow.toISOString().slice(0, 10) } });
+    fireEvent.change(screen.getByLabelText(/End Date/i), { target: { value: dayAfterTomorrow.toISOString().slice(0, 10) } });
     fireEvent.click(screen.getByText(/Next/i));
     // Should not show errors
     expect(screen.queryByText(/is required/i)).not.toBeInTheDocument();

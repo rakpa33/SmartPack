@@ -58,4 +58,16 @@ How to update: Update this doc whenever you start, complete, or change a feature
   - [x] Ensure all form fields and buttons are theme-aware and accessible
   - [x] Polish dark/light mode and app-wide CSS for cohesion
   - [x] All tests (unit, integration, E2E) updated and passing
+  - [x] Integration test navigation assertion fix: assert on UI, not window.location.pathname, in MemoryRouter tests (see TROUBLESHOOTING.md)
   - [x] Acceptance: User can add multiple destinations and travel modes, form state is accessible app-wide, persists to localStorage, passes all tests, and the Next button always advances (stepper/step validation not implemented)
+- [ ] Phase 2: Step 5 – Packing Checklist & Context Refactor
+  - [x] Refactor PackingList context/provider/hook into separate files for fast refresh
+  - [x] Use named exports for all hooks, and ensure only one export per symbol
+  - [x] Create PackingListProvider and wrap checklist UI in provider
+  - [x] Implement PackingList and ChecklistItem components
+  - [x] Integrate PackingList into MainLayout center column
+  - [x] Display trip summary in left column
+  - [x] Add/Update unit, integration, and accessibility tests for checklist and context
+  - [x] Ensure checklist state persists to localStorage and is accessible app-wide
+  - [x] Polish checklist UI for accessibility, theming, and responsive design
+  - [x] Acceptance: User can add, check, and remove items and categories; checklist state persists and updates everywhere; all tests pass

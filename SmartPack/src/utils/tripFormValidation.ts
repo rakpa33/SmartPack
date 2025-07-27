@@ -1,5 +1,5 @@
 import { isValidCity, isDateInPast, isEndDateBeforeStart } from '../utils/validation';
-import type { TripFormState } from '../hooks/useTripForm';
+import type { TripFormState } from '../hooks/TripFormTypes';
 
 export type TripFormErrors = {
   tripName?: string;
@@ -20,7 +20,7 @@ export function validateTripForm(state: TripFormState): TripFormErrors {
   }
 
   // Destinations
-  errors.destinations = state.destinations.map((d) => {
+  errors.destinations = state.destinations.map((d: string) => {
     if (!d.trim()) return 'Destination is required.';
     if (!isValidCity(d)) return 'Enter a valid city.';
     return '';
@@ -39,10 +39,10 @@ export function validateTripForm(state: TripFormState): TripFormErrors {
   }
   if (!state.endDate) {
     errors.endDate = 'End date is required.';
-  } else if (isDateInPast(state.endDate)) {
-    errors.endDate = 'End date cannot be in the past.';
   } else if (state.startDate && isEndDateBeforeStart(state.startDate, state.endDate)) {
     errors.endDate = 'End date cannot be before start date.';
+  } else if (isDateInPast(state.endDate)) {
+    errors.endDate = 'End date cannot be in the past.';
   }
 
   return errors;

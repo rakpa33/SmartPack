@@ -1,4 +1,6 @@
 import React from 'react';
+import { PackingListProvider } from '../hooks/usePackingListContext';
+import { PackingList } from './PackingList';
 
 interface MainLayoutProps {
   children: React.ReactNode;
@@ -17,8 +19,12 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
           <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-4 h-full text-gray-900 dark:text-gray-100 border border-gray-200 dark:border-gray-700">Trip Details (placeholder)</div>
         </section>
         {/* Center: Packing Checklist */}
-        <section className="md:w-2/4 w-full mb-4 md:mb-0" id="packing-checklist">
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-4 h-full text-gray-900 dark:text-gray-100 border border-gray-200 dark:border-gray-700">Packing Checklist (placeholder)</div>
+        <section className="md:w-2/4 w-full mb-4 md:mb-0" id="packing-checklist" data-testid="packing-checklist-section">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-4 h-full text-gray-900 dark:text-gray-100 border border-gray-200 dark:border-gray-700">
+            <PackingListProvider>
+              <PackingList />
+            </PackingListProvider>
+          </div>
         </section>
         {/* Right: AI Suggestions */}
         <section className="md:w-1/4 w-full" id="ai-suggestions">

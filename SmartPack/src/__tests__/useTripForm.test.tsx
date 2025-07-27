@@ -1,6 +1,10 @@
 import React from 'react';
 import { renderHook, act } from '@testing-library/react';
-import { TripFormProvider, useTripForm } from '../hooks/useTripForm';
+import { TripFormProvider } from '../hooks/TripFormContext';
+import { useTripForm } from '../hooks/useTripForm';
+
+// Optionally, import shared factories if needed in future
+// import { makeTrip } from '../../tests/factories/tripFactory';
 
 describe('useTripForm context', () => {
   function wrapper({ children }: { children: React.ReactNode }) {
