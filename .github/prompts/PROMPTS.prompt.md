@@ -125,16 +125,13 @@ How to Use:
 
 **Prepare Commit and Checklist Update:**
 
-- Show me the diff summary and the commit message.
 - Update `CHECKLIST.md` for this step and create new checklist items for expected next steps if not already represented or update for accuracy. Ensure checklist matches `ROADMAP.md`. Checklist items should contain details of steps taken to complete the step-- including tests to validate step/phase is complete.
 - update all files in `#file:copilotdocs` based on what we've done (e.g., `DEVLOG.md`, `CHECKLIST.md`, `TROUBLESHOOTING.md`, etc.).
 - Reference relevant files for this step.
 - State acceptance criteria for completion.
 - List dependencies or prerequisites.
-- Ask for user confirmation before finalizing the commit.
 - Briefly describe how to revert changes if something goes wrong.
 - Note if any documentation (`README.md`, `DEVLOG.md`, `CHECKLIST.md`, etc.) should be updated as part of this step.
-- Wait for my `commit:` response before running `git commit`.
 
 ---
 

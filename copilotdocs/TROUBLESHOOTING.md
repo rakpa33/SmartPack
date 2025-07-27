@@ -4,6 +4,11 @@ Document common issues and their solutions here. Update this file as you encount
 
 ## Common Issues
 
+### Playwright E2E tests fail due to test runner conflicts
+
+- **Symptom:** Playwright E2E tests fail with errors like `expect is not defined`, or try to run unit/integration tests.
+- **Solution:** Ensure Playwright E2E tests are in a separate folder (e.g., `playwright/`) and not mixed with unit/integration tests. Update `playwright.config.ts` to only include E2E tests.
+
 ### Ollama not running
 
 - **Symptom:** AI suggestions fail or timeout.

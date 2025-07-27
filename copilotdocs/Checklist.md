@@ -22,14 +22,14 @@
   - [x] Documented minimatch type error fix in TROUBLESHOOTING.md
   - [x] Compared SmartPack and packing-app for type error diagnosis
   - [x] Updated troubleshooting steps to recommend installing minimatch
-- [ ] Phase 2: Step 3 – Main Layout & Responsive Design
-  - [ ] Create a mobile-first layout using Tailwind
-  - [ ] Implement 3-column design for desktop, stacked for mobile (Trip Details, Packing Checklist, AI Suggestions)
-  - [ ] Add global navigation/header
-  - [ ] Set up dark mode toggle (Tailwind dark variant)
-  - [ ] Add placeholder content and test with Headless UI modal/dialog
-  - [ ] Create and use MainLayout.tsx, DarkModeToggle.tsx, AppHeader.tsx
-  - [ ] Update App.tsx to use new layout and header
-  - [ ] Add/Update component and layout tests (RTL/Vitest)
-  - [ ] Validate responsive layout and dark mode toggle
-  - [ ] Acceptance: Responsive layout, placeholders, and dark mode toggle all work across devices
+- [x] Phase 2: Step 3 – Main Layout & Responsive Design
+  - [x] Create a mobile-first layout using Tailwind
+  - [x] Implement 3-column design for desktop, stacked for mobile (Trip Details, Packing Checklist, AI Suggestions)
+  - [x] Add global navigation/header
+  - [x] Set up dark mode toggle (Tailwind dark variant)
+  - [x] Add placeholder content and test with Headless UI modal/dialog
+  - [x] Create and use MainLayout.tsx, DarkModeToggle.tsx, AppHeader.tsx
+  - [x] Update App.tsx to use new layout and header
+  - [x] Add/Update component and layout tests (RTL/Vitest)
+  - [x] Validate responsive layout and dark mode toggle
+  - [x] Acceptance: Responsive layout, placeholders, and dark mode toggle all work across devices

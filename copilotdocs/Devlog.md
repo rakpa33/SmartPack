@@ -1,5 +1,18 @@
 # DEVLOG for SmartPack
 
+## 2025-07-26
+
+- Completed all deliverables for Phase 2 Step 3: Main Layout & Responsive Design.
+- Implemented mobile-first, responsive 3-column layout with Tailwind.
+- Added global navigation/header and dark mode toggle (Tailwind dark variant).
+- Added placeholder content and Headless UI modal for layout testing.
+- Created and used MainLayout.tsx, DarkModeToggle.tsx, AppHeader.tsx.
+- Updated App.tsx to use new layout and header.
+- Added and validated unit, integration, accessibility (axe/jest-axe), and E2E (Playwright) tests.
+- Separated Playwright E2E tests from unit/integration tests and updated Playwright config for correct test discovery.
+- Improved color contrast and accessibility for both light and dark mode.
+- Updated CHECKLIST.md to reflect all completed items for this phase.
+
 ## 2025-07-24
 
 - Fixed Tailwind CSS not applying by updating `tailwind.config.js` content array

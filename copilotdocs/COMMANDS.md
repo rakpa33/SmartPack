@@ -8,8 +8,9 @@ Keep this file up-to-date with all frequently used command line prompts and scri
 - Lint code: `npm run lint`
 
 ## Testing
-- Run integration tests: `npm test` or `npm run test`
+- Run unit/integration/accessibility tests: `npx vitest run`
 - Run E2E tests: `npx playwright test`
+- Run accessibility (axe) tests: `npx vitest run src/__tests__/*.a11y.test.tsx`
 
 ## Backend/Serverless
 - Deploy backend to AWS Lambda: `npx serverless deploy`
