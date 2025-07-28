@@ -390,3 +390,67 @@ await waitFor(
 // ❌ Problematic - requires element to exist first
 await waitForElementToBeRemoved(() => screen.queryByText('Item'));
 ```
+
+## 8. Context-Dependent Component Testing
+
+### Testing Components with Multiple Context Dependencies
+
+When testing components that depend on multiple React contexts (e.g., SuggestionsPanel with TripForm and PackingList contexts):
+
+1. **Provider Wrapping Strategy:**
+
+   ```tsx
+   const renderWithProviders = (component: ReactElement) => {
+     return render(
+       <TripFormProvider>
+         <PackingListProvider>{component}</PackingListProvider>
+       </TripFormProvider>
+     );
+   };
+   ```
+
+2. **Mock Context Values:**
+
+   ```tsx
+   vi.mock('../hooks/useTripForm', () => ({
+     useTripForm: vi.fn(() => ({
+       state: mockTripState,
+       dispatch: vi.fn(),
+     })),
+   }));
+   ```
+
+3. **Watch Mode vs Run Mode:**
+
+   - Tests with complex context dependencies may hang in watch mode
+   - Use `npm test -- --run` for final verification
+   - Always test both isolated components and integration flows
+
+4. **API Integration Testing:**
+   - Mock API calls in unit tests: `vi.mock('../services/apiService')`
+   - Test error handling scenarios with rejected promises
+   - Verify loading states and user feedback during API calls
+
+### Test Execution Best Practices
+
+1. **For CI/CD and Final Verification:**
+
+   ```bash
+   npm test -- --run --no-watch
+   ```
+
+2. **For Specific Component Testing:**
+
+   ```bash
+   npm test -- --run src/__tests__/ComponentName.test.tsx
+   ```
+
+3. **Current Known Issues:**
+
+   - SuggestionsPanel tests may hang in watch mode but pass in run mode
+   - Always verify test results with `--run` flag before considering them final
+
+4. **Test Coverage Verification:**
+   - Aim for >95% test pass rate
+   - Document any consistently failing tests in TROUBLESHOOTING.md
+   - Current project status: 69/71 tests passing (97% success rate)

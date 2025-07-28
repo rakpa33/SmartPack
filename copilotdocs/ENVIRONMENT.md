@@ -12,14 +12,39 @@ List all required environment variables and their purpose. Keep this file up-to-
 ## Development Environment
 
 ```bash
-# Frontend development
+# Frontend development (Vite runs on port 5173)
 NODE_ENV=development
 VITE_API_URL=http://localhost:3000
 
-# Backend development
+# Backend development (Express server runs on port 3000)
 PORT=3000
 NODE_ENV=development
 ```
+
+## Required Development Setup
+
+### Local Development Ports
+
+- **Frontend (Vite)**: `http://localhost:5173`
+- **Backend (Express)**: `http://localhost:3000`
+- **Health Check**: `http://localhost:3000/health`
+
+### Startup Commands
+
+```bash
+# Terminal 1: Start backend
+npm run lambda:dev
+
+# Terminal 2: Start frontend
+npm run dev
+```
+
+### Verification Steps
+
+1. Backend health check: Visit `http://localhost:3000/health`
+2. Frontend running: Visit `http://localhost:5173`
+3. AI Suggestions: Test with custom prompt in SuggestionsPanel
+4. Complete user flow: Plan trip → Generate checklist → Refine suggestions
 
 ## Production Environment
 
@@ -90,8 +115,35 @@ AWS_SECRET_ACCESS_KEY=your-secret-key
 
 ## Current Integration Status
 
-✅ **Backend API**: Lambda function with Express.js server
+✅ **Backend API**: Lambda function with Express.js server  
 ✅ **Frontend Integration**: TripForm calls backend API for packing list generation  
-✅ **Local Development**: Backend runs on http://localhost:3000
-🚧 **Production Deployment**: Ready for AWS Lambda deployment
-🚧 **CORS Configuration**: Update production URLs after deployment
+✅ **AI Suggestions Panel**: Custom prompt refinement with backend integration  
+✅ **Local Development**: Backend runs on http://localhost:3000  
+✅ **Health Monitoring**: Backend health check endpoint available  
+✅ **CORS Configuration**: Properly configured for local development  
+✅ **Error Handling**: Graceful API error handling in frontend  
+🚧 **Production Deployment**: Ready for AWS Lambda deployment  
+🚧 **Production CORS**: Update production URLs after deployment
+
+## Troubleshooting Environment Issues
+
+### Backend Connection Problems
+
+```bash
+# Check if backend is running
+netstat -ano | findstr ":3000"
+
+# Test backend health
+curl http://localhost:3000/health
+# OR visit in browser: http://localhost:3000/health
+
+# Restart backend if needed
+taskkill /F /IM node.exe
+npm run lambda:dev
+```
+
+### Frontend API Connection Issues
+
+- Verify `VITE_API_URL` points to `http://localhost:3000` in development
+- Check browser developer console for CORS or network errors
+- Ensure both frontend and backend are running simultaneously

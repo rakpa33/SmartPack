@@ -264,4 +264,42 @@ Document common issues and their solutions here. Update this file as you encount
   - Geocoded results must have at least two parts separated by commas
 - **Testing Note:** Ensure to test with a variety of international city names and formats to verify the validation works correctly.
 
+### AI Suggestions Panel Returns "Failed to get AI suggestions"
+
+- **Symptom:** When entering a custom prompt in the AI Suggestions Panel (e.g., "I plan to workout and hike."), user gets error message "Failed to get AI suggestions. Please try again."
+- **Root Cause:** Backend server is not properly running or not accessible on the expected port (3000).
+- **Diagnostic Steps:**
+  1. Check if backend is running: `netstat -ano | findstr ":3000"`
+  2. Test backend health: Visit `http://localhost:3000/health` in browser
+  3. Should return: `{"status":"ok","message":"SmartPack API is running"}`
+  4. Check for Node.js processes: `tasklist | findstr "node"`
+- **Solution:**
+  1. Stop any existing Node processes: `taskkill /F /IM node.exe`
+  2. Start backend correctly: `npm run lambda:dev` (NOT `node lambda/server.js`)
+  3. Verify backend started successfully with console output:
+     ```
+     🚀 SmartPack API server running on port 3000
+     ✅ Health check: http://localhost:3000/health
+     🤖 Generate endpoint: http://localhost:3000/generate (POST)
+     Ready to receive requests from frontend!
+     ```
+  4. In separate terminal, start frontend: `npm run dev`
+  5. Test AI Suggestions again
+- **Prevention:**
+  - Always use `npm run lambda:dev` for backend startup
+  - Verify both services are running before testing AI features
+  - Check COMMANDS.md for proper startup sequence
+- **Related:** See COMMANDS.md troubleshooting section for quick reference commands
+
+### Test Execution Hanging in Watch Mode
+
+- **Symptom:** Tests hang or stall when running `npm test` (watch mode), particularly for components with React Context dependencies.
+- **Root Cause:** Vitest watch mode can sometimes have issues with complex component hierarchies and context providers.
+- **Solution:**
+  - Use `npm test -- --run` for final verification and CI/CD
+  - Use `npm test -- --run --no-watch` for one-time test execution
+  - For specific files: `npm test -- --run src/__tests__/ComponentName.test.tsx`
+- **Current Known Issue:** SuggestionsPanel tests may hang in watch mode but pass in run mode
+- **Impact:** Does not affect functionality - all tests pass when run individually
+
 ## Add more issues as you encounter them!

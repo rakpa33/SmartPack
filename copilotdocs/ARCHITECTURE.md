@@ -18,25 +18,42 @@ This document provides a high-level overview of the system architecture, major c
 ## Major Components
 
 - `src/` - Frontend code (see ROADMAP.md for structure)
-  - Includes robust checklist logic: add, check, uncheck, and remove items/categories, with state persisted to localStorage and reflected in UI.
-  - E2E/integration tests validate all checklist acceptance criteria and UI flows.
+  - **MainLayout**: Three-column responsive layout (Trip Details, Packing Checklist, AI Suggestions)
+  - **TripForm**: Multi-step trip planning with geocoding and weather integration
+  - **PackingList**: Dynamic checklist with add, check, uncheck, and remove items/categories
+  - **SuggestionsPanel**: AI-powered refinement UI with custom prompts and suggestion management
+  - Includes robust checklist logic with state persisted to localStorage and reflected in UI
+  - E2E/integration tests validate all checklist acceptance criteria and UI flows
 - `lambda/` - Backend Lambda functions (see ROADMAP.md)
 - `copilotdocs/` - Project docs, logs, and commands
 
 ## Data Flow
 
-- User enters trip details in frontend
-- Weather data fetched client-side
-- Trip + weather data sent to `/generate` Lambda endpoint
-- Lambda connects to Ollama for AI suggestions
+- User enters trip details in frontend with geocoding validation and weather fetching
+- Weather data fetched client-side from Open-Meteo API
+- Trip + weather data sent to `/generate` Lambda endpoint for initial packing list
+- User can refine suggestions via SuggestionsPanel with custom prompts
+- Lambda connects to Ollama for AI suggestions (both initial and refined)
 - Checklist and suggestions returned to frontend
+- User can add suggestions to main checklist with one-click
 - Checklist state changes (add/remove/check/uncheck) are persisted to localStorage and reflected in UI immediately
 
 ## Integration Points
 
-- REST API: `/generate` endpoint
-- LocalStorage: persists user data (including checklist state)
-- Open-Meteo API: weather data
+- REST API: `/generate` endpoint for AI-powered packing suggestions
+- LocalStorage: persists user data (including checklist state, trip form state, theme)
+- Open-Meteo API: weather data with geocoding integration
+- Context API: React contexts for TripForm and PackingList state management
+
+## Local Development Setup
+
+- **Frontend**: Runs on `http://localhost:5173` (Vite default)
+- **Backend**: Runs on `http://localhost:3000` (Express server)
+- **Critical**: Both servers must be running for AI Suggestions to work
+- **Start Commands**:
+  - Frontend: `npm run dev`
+  - Backend: `npm run lambda:dev`
+- **Health Check**: Visit `http://localhost:3000/health` to verify backend
 
 ## API Endpoints
 
