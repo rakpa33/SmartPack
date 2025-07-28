@@ -1,14 +1,5 @@
 <!--
-This file tracks features, milestones, and tasks for SmartPack. Check of  - [x] Phase 3: Step 4 – TripForm, Weather, and Geocoding Integration
-  - [x] Implement TripForm with async geocoding and weather fetch
-  - [x] Validate and auto-correct destination input on blur
-  - [x] Add integration and unit tests for TripForm and TripDetails
-  - [x] **Note:** Automated integration tests cannot reliably assert async blur-triggered input correction due to React Testing Library limitations. See TROUBLESHOOTING.md (2025-07-28) for details and manual validation requirements.
-  - [x] Fix weather data display in integration tests with reliable test environment handling
-  - [x] Add data-testid attributes to critical elements for reliable test selection
-  - [x] Ensure proper error handling for API calls in form submission flow
-  - [x] Update documentation with testing best practices for components with context
-  - [x] **Enhancement (2025-07-28):** Improved city validation with Unicode support for international citiess you go.
+This file tracks features, milestones, and tasks for SmartPack.
 Keep this comment at the top; do not overwrite or remove it when updating the document.
 
 How to update: Update this doc whenever you start, complete, or change a feature, milestone, or task. Review after every major commit or release.
@@ -111,3 +102,15 @@ How to update: Update this doc whenever you start, complete, or change a feature
   - [x] **UI Enhancement**: Add visual distinction for AI-generated vs manual checklist items
   - [x] **Testing**: Create and verify end-to-end integration tests
   - [x] Acceptance: Backend successfully processes trip + weather data and returns generated packing list
+- [x] Phase 3: Step 8 – AI Suggestions Panel
+  - [x] Build UI for entering custom refinement prompts
+  - [x] On submit, call /generate endpoint with updated context
+  - [x] Display additional AI-suggested checklist items
+  - [x] Enable quick add of suggestions to main checklist
+  - [x] Create comprehensive unit tests for SuggestionsPanel component
+  - [x] Create integration tests for full app flow with suggestions
+  - [x] Handle API errors gracefully during refinement requests
+  - [x] Maintain suggestions state during navigation and user interactions
+  - [x] Show onboarding message when no trip is planned
+  - [x] Integrate SuggestionsPanel into MainLayout replacing placeholder
+  - [x] Acceptance: User can refine AI suggestions with custom prompts and add suggestions to main checklist

@@ -2,6 +2,7 @@ import React from 'react';
 import { PackingListProvider } from '../hooks/usePackingListContext';
 import { PackingList } from './PackingList';
 import { TripDetails } from './TripDetails';
+import SuggestionsPanel from './SuggestionsPanel';
 import { useTripForm } from '../hooks/useTripForm';
 
 interface MainLayoutProps {
@@ -49,7 +50,11 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
         </section>
         {/* Right: AI Suggestions */}
         <section className="md:w-1/4 w-full" id="ai-suggestions" data-testid="ai-suggestions-section">
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-4 h-full text-gray-900 dark:text-gray-100 border border-gray-200 dark:border-gray-700">AI Suggestions (placeholder)</div>
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-4 h-full text-gray-900 dark:text-gray-100 border border-gray-200 dark:border-gray-700">
+            <PackingListProvider>
+              <SuggestionsPanel />
+            </PackingListProvider>
+          </div>
         </section>
       </main>
       {children}

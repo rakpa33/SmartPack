@@ -45,8 +45,8 @@ describe('validateTripForm (unit)', () => {
     today.setDate(today.getDate() + 1); // tomorrow
     const tomorrow = new Date(today);
     tomorrow.setDate(today.getDate() + 1); // day after tomorrow
-    // Use a valid city from the validation list
-    const errors = validateTripForm({ ...base, tripName: 'Trip', destinations: ['New York'], startDate: today.toISOString().slice(0,10), endDate: tomorrow.toISOString().slice(0,10), travelModes: ['Car'] });
+    // Use a simple city name that should pass validation
+    const errors = validateTripForm({ ...base, tripName: 'Trip', destinations: ['Paris'], startDate: today.toISOString().slice(0,10), endDate: tomorrow.toISOString().slice(0,10), travelModes: ['Car'] });
     console.log('VALID INPUT ERRORS:', errors);
     expect(errors.destinations).toEqual(['']);
     // Accepts valid input if all error values are undefined, null, empty strings, or arrays of only falsy values or arrays of empty strings

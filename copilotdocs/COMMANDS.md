@@ -24,7 +24,15 @@ Keep this file up-to-date with all frequently used command line prompts and scri
 
 ## Backend/Serverless
 
+- Start local backend server: `npm run lambda:dev`
 - Deploy backend to AWS Lambda: `npx serverless deploy`
+- Test backend health: `curl http://localhost:3000/health` or visit in browser
+
+## Troubleshooting
+
+- If AI Suggestions fail with "Failed to get AI suggestions", ensure backend is running with `npm run lambda:dev`
+- Backend runs on http://localhost:3000, frontend on http://localhost:5173
+- Check backend logs for errors when making API calls
 
 ## Other
 
