@@ -11,13 +11,21 @@
     "test": "vitest",
     "test:unit": "cd SmartPack && vitest --include src/__tests__/*.test.tsx src/__tests__/*.unit.test.ts src/__tests__/*.test.ts src/__tests__/*.unit.test.tsx",
     "test:int": "vitest --include src/__tests__/integration/**/*.test.ts",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "lambda:dev": "ts-node lambda/server.ts",
+    "lambda:build": "esbuild lambda/app.ts --bundle --platform=node --target=node20 --outfile=lambda/dist/app.js",
+    "lambda:deploy": "cd lambda && serverless deploy",
+    "lambda:test": "vitest --include lambda/app.test.ts"
   },
   "dependencies": {
     "@headlessui/react": "^2.2.6",
+    "@types/cors": "^2.8.19",
+    "cors": "^2.8.5",
+    "express": "^5.1.0",
     "minimatch": "^10.0.3",
     "react": "^19.1.0",
-    "react-dom": "^19.1.0"
+    "react-dom": "^19.1.0",
+    "serverless-http": "^3.2.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.30.1",
@@ -25,6 +33,7 @@
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.3.0",
     "@testing-library/user-event": "^14.6.1",
+    "@types/express": "^5.0.3",
     "@types/jest": "^30.0.0",
     "@types/jest-axe": "^3.5.9",
     "@types/minimatch": "^6.0.0",

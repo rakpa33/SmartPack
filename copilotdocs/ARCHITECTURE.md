@@ -38,12 +38,95 @@ This document provides a high-level overview of the system architecture, major c
 - LocalStorage: persists user data (including checklist state)
 - Open-Meteo API: weather data
 
+## API Endpoints
+
+### Lambda Backend
+
+1. **Health Check**
+
+   - **Endpoint**: `/health`
+   - **Method**: GET
+   - **Description**: Simple health check to verify API is running
+   - **Response**: `{ status: "ok", message: "SmartPack API is running" }`
+
+2. **Generate Packing List**
+   - **Endpoint**: `/generate`
+   - **Method**: POST
+   - **Description**: Generates a packing list based on trip and weather data
+   - **Request Body**:
+     ```json
+     {
+       "trip": {
+         "name": "Trip Name",
+         "startDate": "YYYY-MM-DD",
+         "endDate": "YYYY-MM-DD",
+         "destinations": ["City, Country"],
+         "travelModes": ["plane", "car", "train", "bus", "boat"],
+         "tripDetails": "Additional details about the trip"
+       },
+       "weather": [
+         {
+           "location": "City, Country",
+           "temperature": 20,
+           "conditions": "Sunny",
+           "precipitation": 0
+         }
+       ]
+     }
+     ```
+   - **Response**:
+     ```json
+     {
+       "checklist": [
+         {
+           "id": "1",
+           "text": "Passport/ID",
+           "category": "Documents",
+           "checked": false,
+           "aiGenerated": true
+         }
+       ],
+       "suggestedItems": [
+         "Travel insurance documentation",
+         "Emergency contact list"
+       ]
+     }
+     ```
+
 ## Testing & Validation Protocol
 
 - All checklist and trip flows are covered by robust E2E/integration tests (see TESTING_GUIDELINES.md).
 - When diagnosing test failures, always validate the behavior live (via `npm run dev`) before assuming the test is incorrect.
 - Validate against external sources for best practices (e.g., React Testing Library, accessibility, and E2E patterns).
 - Only update tests if the live UI matches the intended acceptance criteria and best practices.
+
+## Testing Architecture Insights
+
+### Component Dependencies and Conditional Rendering
+
+- **TripForm Component**: Automatically navigates to `/MainLayout` when `state.step === 2`
+- **MainLayout Component**: Has guard clause `if (!state || state.step < 2)` that shows loading state instead of content
+- **Key Insight**: Understanding conditional rendering is crucial for writing reliable integration tests
+
+### localStorage Dependencies
+
+- **Trip Form State**: Stored in `localStorage.getItem('tripForm')` with step tracking
+- **Checklist Items**: Stored in `localStorage.getItem('smartpack_checklist')`
+- **Categories**: Stored in `localStorage.getItem('smartpack_categories')`
+- **Theme**: Stored in `localStorage.getItem('theme')`
+- **Test Impact**: Components initialize from localStorage, making proper cleanup essential
+
+### Test Contamination Patterns
+
+- **Root Cause**: localStorage persistence between tests causing state leakage
+- **Symptoms**: Tests showing data from previous runs, wrong component rendering
+- **Solution**: Comprehensive localStorage cleanup in beforeEach hooks
+
+### Routing and Navigation Testing
+
+- **Challenge**: Complex navigation flows are harder to test reliably than direct component testing
+- **Best Practice**: Start tests at the target route when testing specific functionality
+- **Example**: Use `/MainLayout` directly for packing list tests instead of navigating through trip form
 
 ## See Also
 

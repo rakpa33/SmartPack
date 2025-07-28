@@ -1,7 +1,71 @@
 <!--
 Prompt command for Copilot/AI:
 
-When I say "run tests":
+When - **Assertion Messages:** Custom assertion messages should be concise and explain the intent, e.g., `expect(x).toBe(y) /* explains why */`. Use a consistent, descriptive style.
+- **Test Review:** PRs that make major changes to test structure/utilities must be reviewed by a designated "test lead" or equivalent.
+- **Test Audit:** The quarterly "test hygiene" audit must be tracked in GitHub Projects and use a dedicated issue template for documentation.
+
+---
+
+## 2. Integration Testing Best Practices
+
+### Handling Navigation and Async UI Updates
+
+When testing navigation between components (e.g., TripForm → MainLayout):
+
+1. **Use proper query methods:**
+   - Use `findByTestId` instead of `waitFor` + `getByTestId` for elements that appear asynchronously
+   - Use `findBy*` queries over `waitFor` + `getBy*` for async elements
+   - Use data-testid attributes for reliable element selection
+
+2. **Configure waitFor properly:**
+   ```tsx
+   await waitFor(
+     () => {
+       expect(screen.queryByTestId('element-id')).not.toBeInTheDocument();
+     },
+     {
+       timeout: 5000,  // Increase timeout for slower transitions
+       onTimeout: (error) => {
+         console.error('Timeout error details:', error);
+         console.log('Current DOM:', document.body.innerHTML);
+         return error;
+       }
+     }
+   );
+   ```
+
+3. **Form interaction best practices:**
+   - Add explicit waits between form interactions (`await userEvent.clear/type/click`)
+   - Wrap test logic in try/catch for better error messages
+   - Verify input values after typing with console.log
+   - Tab out after typing to trigger blur events (important for geocoding)
+   - Use proper element type casting (e.g., `as HTMLInputElement`)
+
+4. **Test setup and environment:**
+   - Initialize localStorage with mock data in `beforeEach` for consistent test behavior
+   - Mock browser APIs like console.error to filter irrelevant warnings
+   - Add cleanup in the return function of `beforeEach`
+
+5. **Debugging techniques:**
+   - Add strategic console.log statements at critical points
+   - Log the entire DOM at key transitions
+   - Log specific element states before assertions
+   - Use more descriptive test names that explain the expected behavior
+
+### React Testing Library Query Priority
+
+Follow this order for element queries (best to worst):
+1. `getByRole` / `findByRole` (with name option)
+2. `getByLabelText` (for form controls)
+3. `getByText` (for non-interactive elements)
+4. `getByTestId` (when semantic queries aren't possible)
+
+Avoid using:
+- `container.querySelector` (breaks accessibility testing)
+- `queryBy*` variants except for checking non-existence
+
+--- "run tests":
 - Run unit tests (using the appropriate npm scripts).
 - Keep running the last test and automatically fix errors until all tests pass.
 - If all unit tests pass, run integration tests (using the appropriate npm scripts).
@@ -232,3 +296,97 @@ jobs:
 - Lean E2E tests prove the happy path in production-like conditions.
 - Automate everything in CI, use clear fail messages, and log major issues in `DEVLOG.md`.
 - Prioritize accessibility and maintainability in all tests.
+
+---
+
+## localStorage and State Management in Tests
+
+**Critical for SmartPack:** Components depend heavily on localStorage for state persistence.
+
+1. **Comprehensive cleanup in beforeEach:**
+
+   ```tsx
+   beforeEach(() => {
+     // Clear ALL localStorage - critical for preventing test contamination
+     window.localStorage.clear();
+
+     // Explicitly remove known keys for extra safety
+     window.localStorage.removeItem('tripForm');
+     window.localStorage.removeItem('smartpack_checklist');
+     window.localStorage.removeItem('smartpack_categories');
+     window.localStorage.removeItem('theme');
+   });
+   ```
+
+2. **Set up required state before component initialization:**
+
+   ```tsx
+   beforeEach(() => {
+     // Set up trip form data for MainLayout tests (required for conditional rendering)
+     const tripData = {
+       tripName: 'Test Trip',
+       destinations: ['Paris'],
+       travelModes: ['Car'],
+       preferences: ['No special needs'],
+       startDate: '2025-08-01',
+       endDate: '2025-08-10',
+       step: 2, // Critical: MainLayout only renders when step === 2
+     };
+     window.localStorage.setItem('tripForm', JSON.stringify(tripData));
+   });
+   ```
+
+3. **Understanding component conditional rendering:**
+   - `TripForm`: Automatically navigates to `/MainLayout` when `state.step === 2`
+   - `MainLayout`: Only renders content when `state.step >= 2`, otherwise shows loading
+   - **Test Impact**: Set up proper state before rendering to avoid unexpected behavior
+
+### Direct Route Testing vs Full Navigation
+
+**Prefer targeted testing over complex navigation flows:**
+
+```tsx
+// ❌ Complex - requires full form flow
+render(
+  <MemoryRouter initialEntries={['/']}>
+    <App />
+  </MemoryRouter>
+);
+await fillOutComplexForm(); // Flaky, hard to debug
+
+// ✅ Direct - test specific functionality
+render(
+  <MemoryRouter initialEntries={['/MainLayout']}>
+    <App />
+  </MemoryRouter>
+);
+// Component renders immediately with proper localStorage setup
+```
+
+**When to use each approach:**
+
+- **Direct Route Testing**: For testing specific page/component functionality
+- **Full Navigation Testing**: For critical user journey validation (fewer tests, more comprehensive)
+
+### Async Element Handling Best Practices
+
+**Updated patterns based on SmartPack findings:**
+
+```tsx
+// ❌ Unreliable
+const element = await waitFor(() => screen.getByTestId('element'));
+
+// ✅ More reliable for async elements
+const element = await screen.findByTestId('element', {}, { timeout: 5000 });
+
+// ✅ Best for checking element removal
+await waitFor(
+  () => {
+    expect(screen.queryByText('Item')).not.toBeInTheDocument();
+  },
+  { timeout: 2000 }
+);
+
+// ❌ Problematic - requires element to exist first
+await waitForElementToBeRemoved(() => screen.queryByText('Item'));
+```

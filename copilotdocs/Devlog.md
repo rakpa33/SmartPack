@@ -9,6 +9,29 @@ How to update: Add a new dated entry for each major change, bugfix, or troublesh
 
 ## 2025-07-27
 
+### Integration Test Reliability Improvements
+
+- **Problem:** Integration tests for App navigation (TripForm → MainLayout) were inconsistent and flaky, sometimes passing and sometimes failing.
+- **Root Cause:** Tests were not properly handling asynchronous navigation, had inadequate timeouts, and lacked proper error handling and diagnostic capabilities.
+- **Actions Taken:**
+  - Rewrote the `App.integration.test.tsx` test to use more reliable testing patterns
+  - Replaced `waitFor` + `getBy*` with more appropriate `findBy*` queries for async elements
+  - Added proper data-testid attributes to all main layout sections
+  - Increased timeout values for critical transitions (5000ms instead of 3000ms)
+  - Added detailed error handling with onTimeout callbacks to provide better diagnostics
+  - Enhanced the form filling function with try/catch blocks and better logging
+  - Added more strategic console.log statements to aid in debugging
+  - Improved test initialization with consistent mock data in localStorage
+  - Updated documentation in TESTING_GUIDELINES.md with best practices
+  - Added new troubleshooting sections in TROUBLESHOOTING.md
+- **Best Practice:**
+  - Use `findBy*` queries for asynchronous elements
+  - Always add proper data-testid attributes to key UI components
+  - Include error handling in tests with detailed diagnostic output
+  - Initialize test environment with consistent mock data
+  - Add strategic console.log statements at key transition points
+  - Document testing patterns and solutions for future reference
+
 ### Missing Geocode Utility Implementation
 
 - **Problem:** The `useGeocode` hook was importing from `../utils/geocode`, but the geocode.ts file was missing from the utils directory.
@@ -72,6 +95,35 @@ How to update: Add a new dated entry for each major change, bugfix, or troublesh
   - Add proper error handling for API calls
 
 ## 2025-07-28
+
+### TypeScript Error Fixes for Lambda Backend
+
+- Fixed TypeScript errors in Lambda backend and frontend service:
+  - Installed @types/express and @types/cors for type declarations
+  - Created custom type declaration for serverless-http
+  - Fixed empty object type issues in Express Request generics
+  - Improved test mocking with better types
+  - Fixed "any" type usage throughout the codebase
+  - Added proper TypeScript typing for Express router in tests
+  - Created Jest mock type declarations for better test typing
+  - Updated fetch mocks to use proper TypeScript types
+
+### AWS Lambda Backend Implementation for Packing List Generation
+
+- **Implemented Lambda Backend for Packing List Generation (Step 7)**
+  - Created Express app in lambda/ folder with TypeScript support
+  - Implemented /generate endpoint that accepts trip and weather data
+  - Set up serverless-http for AWS Lambda deployment
+  - Added CORS configuration for frontend-backend communication
+  - Created mock packing list generation logic (to be replaced with Ollama)
+  - Set up serverless.yml for AWS Lambda deployment
+  - Added local development server for testing
+  - Created frontend service to interact with the Lambda API
+  - Added comprehensive error handling
+  - Documented API endpoints in ARCHITECTURE.md
+  - Added necessary types and interfaces for API request/response
+  - **TODO**: Complete tests for backend API and frontend service
+  - **TODO**: Deploy to AWS Lambda and test in production
 
 ### TripForm, Context, and Integration Test Navigation Fix (Single-Click Issue)
 
@@ -204,3 +256,78 @@ How to update: Add a new dated entry for each major change, bugfix, or troublesh
   - Opened project in a clean environment/editor (recommended if error persists).
   - Installing minimatch as a direct dependency resolved the error.
 - See TROUBLESHOOTING.md for full checklist and solutions.
+
+## 2025-07-28
+
+### PackingChecklist Integration Test Debugging & Resolution
+
+- **Problem:** The `PackingChecklist.integration.test.tsx` file was failing due to test contamination, routing issues, and conditional rendering problems.
+- **Root Causes:**
+  1. **Test Contamination:** Tests were affecting each other through localStorage persistence of trip form data and checklist items
+  2. **Routing Complexity:** App was starting at `/` but immediately navigating to `/MainLayout` when trip data existed, making test flow unpredictable
+  3. **Conditional Rendering:** The `MainLayout` component only renders packing list content when `state.step === 2`, otherwise shows loading state
+  4. **Timing Issues:** localStorage data was being set after component initialization, causing conditional renders to fail
+- **Actions Taken:**
+  - **Simplified Test Approach:** Changed tests to start directly at `/MainLayout` route instead of going through trip form flow
+  - **Proper State Setup:** Moved trip form data setup to `beforeEach` hook with `step: 2` to ensure MainLayout renders correctly
+  - **Comprehensive Cleanup:** Added thorough localStorage cleanup for all known keys (`tripForm`, `smartpack_checklist`, `smartpack_categories`, `theme`)
+  - **Removed Complexity:** Eliminated the complex `fillOutTripForm` helper function since we're now testing packing list functionality directly
+  - **Fixed Import Issues:** Restored corrupted imports after failed string replacements
+- **Key Insights:**
+  - The `MainLayout` component has a guard clause: `if (!state || state.step < 2)` that prevents rendering when trip form isn't complete
+  - Setting up proper test data in localStorage before component rendering is crucial for integration tests
+  - Direct testing of specific app sections can be more reliable than full end-to-end flows when the focus is on specific functionality
+  - Test contamination through localStorage is a major source of flaky tests
+- **Best Practices:**
+  - Always clear localStorage comprehensively in test setup
+  - Set up required application state in `beforeEach` hooks, not inside individual tests
+  - Use direct route navigation for focused integration testing
+  - Understand component conditional rendering logic when writing tests
+  - Prefer targeted testing over complex end-to-end flows when possible
+
+## 2025-01-27
+
+### External Research Applied - localStorage Test Contamination Pattern
+
+**Context**: Applied external React Testing Library research to fix TripForm.next.single.click.test.tsx and discovered the same localStorage contamination pattern affecting multiple test files.
+
+**External Sources Consulted**:
+
+- Testing Library official documentation: https://testing-library.com/docs/
+- Kent C. Dodds blog on testing best practices
+
+**Key Findings from External Research**:
+
+1. **localStorage Cleanup**: Critical to clear localStorage in beforeEach to prevent test contamination
+2. **Provider Redundancy**: Avoid wrapping components in providers they already receive from parent components
+3. **Error Handling**: Improve error diagnostics by using proper variable handling in test assertions
+
+**Applied Fixes**:
+
+#### TripForm.next.single.click.test.tsx
+
+- Added `localStorage.clear()` in beforeEach hook
+- Removed redundant TripFormProvider wrapper (App component already provides it)
+- Fixed error variable handling in test assertions
+- Result: Tests now pass consistently
+
+#### MainLayout Tests (accessibility & unit tests)
+
+- Added `localStorage.clear()` in beforeEach hook
+- Set up proper localStorage state with step: 2 to ensure MainLayout renders content instead of "Loading..."
+- Fixed testid mismatch: `packing-checklist-section` → `packing-list-section`
+- Result: Tests now properly render and validate MainLayout sections
+
+#### TripDetails.unit.test.tsx
+
+- Added `localStorage.clear()` in beforeEach hook
+- Changed default step from 1 to 2 in test helper to ensure TripDetails renders content instead of "Please complete the trip form"
+- Result: Tests now properly validate TripDetails component rendering
+
+**Pattern Recognition**: localStorage contamination is a common issue when components depend on persisted state. The solution involves:
+
+1. Clear localStorage in beforeEach
+2. Set up appropriate initial state for the component being tested
+3. Ensure test isolation by not relying on state from previous tests
+
+**External Validation**: The patterns applied match React Testing Library best practices for test isolation and state management, confirming our debugging approach was correct.

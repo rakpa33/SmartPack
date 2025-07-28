@@ -36,19 +36,19 @@ describe('MainLayout Trip Details integration', () => {
       preferences: ['Gluten-free'],
     });
     expect(screen.getByText('Trip Details')).toBeInTheDocument();
-    expect(screen.getByText((content, node) =>
+    expect(screen.getByText((_, node) =>
       node?.textContent === 'Euro Trip')
     ).toBeInTheDocument();
-    expect(screen.getByText((content, node) =>
+    expect(screen.getByText((_, node) =>
       node?.textContent === '2025-09-01 – 2025-09-15')
     ).toBeInTheDocument();
-    expect(screen.getByText((content, node) =>
+    expect(screen.getByText((_, node) =>
       node?.textContent === 'Rome, Madrid')
     ).toBeInTheDocument();
-    expect(screen.getByText((content, node) =>
+    expect(screen.getByText((_, node) =>
       node?.textContent === 'Car, Bus')
     ).toBeInTheDocument();
-    expect(screen.getByText((content, node) =>
+    expect(screen.getByText((_, node) =>
       node?.textContent === 'Gluten-free')
     ).toBeInTheDocument();
   });

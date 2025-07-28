@@ -12,7 +12,7 @@ function renderWithTripForm(state: Partial<TripFormState> = {}) {
     destinations: [''],
     travelModes: [],
     preferences: [],
-    step: 1,
+    step: 2, // Set step to 2 so TripDetails renders content instead of "Please complete the trip form"
   };
   return render(
     <TripFormContext.Provider value={{ state: { ...defaultState, ...state }, dispatch: () => { } }}>
@@ -22,6 +22,11 @@ function renderWithTripForm(state: Partial<TripFormState> = {}) {
 }
 
 describe('TripDetails', () => {
+  beforeEach(() => {
+    // Clear localStorage to prevent test contamination
+    localStorage.clear();
+  });
+
   it('renders all fields with (not set) or (none) when empty', () => {
     const { getByText, getAllByText } = renderWithTripForm();
     expect(getByText('Trip Name:')).toBeInTheDocument();

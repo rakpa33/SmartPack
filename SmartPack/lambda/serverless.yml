@@ -1,0 +1,62 @@
+service: smartpack-api
+
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  runtime: nodejs20.x
+  stage: ${opt:stage, 'dev'}
+  region: ${opt:region, 'us-east-2'}
+  memorySize: 256
+  timeout: 30
+  logRetentionInDays: 14
+
+  environment:
+    NODE_ENV: ${self:provider.stage}
+
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - logs:CreateLogGroup
+            - logs:CreateLogStream
+            - logs:PutLogEvents
+          Resource: arn:aws:logs:*:*:*
+
+functions:
+  api:
+    handler: dist/app.handler
+    events:
+      - httpApi:
+          path: /health
+          method: get
+      - httpApi:
+          path: /generate
+          method: post
+    cors:
+      origin: ${self:custom.corsOrigin.${self:provider.stage}}
+      headers:
+        - Content-Type
+        - Authorization
+      allowCredentials: false
+
+custom:
+  corsOrigin:
+    dev: http://localhost:5173
+    prod: https://your-production-domain.com
+  esbuild:
+    bundle: true
+    minify: true
+    sourcemap: true
+    exclude: ['aws-sdk']
+    target: 'node20'
+    platform: 'node'
+    concurrency: 10
+
+plugins:
+  - serverless-esbuild
+  - serverless-offline
+
+package:
+  individually: true

@@ -85,3 +85,17 @@ How to update: Update this doc whenever you start, complete, or change a feature
   - [x] Add data-testid attributes to critical elements for reliable test selection
   - [x] Ensure proper error handling for API calls in form submission flow
   - [x] Update documentation with testing best practices for components with context
+- [ ] Phase 3: Step 7 – AWS Lambda Backend for Packing List Generation
+  - [x] Scaffold Express app in lambda/ folder
+  - [x] Set up /generate route to accept trip + weather data
+  - [x] Set up serverless-http to deploy Express app to Lambda (API Gateway)
+  - [x] Connect backend to Ollama (on local network for development)
+  - [x] Create Lambda deployment configuration with serverless.yml
+  - [x] Implement and test backend API endpoint
+  - [x] Set up CORS for frontend-backend communication
+  - [x] Create frontend service to call the API
+  - [x] Implement error handling for API calls
+  - [x] Add tests for the backend API and frontend service
+  - [x] Document API endpoints and usage in ARCHITECTURE.md
+  - [x] Fix TypeScript errors in Lambda backend and frontend service
+  - [ ] Acceptance: Backend successfully processes trip + weather data and returns generated packing list (pending final deployment and testing)

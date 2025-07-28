@@ -2,16 +2,23 @@ import React from 'react';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
-import { TripFormProvider } from '../hooks/TripFormContext';
 import App from '../App';
 
 describe('TripForm single Next click navigation', () => {
+  beforeEach(() => {
+    // Clear ALL localStorage to prevent test contamination
+    window.localStorage.clear();
+
+    // Explicitly remove known keys for extra safety
+    window.localStorage.removeItem('tripForm');
+    window.localStorage.removeItem('smartpack_checklist');
+    window.localStorage.removeItem('smartpack_categories');
+    window.localStorage.removeItem('theme');
+  });
   it('navigates to /MainLayout after a single Next click with valid form, or logs if two clicks are needed', async () => {
     render(
       <MemoryRouter initialEntries={['/']}>
-        <TripFormProvider>
-          <App />
-        </TripFormProvider>
+        <App />
       </MemoryRouter>
     );
 
@@ -59,7 +66,7 @@ describe('TripForm single Next click navigation', () => {
         expect(screen.getByText(/Packing Checklist/i)).toBeInTheDocument();
       }, { timeout: 2000 }); // Increased timeout to 2 seconds
       console.log('Packing Checklist found after single click as expected');
-    } catch (error) {
+    } catch {
       console.log('Packing Checklist not found after first click, trying again...');
 
       // Before clicking again, verify we're still on the form page
@@ -90,9 +97,7 @@ describe('TripForm single Next click navigation', () => {
   it('logs destination input and DOM after every userEvent.type', async () => {
     render(
       <MemoryRouter initialEntries={['/']}>
-        <TripFormProvider>
-          <App />
-        </TripFormProvider>
+        <App />
       </MemoryRouter>
     );
     const destinationInput = screen.getByTestId('destination-input-0') as HTMLInputElement;
@@ -106,9 +111,7 @@ describe('TripForm single Next click navigation', () => {
   it('checks if context state is updated after blur', async () => {
     render(
       <MemoryRouter initialEntries={['/']}>
-        <TripFormProvider>
-          <App />
-        </TripFormProvider>
+        <App />
       </MemoryRouter>
     );
     const destinationInput = screen.getByTestId('destination-input-0') as HTMLInputElement;

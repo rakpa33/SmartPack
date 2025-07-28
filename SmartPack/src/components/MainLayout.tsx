@@ -34,13 +34,13 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
     <div className="flex flex-col min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors">
       <main className="flex-1 flex flex-col md:flex-row w-full max-w-7xl mx-auto px-2 md:px-6 py-4 gap-4">
         {/* Left: Trip Details */}
-        <section className="md:w-1/4 w-full mb-4 md:mb-0" id="trip-details">
+        <section className="md:w-1/4 w-full mb-4 md:mb-0" id="trip-details" data-testid="trip-details-section">
           <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-4 h-full text-gray-900 dark:text-gray-100 border border-gray-200 dark:border-gray-700">
             <TripDetails />
           </div>
         </section>
         {/* Center: Packing Checklist */}
-        <section className="md:w-2/4 w-full mb-4 md:mb-0" id="packing-checklist" data-testid="packing-checklist-section">
+        <section className="md:w-2/4 w-full mb-4 md:mb-0" id="packing-checklist" data-testid="packing-list-section">
           <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-4 h-full text-gray-900 dark:text-gray-100 border border-gray-200 dark:border-gray-700">
             <PackingListProvider>
               <PackingList />
@@ -48,7 +48,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
           </div>
         </section>
         {/* Right: AI Suggestions */}
-        <section className="md:w-1/4 w-full" id="ai-suggestions">
+        <section className="md:w-1/4 w-full" id="ai-suggestions" data-testid="ai-suggestions-section">
           <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-4 h-full text-gray-900 dark:text-gray-100 border border-gray-200 dark:border-gray-700">AI Suggestions (placeholder)</div>
         </section>
       </main>

@@ -40,6 +40,31 @@ Document common issues and their solutions here. Update this file as you encount
   - Check that localStorage is available and not blocked by browser settings.
   - Verify that the reducer and dispatch actions are used correctly in the form logic.
 
+### Flaky Navigation Tests in App.integration.test.tsx
+
+- **Symptom:** Integration tests for navigating from TripForm to MainLayout are inconsistent, sometimes passing and sometimes failing.
+- **Root Cause:** Async nature of navigation, race conditions, and inconsistent test data.
+- **Solution:**
+  - Use `findBy*` queries instead of `waitFor` + `getBy*` for async elements
+  - Increase timeouts for critical transitions (e.g., `{ timeout: 5000 }`)
+  - Add explicit error handling with `onTimeout` to provide better diagnostics
+  - Initialize localStorage with consistent mock data in `beforeEach`
+  - Add data-testid attributes to all sections (e.g., `trip-details-section`, `packing-list-section`)
+  - Ensure proper element typing with TypeScript (e.g., `as HTMLFormElement`)
+  - Add detailed console.log statements at key points for debugging
+  - Make form submission more reliable with explicit waits between interactions
+
+### PackingList Items Not Removed in Tests
+
+- **Symptom:** In PackingChecklist.integration.test.tsx, items sometimes don't get removed properly or tests fail to detect removal.
+- **Root Cause:** Test not waiting for state updates, DOM mutations, or re-renders after item removal.
+- **Solution:**
+  - Use `waitForElementToBeRemoved` instead of just asserting non-existence
+  - Add explicit delays after remove operations with `await new Promise(r => setTimeout(r, 100))`
+  - Improve element selection with more reliable selectors (use data-testid attributes)
+  - Add more detailed logging around DOM state before and after removal
+  - Ensure all remove buttons have accessible names (e.g., `aria-label="Remove Item Name"`)
+
 ### Playwright E2E tests fail due to test runner conflicts
 
 - **Symptom:** Playwright E2E tests fail with errors like `expect is not defined`, or try to run unit/integration tests.
@@ -187,5 +212,36 @@ Document common issues and their solutions here. Update this file as you encount
   - [React Testing Library: Flushing async state after blur](https://github.com/testing-library/react-testing-library/issues/119)
   - [Kent C. Dodds: Testing async UI interactions](https://kentcdodds.com/blog/testing-asynchronous-functionality)
   - See `src/__tests__/integration/TripForm.integration.test.tsx` for documentation comments and manual validation note.
+
+### Integration Test Contamination and Routing Issues
+
+- **Symptom:**
+  - Integration tests fail with "Unable to find a label with the text of: Trip Name" when they should be showing the trip form
+  - Tests show MainLayout content instead of TripForm even when starting at `/` route
+  - DOM output shows "Test Trip" and other data from previous tests
+  - "Persistent Item" appears in checklist even after localStorage.clear()
+- **Root Cause:**
+  - Tests contaminating each other through localStorage persistence
+  - TripForm component automatically navigates to MainLayout when `state.step === 2`
+  - MainLayout component conditionally renders based on trip form completion status
+  - Race conditions between localStorage setup and component initialization
+- **Solution:**
+  - **For Test Contamination:**
+    - Clear ALL localStorage keys in beforeEach: `localStorage.clear()`
+    - Explicitly remove known keys: `tripForm`, `smartpack_checklist`, `smartpack_categories`, `theme`
+    - Set up required test data in beforeEach hook, not inside individual tests
+  - **For Routing Issues:**
+    - Start tests directly at target route (e.g., `/MainLayout`) instead of going through complex navigation flows
+    - Set up complete trip form data with `step: 2` in localStorage for MainLayout tests
+    - Understand component conditional rendering logic before writing tests
+  - **For Conditional Rendering:**
+    - MainLayout only renders content when `state.step === 2`, otherwise shows loading
+    - Ensure trip form state is properly initialized before component renders
+    - Use targeted testing instead of full end-to-end flows when testing specific functionality
+- **Prevention:**
+  - Always understand component dependencies and conditional rendering
+  - Use isolated test environments with proper cleanup
+  - Prefer direct route testing over complex navigation flows
+  - Document localStorage dependencies in test files
 
 ## Add more issues as you encounter them!

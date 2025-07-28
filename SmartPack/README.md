@@ -1,50 +1,77 @@
-# React + TypeScript + Vite
+# SmartPack
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+SmartPack is a smart packing assistant that helps you prepare for your trips by generating personalized packing lists based on your trip details and weather forecasts.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- Create trip profiles with destinations, dates, and travel modes
+- Automatically fetch weather data for your destinations
+- Generate personalized packing lists based on trip details and weather
+- Get AI-powered suggestions for items you might have forgotten
+- Save and manage multiple packing lists
 
-## Expanding the ESLint configuration
+## Technology Stack
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- **Frontend:** React + TypeScript + Vite + Tailwind CSS + Headless UI
+- **Backend:** AWS Lambda (Express/Node) + Ollama
+- **Weather:** Open-Meteo API
+- **Deployment:** AWS (Lambda, S3, CloudFront)
 
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## Getting Started
 
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
+### Prerequisites
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+- Node.js (LTS version)
+- npm
+- AWS CLI (for deployment)
+- Ollama (for local AI development)
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### Installation
+
+1. Clone the repository
+
+   ```
+   git clone https://github.com/your-username/smartpack.git
+   cd smartpack
+   ```
+
+2. Install dependencies
+
+   ```
+   npm install
+   ```
+
+3. Start the development server
+
+   ```
+   npm run dev
+   ```
+
+4. Start the Lambda backend (in a separate terminal)
+   ```
+   npm run lambda:dev
+   ```
+
+## Development Commands
+
+### Frontend
+
+- `npm run dev` - Start the development server
+- `npm run build` - Build the production version
+- `npm run preview` - Preview the production build
+- `npm run lint` - Run ESLint
+
+### Backend (Lambda)
+
+- `npm run lambda:dev` - Start the local Lambda development server
+- `npm run lambda:build` - Build the Lambda function for deployment
+- `npm run lambda:deploy` - Deploy the Lambda function to AWS
+- `npm run lambda:test` - Run Lambda function tests
 
 ```js
 // eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+import reactX from 'eslint-plugin-react-x';
+import reactDom from 'eslint-plugin-react-dom';
 
 export default tseslint.config([
   globalIgnores(['dist']),
@@ -65,5 +92,5 @@ export default tseslint.config([
       // other options...
     },
   },
-])
+]);
 ```
