@@ -1,28 +1,27 @@
 // utils/validation.ts
 // Validation utilities for Trip Details form
 
-// Placeholder: a small set of valid cities for demo/testing
-const VALID_CITIES = [
-  "New York", "London", "Paris", "Tokyo", "Sydney", "Berlin", "Toronto", "San Francisco", "Chicago", "Los Angeles"
-];
-
+// Enhanced city validation that's more flexible with geocoded results
 export function isValidCity(city: string): boolean {
-  // Handle geocoded city names that may include region/country information
-  // Check if any valid city is contained within the geocoded city string
-  const cityLower = city.trim().toLowerCase();
+  const cityTrimmed = city.trim();
   
-  // If the city contains a comma, it might be a geocoded result
-  if (cityLower.includes(',')) {
-    // Check if any of our valid cities appears at the beginning of the string
-    return VALID_CITIES.some(valid => 
-      cityLower.startsWith(valid.toLowerCase())
-    );
+  // If the city is empty, it's invalid
+  if (!cityTrimmed) return false;
+  
+  // If the city contains a comma, it's likely a geocoded result (e.g., "Honolulu, Hawaii, United States")
+  // We consider geocoded results as valid since they came from a geocoding service
+  if (cityTrimmed.includes(',')) {
+    // Check if it has at least a city and one other location part
+    const parts = cityTrimmed.split(',').map(part => part.trim());
+    return parts.length >= 2 && parts.every(part => part.length > 0);
   }
   
-  // For non-geocoded entries, do an exact match
-  return VALID_CITIES.some(
-    valid => valid.toLowerCase() === cityLower
-  );
+  // For non-geocoded entries, check if it looks like a reasonable city name
+  // - At least 1 character
+  // - Contains mostly letters with optional spaces, hyphens, periods, and apostrophes
+  // - Allows for international city names
+  const cityPattern = /^[\p{L}][\p{L}\s\-'.]*[\p{L}]$|^[\p{L}]$/u;
+  return cityTrimmed.length >= 1 && cityPattern.test(cityTrimmed);
 }
 
 export function isDateInPast(dateStr: string): boolean {

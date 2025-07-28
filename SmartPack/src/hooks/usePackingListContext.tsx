@@ -57,8 +57,34 @@ export const PackingListProvider = ({ children }: { children: ReactNode }) => {
     setItems((prev) => prev.map((item) => (item.category === id ? { ...item, category: 'other' } : item)));
   };
 
+  const loadAiGeneratedItems = (aiItems: Array<{ id: string; text: string; category: string; checked: boolean; aiGenerated: boolean }>) => {
+    // Clear existing AI-generated items
+    setItems((prev) => prev.filter(item => !item.aiGenerated));
+
+    // Transform API items to match our ChecklistItem interface and add them
+    const newItems: ChecklistItem[] = aiItems.map(item => ({
+      id: item.id,
+      label: item.text,
+      checked: item.checked,
+      category: item.category.toLowerCase(),
+      aiGenerated: true
+    }));
+
+    // Add AI-generated categories if they don't exist
+    const newCategories = [...new Set(aiItems.map(item => item.category.toLowerCase()))];
+    newCategories.forEach(categoryId => {
+      const categoryExists = categories.some(cat => cat.id === categoryId);
+      if (!categoryExists) {
+        const categoryName = categoryId.charAt(0).toUpperCase() + categoryId.slice(1);
+        setCategories(prev => [...prev, { id: categoryId, name: categoryName }]);
+      }
+    });
+
+    setItems((prev) => [...prev, ...newItems]);
+  };
+
   return (
-    <PackingListContext.Provider value={{ items, categories, addItem, editItem, removeItem, toggleItem, addCategory, editCategory, removeCategory }}>
+    <PackingListContext.Provider value={{ items, categories, addItem, editItem, removeItem, toggleItem, addCategory, editCategory, removeCategory, loadAiGeneratedItems }}>
       {children}
     </PackingListContext.Provider>
   );

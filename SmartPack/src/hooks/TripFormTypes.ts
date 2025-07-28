@@ -11,6 +11,16 @@ export type TripFormState = {
     summary: string;
     weathercode?: number;
   };
+  generatedPackingList?: {
+    checklist: Array<{
+      id: string;
+      text: string;
+      category: string;
+      checked: boolean;
+      aiGenerated: boolean;
+    }>;
+    suggestedItems: string[];
+  } | null;
 };
 
 export type TripFormAction =

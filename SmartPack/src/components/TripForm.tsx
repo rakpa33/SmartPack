@@ -4,6 +4,8 @@ import { validateTripForm } from '../utils/tripFormValidation';
 import { useNavigate } from 'react-router-dom';
 import { useGeocode } from '../hooks/useGeocode';
 import { fetchWeather } from '../utils/weather';
+import { generatePackingList } from '../services/apiService';
+import type { WeatherData } from '../services/apiService';
 
 export const TripForm: React.FC = () => {
   const { dispatch, state } = useTripForm();
@@ -164,6 +166,36 @@ export const TripForm: React.FC = () => {
 
       console.log('TripForm contextWeather:', contextWeather);
 
+      // Call backend API to generate packing list
+      let generatedPackingList = null;
+      try {
+        if (filteredDestinations.length > 0 && weatherData) {
+          // Transform data to match API expected format
+          const apiTripData = {
+            name: tripName,
+            startDate,
+            endDate,
+            destinations: filteredDestinations,
+            travelModes,
+            tripDetails: preferences.filter(p => p.trim()).join(', ') || 'No specific preferences'
+          };
+
+          const apiWeatherData: WeatherData[] = [{
+            location: filteredDestinations[0],
+            temperature: weatherData.temperature ?? 20, // Default to 20°C if null
+            conditions: weatherData.summary,
+            precipitation: 0 // Default, could be enhanced later
+          }];
+
+          console.log('Calling generatePackingList API with:', { trip: apiTripData, weather: apiWeatherData });
+          generatedPackingList = await generatePackingList(apiTripData, apiWeatherData);
+          console.log('Generated packing list:', generatedPackingList);
+        }
+      } catch (error) {
+        console.error('Error generating packing list:', error);
+        // Continue without generated list - user can still use manual checklist
+      }
+
       // IMPORTANT FIX: First update context state with a single atomic dispatch
       // This ensures context state is updated before navigation
       dispatch({
@@ -177,6 +209,7 @@ export const TripForm: React.FC = () => {
           preferences,
           step: 2, // Force step to 2 so checklist always appears after submit
           weather: contextWeather,
+          generatedPackingList, // Add the generated packing list to context
         },
       });
 

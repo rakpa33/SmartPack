@@ -12,6 +12,7 @@ export function usePackingList(): {
   addCategory: (name: string) => void;
   editCategory: (id: string, name: string) => void;
   removeCategory: (id: string) => void;
+  loadAiGeneratedItems: (items: Array<{ id: string; text: string; category: string; checked: boolean; aiGenerated: boolean }>) => void;
 } {
   const ctx = useContext(PackingListContext);
   if (!ctx) throw new Error('usePackingList must be used within a PackingListProvider');

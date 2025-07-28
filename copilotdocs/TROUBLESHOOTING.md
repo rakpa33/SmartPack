@@ -244,4 +244,24 @@ Document common issues and their solutions here. Update this file as you encount
   - Prefer direct route testing over complex navigation flows
   - Document localStorage dependencies in test files
 
+### International City Names Not Validating
+
+- **Symptom:** Cities with special characters, periods, or international characters fail validation
+- **Root Cause:** City validation regex was not Unicode-aware and too restrictive
+- **Solution:**
+  - Updated validation to use Unicode-aware regex with `\p{L}` for letter matching
+  - Added support for more special characters (periods, hyphens, apostrophes)
+  - Implemented separate validation paths for geocoded vs non-geocoded inputs
+  - Added comprehensive test coverage for various city name formats
+- **Example Fix:**
+  ```typescript
+  const cityPattern = /^[\p{L}][\p{L}\s\-'.]*[\p{L}]$|^[\p{L}]$/u;
+  ```
+- **Validation Rules:**
+  - Must start and end with a letter (any Unicode letter)
+  - Can contain letters, spaces, hyphens, periods, and apostrophes
+  - Must be at least one character long
+  - Geocoded results must have at least two parts separated by commas
+- **Testing Note:** Ensure to test with a variety of international city names and formats to verify the validation works correctly.
+
 ## Add more issues as you encounter them!

@@ -5,6 +5,7 @@ export interface ChecklistItem {
   label: string;
   checked: boolean;
   category: string;
+  aiGenerated?: boolean;
 }
 
 export interface ChecklistCategory {
@@ -22,6 +23,7 @@ export interface PackingListContextType {
   addCategory: (name: string) => void;
   editCategory: (id: string, name: string) => void;
   removeCategory: (id: string) => void;
+  loadAiGeneratedItems: (items: Array<{ id: string; text: string; category: string; checked: boolean; aiGenerated: boolean }>) => void;
 }
 
 export const PackingListContext = createContext<PackingListContextType | undefined>(undefined);

@@ -331,3 +331,25 @@ How to update: Add a new dated entry for each major change, bugfix, or troublesh
 3. Ensure test isolation by not relying on state from previous tests
 
 **External Validation**: The patterns applied match React Testing Library best practices for test isolation and state management, confirming our debugging approach was correct.
+
+## 2025-07-28
+
+### City Validation Improvements
+
+- **Problem:** City validation was too strict and failed to handle international cities and special characters properly.
+- **Root Cause:** The regex pattern for city validation was not Unicode-aware and didn't handle certain valid city name formats.
+- **Actions Taken:**
+  - Updated the city validation regex to use `\p{L}` for Unicode letter support
+  - Added support for periods, hyphens, and apostrophes in city names
+  - Made validation more lenient while still maintaining security
+  - Added comprehensive unit tests for various city name formats
+  - Improved support for both geocoded and non-geocoded city inputs
+- **Technical Details:**
+  - New regex pattern: `/^[\p{L}][\p{L}\s\-'.]*[\p{L}]$|^[\p{L}]$/u`
+  - Added Unicode flag (`u`) for proper international character support
+  - Maintained validation for empty strings and special character abuse
+- **Best Practice:**
+  - Use Unicode-aware patterns for international text
+  - Test with a variety of real-world examples
+  - Balance security with usability in validation rules
+  - Document validation rules clearly in comments
