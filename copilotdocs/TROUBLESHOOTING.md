@@ -113,4 +113,31 @@ Document common issues and their solutions here. Update this file as you encount
   - [Kent C. Dodds: Testing React Router](https://kentcdodds.com/blog/testing-react-router)
   - [React Router Testing Docs](https://reactrouter.com/en/main/guides/testing)
 
+### Packing Checklist/TripForm Integration Test Routing
+
+- **Symptom:** Integration test fails with `useRoutes() may be used only in the context of a <Router> component.`
+- **Root Cause:** App was rendered in tests without a router context. All routing hooks (useRoutes, useNavigate) require a Router.
+- **Solution:** Wrap App in a MemoryRouter in all integration tests:
+  ```tsx
+  render(
+    <MemoryRouter>
+      <App />
+    </MemoryRouter>
+  );
+  ```
+- **Reference:** See `TripForm.integration.test.tsx` for the correct pattern.
+
+### TripForm Step/Checklist Sync Issue
+
+- **Symptom:** Packing Checklist does not appear after clicking Next, or only after multiple clicks.
+- **Root Cause:** Local step logic in TripForm was out of sync with context step logic. UI depended on context step, but context was not updated atomically.
+- **Solution:** Set step: 2 directly in context on submit, and navigate to `/MainLayout` after successful submit.
+- **Reference:** See `TripForm.tsx` and `App.tsx` for the correct pattern.
+
+### Browser Extension/Devtools Message Channel Error
+
+- **Symptom:** `Uncaught (in promise) Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received`
+- **Root Cause:** This is caused by a browser extension or devtools, not by app or test code.
+- **Solution:** Ignore for development/testing, or disable extensions in incognito mode.
+
 ## Add more issues as you encounter them!

@@ -67,7 +67,8 @@ How to update: Update this doc whenever you start, complete, or change a feature
   - [x] Implement PackingList and ChecklistItem components
   - [x] Integrate PackingList into MainLayout center column
   - [x] Display trip summary in left column
+  - [x] Translate and display submitted TripForm data in the Trip Details component/section
   - [x] Add/Update unit, integration, and accessibility tests for checklist and context
   - [x] Ensure checklist state persists to localStorage and is accessible app-wide
   - [x] Polish checklist UI for accessibility, theming, and responsive design
-  - [x] Acceptance: User can add, check, and remove items and categories; checklist state persists and updates everywhere; all tests pass
+  - [x] Acceptance: User can add, check, and remove items and categories; checklist state persists and updates everywhere; Trip Details section displays submitted trip data; all tests pass

@@ -1,6 +1,7 @@
 import React from 'react';
 import { PackingListProvider } from '../hooks/usePackingListContext';
 import { PackingList } from './PackingList';
+import { TripDetails } from './TripDetails';
 
 interface MainLayoutProps {
   children: React.ReactNode;
@@ -16,7 +17,9 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
       <main className="flex-1 flex flex-col md:flex-row w-full max-w-7xl mx-auto px-2 md:px-6 py-4 gap-4">
         {/* Left: Trip Details */}
         <section className="md:w-1/4 w-full mb-4 md:mb-0" id="trip-details">
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-4 h-full text-gray-900 dark:text-gray-100 border border-gray-200 dark:border-gray-700">Trip Details (placeholder)</div>
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-4 h-full text-gray-900 dark:text-gray-100 border border-gray-200 dark:border-gray-700">
+            <TripDetails />
+          </div>
         </section>
         {/* Center: Packing Checklist */}
         <section className="md:w-2/4 w-full mb-4 md:mb-0" id="packing-checklist" data-testid="packing-checklist-section">

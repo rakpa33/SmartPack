@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { useTripForm } from '../hooks/useTripForm';
 import { validateTripForm } from '../utils/tripFormValidation';
+import { useNavigate } from 'react-router-dom';
 
 export const TripForm: React.FC = () => {
   const { dispatch } = useTripForm();
+  const navigate = useNavigate();
   // Local state for all fields
   const [tripName, setTripName] = useState('');
   const [destinations, setDestinations] = useState(['']);
@@ -105,10 +107,11 @@ export const TripForm: React.FC = () => {
           startDate,
           endDate,
           preferences,
-          step,
+          step: 2, // Force step to 2 so checklist always appears after submit
         },
       });
-      dispatch({ type: 'NEXT_STEP' });
+      // Navigate to /MainLayout after successful submit
+      navigate('/MainLayout');
     }
   };
 

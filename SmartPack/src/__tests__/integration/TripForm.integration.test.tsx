@@ -7,14 +7,19 @@
 
 import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import AppWithProvider from '../../App';
+import { MemoryRouter } from 'react-router-dom';
+import App from '../../App';
 
 describe('TripForm integration', () => {
   beforeEach(() => {
     window.localStorage.clear();
   });
   it('shows PackingList when all fields are valid and Next is clicked', async () => {
-    render(<AppWithProvider />);
+    render(
+      <MemoryRouter>
+        <App />
+      </MemoryRouter>
+    );
 
     // Fill out Trip Name
     await waitFor(() => fireEvent.change(screen.getByLabelText(/Trip Name/i), { target: { value: 'Test Trip' } }));
