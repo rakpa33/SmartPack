@@ -1,4 +1,4 @@
-import { validateTripForm } from '../utils/tripFormValidation';
+import validateTripForm from '../utils/tripFormValidation';
 import type { TripFormState } from '../hooks/TripFormTypes'; // Updated import to use named import
 // import { makeTrip } from '../../tests/factories/tripFactory'; // For future use if needed
 

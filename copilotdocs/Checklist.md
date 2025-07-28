@@ -60,7 +60,7 @@ How to update: Update this doc whenever you start, complete, or change a feature
   - [x] All tests (unit, integration, E2E) updated and passing
   - [x] Integration test navigation assertion fix: assert on UI, not window.location.pathname, in MemoryRouter tests (see TROUBLESHOOTING.md)
   - [x] Acceptance: User can add multiple destinations and travel modes, form state is accessible app-wide, persists to localStorage, passes all tests, and the Next button always advances (stepper/step validation not implemented)
-- [ ] Phase 2: Step 5 – Packing Checklist & Context Refactor
+- [x] Phase 2: Step 5 – Packing Checklist & Context Refactor
   - [x] Refactor PackingList context/provider/hook into separate files for fast refresh
   - [x] Use named exports for all hooks, and ensure only one export per symbol
   - [x] Create PackingListProvider and wrap checklist UI in provider
@@ -72,3 +72,16 @@ How to update: Update this doc whenever you start, complete, or change a feature
   - [x] Ensure checklist state persists to localStorage and is accessible app-wide
   - [x] Polish checklist UI for accessibility, theming, and responsive design
   - [x] Acceptance: User can add, check, and remove items and categories; checklist state persists and updates everywhere; Trip Details section displays submitted trip data; all tests pass
+- [x] Phase 3: Step 6 – Weather API Integration
+  - [x] Fetch weather data from Open-Meteo API client-side on trip form submit
+  - [x] Display relevant weather info in UI
+  - [x] Use weather data as context for AI packing list generation
+- [x] Phase 3: Step 4 – TripForm, Weather, and Geocoding Integration
+  - [x] Implement TripForm with async geocoding and weather fetch
+  - [x] Validate and auto-correct destination input on blur
+  - [x] Add integration and unit tests for TripForm and TripDetails
+  - [x] **Note:** Automated integration tests cannot reliably assert async blur-triggered input correction due to React Testing Library limitations. See TROUBLESHOOTING.md (2025-07-28) for details and manual validation requirements.
+  - [x] Fix weather data display in integration tests with reliable test environment handling
+  - [x] Add data-testid attributes to critical elements for reliable test selection
+  - [x] Ensure proper error handling for API calls in form submission flow
+  - [x] Update documentation with testing best practices for components with context

@@ -1,4 +1,4 @@
-import { isValidCity, isDateInPast, isEndDateBeforeStart } from '../utils/validation';
+import { isValidCity, isDateInPast, isEndDateBeforeStart } from './validation';
 import type { TripFormState } from '../hooks/TripFormTypes';
 
 export type TripFormErrors = {
@@ -9,6 +9,7 @@ export type TripFormErrors = {
   endDate?: string;
 };
 
+// Export both as named export and default export to handle different import styles
 export function validateTripForm(state: TripFormState): TripFormErrors {
   const errors: TripFormErrors = {};
 
@@ -47,3 +48,6 @@ export function validateTripForm(state: TripFormState): TripFormErrors {
 
   return errors;
 }
+
+// Also export as default for compatibility
+export default validateTripForm;

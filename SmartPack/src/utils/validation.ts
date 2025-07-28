@@ -7,9 +7,21 @@ const VALID_CITIES = [
 ];
 
 export function isValidCity(city: string): boolean {
-  // Simple check: case-insensitive match against known cities
+  // Handle geocoded city names that may include region/country information
+  // Check if any valid city is contained within the geocoded city string
+  const cityLower = city.trim().toLowerCase();
+  
+  // If the city contains a comma, it might be a geocoded result
+  if (cityLower.includes(',')) {
+    // Check if any of our valid cities appears at the beginning of the string
+    return VALID_CITIES.some(valid => 
+      cityLower.startsWith(valid.toLowerCase())
+    );
+  }
+  
+  // For non-geocoded entries, do an exact match
   return VALID_CITIES.some(
-    valid => valid.toLowerCase() === city.trim().toLowerCase()
+    valid => valid.toLowerCase() === cityLower
   );
 }
 

@@ -6,7 +6,19 @@ import { useTripForm } from '../hooks/useTripForm';
  */
 export const TripDetails: React.FC = () => {
   const { state } = useTripForm();
-  if (!state) return null;
+
+  // Enhanced error handling - provide clear fallback for incomplete state
+  if (!state) {
+    console.log('TripDetails: No state found');
+    return <div>Loading trip details...</div>;
+  }
+
+  // Explicit check for step=2 (completed form)
+  if (state.step < 2) {
+    console.log('TripDetails: Form not completed, step is', state.step);
+    return <div>Please complete the trip form</div>;
+  }
+
   const {
     tripName,
     startDate,
@@ -14,7 +26,12 @@ export const TripDetails: React.FC = () => {
     destinations,
     travelModes,
     preferences,
+    weather,
   } = state;
+
+  // Debug: log the state to see if weather data is present
+  console.log('TripDetails state:', state);
+  console.log('Weather data:', weather);
 
   return (
     <div>
@@ -47,6 +64,16 @@ export const TripDetails: React.FC = () => {
             : <span className="text-gray-400">(none)</span>}</dd>
         </div>
       </dl>
+      {weather && (
+        <div className="mt-4 p-3 bg-blue-50 dark:bg-blue-900 rounded" data-testid="weather-display">
+          <div className="text-lg font-semibold" data-testid="weather-summary">{weather.summary}</div>
+          <div className="text-xl" data-testid="weather-temperature">{weather.temperature !== null ? `${weather.temperature}°C` : 'N/A'}</div>
+        </div>
+      )}
+      {/* Add a fallback div to help with testing */}
+      {!weather && (
+        <div data-testid="weather-empty">No weather data available</div>
+      )}
     </div>
   );
 };

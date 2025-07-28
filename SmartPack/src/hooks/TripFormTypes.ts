@@ -6,6 +6,11 @@ export type TripFormState = {
   travelModes: string[];
   preferences: string[];
   step: number;
+  weather?: {
+    temperature: number | null;
+    summary: string;
+    weathercode?: number;
+  };
 };
 
 export type TripFormAction =

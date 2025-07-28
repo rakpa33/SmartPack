@@ -56,7 +56,11 @@ A quick reference for creating, organizing, and running tests in SmartPack. Appl
 - **Isolation:** No network/time dependencies in unit tests.
 - **Descriptive Names:** One logical assertion per test.
 - **Fail Fast:** Run unit/integration on every push; E2E on PR/nightly.
-- **Naming:** Name test files with `.test.ts(x)` or `.spec.ts(x)` suffixes. Place unit tests close to code; integration/E2E in dedicated folders.
+- **Naming:** Name test files with `.test.ts(x)` or `.spec.ts(x)` suffixes.
+- **Test Location:**
+  - Unit tests should be placed in `src/__tests__/` directory
+  - Integration tests belong in `src/__tests__/integration/`
+  - E2E tests belong in the `playwright/` directory
 - **Test Data:** Use fixtures or factories for test data. Mock external services (APIs, network calls) using MSW, nock, or vi.mock.
 - **Accessibility:** Prefer accessible queries and check for a11y issues in UI tests.
 
@@ -67,20 +71,44 @@ A quick reference for creating, organizing, and running tests in SmartPack. Appl
 - Use `describe` blocks per component or util.
 - Mock fetches with `vi.mock` or `msw`.
 - Prefer RTL queries (`getByRole`, `findByText`).
-- Use `data-testid` only when necessary.
+- Use `data-testid` for critical elements that need reliable selection in tests.
 - Keep tests under 100 ms each.
 - Keep tests colocated with the code they test when possible.
+- For components that use context, ensure the test provides the necessary context wrapper.
+- For asynchronous operations, use appropriate waiting mechanisms with reasonable timeouts.
 
 **Example:**
 
 ```ts
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
+import { TripFormProvider } from '../hooks/TripFormContext';
 import TripForm from './TripForm';
 
 describe('TripForm', () => {
   it('prefills default dates', () => {
-    render(<TripForm />);
+    render(
+      <TripFormProvider>
+        <TripForm />
+      </TripFormProvider>
+    );
     expect(screen.getByLabelText(/start date/i)).toHaveValue(/*…*/);
+  });
+
+  it('displays weather data after submission', async () => {
+    render(
+      <TripFormProvider>
+        <TripForm />
+      </TripFormProvider>
+    );
+    // Fill and submit form...
+
+    await waitFor(
+      () => {
+        const weatherElement = screen.getByTestId('weather-display');
+        expect(weatherElement).toBeInTheDocument();
+      },
+      { timeout: 3000 }
+    ); // Use appropriate timeout
   });
 });
 ```
@@ -122,14 +150,26 @@ describe('/generate route', () => {
 - Record videos only on failure.
 - Clear localStorage and reset state between specs.
 - Place E2E tests in `__tests__/e2e` or similar.
+- **Critical user journeys must include:**
+  - Form completion flows that involve API calls (like geocoding)
+  - Validation flows that depend on transformed data
+  - Multi-step processes where state changes across screens
 
 **Example:**
 
 ```ts
-test('user completes trip wizard', async ({ page }) => {
+test('user completes trip wizard with geocoded city', async ({ page }) => {
   await page.goto(process.env.APP_URL);
   await page.getByRole('textbox', { name: /name/i }).fill('Alice');
-  // ...continue flow…
+  // Type a simple city name and ensure it gets geocoded properly
+  await page.getByTestId('destination-input-0').fill('paris');
+  await page.getByTestId('destination-input-0').blur();
+  // Verify the geocoded format appears
+  await expect(page.getByTestId('destination-input-0')).toHaveValue(
+    /Paris.*France/
+  );
+  // Continue flow and verify navigation succeeds
+  await page.getByText('Next').click();
   await expect(page.getByText('Packing Checklist')).toBeVisible();
 });
 ```
