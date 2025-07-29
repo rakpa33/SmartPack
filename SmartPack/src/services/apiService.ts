@@ -14,6 +14,8 @@ export interface ChecklistItem {
 export interface GenerateResponse {
   checklist: ChecklistItem[];
   suggestedItems: string[];
+  aiGenerated?: boolean;
+  fallbackReason?: string;
 }
 
 export interface WeatherData {
@@ -67,7 +69,7 @@ export async function generateAISuggestions(
   customPrompt: string,
   tripData: TripFormData, 
   weatherData: WeatherData[]
-): Promise<{ suggestedItems: string[] }> {
+): Promise<{ suggestedItems: string[]; aiGenerated?: boolean; fallbackReason?: string }> {
   try {
     const response = await fetch(`${API_URL}/suggestions`, {
       method: 'POST',
@@ -86,7 +88,7 @@ export async function generateAISuggestions(
       throw new Error(errorData.message || 'Failed to generate AI suggestions');
     }
 
-    const data: { suggestedItems: string[] } = await response.json();
+    const data: { suggestedItems: string[]; aiGenerated?: boolean; fallbackReason?: string } = await response.json();
     return data;
   } catch (error) {
     console.error('AI suggestions API error:', error);

@@ -73,7 +73,14 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
         </section>
         {/* Right: AI Suggestions */}
         <section className="md:w-1/4 w-full" id="ai-suggestions" data-testid="ai-suggestions-section">
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-4 h-full text-gray-900 dark:text-gray-100 border border-gray-200 dark:border-gray-700">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-4 h-full text-gray-900 dark:text-gray-100 border border-gray-200 dark:border-gray-700 relative">
+            {/* Ollama Powered Badge */}
+            <div className="absolute top-2 right-2 z-10">
+              <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-2 py-1 rounded-full text-xs font-medium flex items-center space-x-1 shadow-sm">
+                <div className="w-2 h-2 bg-white rounded-full animate-pulse"></div>
+                <span>Ollama AI</span>
+              </div>
+            </div>
             <PackingListProvider>
               <SuggestionsPanel />
             </PackingListProvider>

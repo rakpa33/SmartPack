@@ -24,6 +24,8 @@ export type TripFormState = {
       aiGenerated: boolean;
     }>;
     suggestedItems: string[];
+    aiGenerated?: boolean;
+    fallbackReason?: string;
   } | null;
 };
 

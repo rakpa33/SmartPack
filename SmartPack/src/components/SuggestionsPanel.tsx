@@ -9,6 +9,7 @@ interface SuggestionItem {
   id: string;
   text: string;
   category: string;
+  aiGenerated?: boolean;
 }
 
 export const SuggestionsPanel: React.FC = () => {
@@ -18,16 +19,20 @@ export const SuggestionsPanel: React.FC = () => {
   const [suggestions, setSuggestions] = useState<SuggestionItem[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [lastResponseType, setLastResponseType] = useState<'ai' | 'fallback' | null>(null);
 
   // Load initial suggestions from the trip form state
   useEffect(() => {
     if (state.generatedPackingList?.suggestedItems) {
+      const isAiGenerated = state.generatedPackingList.aiGenerated !== false;
       const initialSuggestions: SuggestionItem[] = state.generatedPackingList.suggestedItems.map((item: string, index: number) => ({
         id: `suggestion-${index}`,
         text: item,
-        category: 'general' // Default category for string suggestions
+        category: 'general', // Default category for string suggestions
+        aiGenerated: isAiGenerated
       }));
       setSuggestions(initialSuggestions);
+      setLastResponseType(isAiGenerated ? 'ai' : 'fallback');
     }
   }, [state.generatedPackingList]);
 
@@ -70,11 +75,19 @@ export const SuggestionsPanel: React.FC = () => {
         const newSuggestions: SuggestionItem[] = response.suggestedItems.map((item: string, index: number) => ({
           id: `refined-${Date.now()}-${index}`,
           text: item,
-          category: 'general'
+          category: 'general',
+          aiGenerated: response.aiGenerated !== false
         }));
 
         // Add new suggestions to existing ones
         setSuggestions(prev => [...prev, ...newSuggestions]);
+        setLastResponseType(response.aiGenerated !== false ? 'ai' : 'fallback');
+
+        // Show a brief success message if using fallback
+        if (response.aiGenerated === false && response.fallbackReason) {
+          setError(`Note: Using fallback suggestions. ${response.fallbackReason}`);
+          setTimeout(() => setError(null), 5000);
+        }
       }
 
       // Clear the prompt after successful submission
@@ -138,11 +151,13 @@ export const SuggestionsPanel: React.FC = () => {
         const newSuggestions: SuggestionItem[] = response.suggestedItems.map((item: string, index: number) => ({
           id: `refresh-${Date.now()}-${index}`,
           text: item,
-          category: 'general'
+          category: 'general',
+          aiGenerated: response.aiGenerated !== false
         }));
 
         // Replace all suggestions with fresh ones
         setSuggestions(newSuggestions);
+        setLastResponseType(response.aiGenerated !== false ? 'ai' : 'fallback');
       }
     } catch (err) {
       setError('Failed to refresh suggestions. Please try again.');
@@ -156,9 +171,18 @@ export const SuggestionsPanel: React.FC = () => {
 
   return (
     <div className="h-full">
-      <h2 className="font-bold text-xl mb-4" role="heading" aria-level={2}>
-        AI Suggestions
-      </h2>
+      <div className="flex items-center justify-between mb-4">
+        <h2 className="font-bold text-xl" role="heading" aria-level={2}>
+          AI Suggestions
+        </h2>
+        {/* Ollama AI Badge */}
+        <div className="flex items-center space-x-2">
+          <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-2 py-1 rounded-full text-xs font-medium flex items-center space-x-1">
+            <CpuChipIcon className="h-3 w-3" />
+            <span>Ollama AI</span>
+          </div>
+        </div>
+      </div>
 
       {!hasTrip ? (
         <div className="text-center py-8">
@@ -200,9 +224,19 @@ export const SuggestionsPanel: React.FC = () => {
               <button
                 type="submit"
                 disabled={!customPrompt.trim() || isLoading}
-                className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed text-white font-medium py-2 px-4 rounded-md transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed text-white font-medium py-2 px-4 rounded-md transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 flex items-center justify-center space-x-2"
               >
-                {isLoading ? 'Getting Suggestions...' : 'Get More Suggestions'}
+                {isLoading ? (
+                  <>
+                    <CpuChipIcon className="h-4 w-4 animate-pulse" />
+                    <span>Ollama AI Thinking...</span>
+                  </>
+                ) : (
+                  <>
+                    <CpuChipIcon className="h-4 w-4" />
+                    <span>Get AI Suggestions</span>
+                  </>
+                )}
               </button>
             </form>
             {error && (
@@ -218,18 +252,30 @@ export const SuggestionsPanel: React.FC = () => {
               <h3 className="font-semibold text-gray-900 dark:text-gray-100">
                 Suggested Items ({suggestions.length})
               </h3>
-              {suggestions.length > 0 && (
-                <button
-                  onClick={handleRefreshSuggestions}
-                  disabled={isLoading}
-                  className="flex items-center gap-1 text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-200 disabled:opacity-50 disabled:cursor-not-allowed text-sm font-medium"
-                  title="Refresh suggestions"
-                  aria-label="Refresh suggestions"
-                >
-                  <ArrowPathIcon className={`h-4 w-4 ${isLoading ? 'animate-spin' : ''}`} />
-                  Refresh
-                </button>
-              )}
+              <div className="flex items-center gap-2">
+                {lastResponseType && (
+                  <div className={`flex items-center gap-1 text-xs px-2 py-1 rounded-full ${lastResponseType === 'ai'
+                      ? 'bg-green-50 text-green-700 dark:bg-green-900/30 dark:text-green-400'
+                      : 'bg-amber-50 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400'
+                    }`}>
+                    <div className={`w-2 h-2 rounded-full ${lastResponseType === 'ai' ? 'bg-green-500' : 'bg-amber-500'
+                      }`}></div>
+                    <span>{lastResponseType === 'ai' ? 'Ollama Online' : 'Using Fallback'}</span>
+                  </div>
+                )}
+                {suggestions.length > 0 && (
+                  <button
+                    onClick={handleRefreshSuggestions}
+                    disabled={isLoading}
+                    className="flex items-center gap-1 text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-200 disabled:opacity-50 disabled:cursor-not-allowed text-sm font-medium"
+                    title="Refresh suggestions"
+                    aria-label="Refresh suggestions"
+                  >
+                    <ArrowPathIcon className={`h-4 w-4 ${isLoading ? 'animate-spin' : ''}`} />
+                    Refresh
+                  </button>
+                )}
+              </div>
             </div>
             {suggestions.length === 0 ? (
               <div className="text-center py-6">
@@ -249,8 +295,11 @@ export const SuggestionsPanel: React.FC = () => {
                         {suggestion.text}
                       </span>
                       <div className="flex items-center gap-2 mt-1">
-                        <span className="text-xs text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 px-2 py-0.5 rounded-full">
-                          AI
+                        <span className={`text-xs px-2 py-0.5 rounded-full ${suggestion.aiGenerated !== false
+                            ? 'text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30'
+                            : 'text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-900/30'
+                          }`}>
+                          {suggestion.aiGenerated !== false ? 'Ollama AI' : 'Fallback'}
                         </span>
                         <span className="text-xs text-gray-500 dark:text-gray-400 capitalize">
                           {suggestion.category}

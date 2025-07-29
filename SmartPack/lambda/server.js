@@ -60,7 +60,12 @@ ${weatherSummary}
   "suggestedItems": ["suggestion1", "suggestion2"]
 }
 
-2. Categories to use: Documents, Clothing, Footwear, Electronics, Toiletries, Health, Accessories, Equipment, Comfort, Food
+2. Categories: Create meaningful, context-aware categories based on the trip. Examples include:
+   - Core categories: Documents, Clothing, Footwear, Electronics, Toiletries, Health
+   - Activity-specific: Photography Gear, Business Items, Outdoor Equipment, Beach Essentials
+   - Travel-specific: Flight Essentials, Road Trip Items, International Travel
+   - Climate-specific: Cold Weather Gear, Rain Protection, Sun Protection
+   - Choose the most relevant categories for this specific trip
 
 3. Consider:
    - Weather conditions for appropriate clothing
@@ -339,6 +344,7 @@ app.post('/suggestions', async (req, res) => {
 3. Consider the weather, trip type, and user's specific needs
 4. Be specific and practical (e.g., "waterproof hiking boots" not just "shoes")
 5. Focus on items relevant to the custom request
+6. Use descriptive, context-aware item names that clearly indicate their purpose
 6. No explanations, just the JSON response
 
 Generate suggestions:`;
