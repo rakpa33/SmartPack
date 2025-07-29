@@ -1,6 +1,28 @@
 <!--
 Prompt command for Copilot/AI:
 
+🚨 **IMPORTANT**: Before creating or modifying any tests, first consult the current testing standards:
+- **Primary Reference**: `TESTING_STANDARDS.md` - Complete 2024/2025 industry standards
+- **Quick Reference**: `.github/prompts/test-standards.prompt.md` - Concise patterns and anti-patterns
+- **Legacy Guidelines**: This file contains SmartPack-specific patterns and troubleshooting
+
+ALL NEW TESTS must follow the standards in TESTING_STANDARDS.md. Use this file only for:
+- SmartPack-specific test utilities and helpers
+- Troubleshooting existing test issues
+- Legacy pattern explanations during migration
+
+When creating tests, follow this priority:
+1. TESTING_STANDARDS.md patterns (Required)
+2. SmartPack-specific guidelines below (As needed)
+3. Legacy patterns in this file (Only when migrating old tests)
+
+---
+
+# SmartPack Testing Cheatsheet (Legacy & Project-Specific)
+
+> **⚠️ NOTE**: This document contains legacy patterns and SmartPack-specific guidance.
+> For current testing standards, see `TESTING_STANDARDS.md` first.
+
 When - **Assertion Messages:** Custom assertion messages should be concise and explain the intent, e.g., `expect(x).toBe(y) /* explains why */`. Use a consistent, descriptive style.
 - **Test Review:** PRs that make major changes to test structure/utilities must be reviewed by a designated "test lead" or equivalent.
 - **Test Audit:** The quarterly "test hygiene" audit must be tracked in GitHub Projects and use a dedicated issue template for documentation.

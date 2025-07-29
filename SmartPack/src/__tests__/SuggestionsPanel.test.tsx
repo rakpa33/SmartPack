@@ -1,9 +1,13 @@
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { vi, describe, it, expect, beforeEach } from 'vitest';
+import { axe, toHaveNoViolations } from 'jest-axe';
 import { SuggestionsPanel } from '../components/SuggestionsPanel';
 import { useTripForm } from '../hooks/useTripForm';
 import { usePackingList } from '../hooks/usePackingList';
 import * as apiService from '../services/apiService';
+
+expect.extend(toHaveNoViolations);
 
 // Mock the hooks
 vi.mock('../hooks/useTripForm');
@@ -17,6 +21,12 @@ const mockGeneratePackingList = vi.mocked(apiService.generatePackingList);
 describe('SuggestionsPanel', () => {
   const mockAddItem = vi.fn();
   const mockDispatch = vi.fn();
+
+  function renderSuggestionsPanel() {
+    const user = userEvent.setup();
+    render(<SuggestionsPanel />);
+    return { user };
+  }
 
   beforeEach(() => {
     vi.clearAllMocks();
@@ -55,6 +65,12 @@ describe('SuggestionsPanel', () => {
     expect(screen.getByText('Complete your trip details to get AI-powered packing suggestions.')).toBeInTheDocument();
     // Instead of checking for emoji, check for the AI-related text
     expect(screen.getByText('AI will analyze your destinations, weather, and travel modes to suggest items you might need.')).toBeInTheDocument();
+  });
+
+  it('should be accessible', async () => {
+    const { container } = render(<SuggestionsPanel />);
+    const results = await axe(container);
+    expect(results).toHaveNoViolations();
   });
 
   it('shows refinement form when trip is complete', () => {
@@ -142,13 +158,13 @@ describe('SuggestionsPanel', () => {
     };
     mockGeneratePackingList.mockResolvedValue(mockApiResponse);
 
-    render(<SuggestionsPanel />);
+    const { user } = renderSuggestionsPanel();
 
     const textArea = screen.getByLabelText('What specific items or activities should we consider?');
     const submitButton = screen.getByRole('button', { name: 'Get More Suggestions' });
 
-    fireEvent.change(textArea, { target: { value: 'business meetings' } });
-    fireEvent.click(submitButton);
+    await user.type(textArea, 'business meetings');
+    await user.click(submitButton);
 
     expect(screen.getByText('Getting Suggestions...')).toBeInTheDocument();
 
@@ -178,7 +194,7 @@ describe('SuggestionsPanel', () => {
     expect(textArea).toHaveValue('');
   });
 
-  it('can add suggestion to main packing list', () => {
+  it('can add suggestion to main packing list', async () => {
     mockUseTripForm.mockReturnValue({
       state: {
         tripName: 'Paris Trip',
@@ -196,10 +212,10 @@ describe('SuggestionsPanel', () => {
       dispatch: mockDispatch
     });
 
-    render(<SuggestionsPanel />);
+    const { user } = renderSuggestionsPanel();
 
     const addButton = screen.getByRole('button', { name: 'Add Travel insurance to packing list' });
-    fireEvent.click(addButton);
+    await user.click(addButton);
 
     expect(mockAddItem).toHaveBeenCalledWith({
       label: 'Travel insurance',
@@ -237,13 +253,13 @@ describe('SuggestionsPanel', () => {
 
     mockGeneratePackingList.mockRejectedValue(new Error('API Error'));
 
-    render(<SuggestionsPanel />);
+    const { user } = renderSuggestionsPanel();
 
     const textArea = screen.getByLabelText('What specific items or activities should we consider?');
     const submitButton = screen.getByRole('button', { name: 'Get More Suggestions' });
 
-    fireEvent.change(textArea, { target: { value: 'business meetings' } });
-    fireEvent.click(submitButton);
+    await user.type(textArea, 'business meetings');
+    await user.click(submitButton);
 
     await waitFor(() => {
       expect(screen.getByText('Failed to get AI suggestions. Please try again.')).toBeInTheDocument();
@@ -276,7 +292,7 @@ describe('SuggestionsPanel', () => {
     expect(screen.queryByLabelText('What specific items or activities should we consider?')).not.toBeInTheDocument();
   });
 
-  it('disables submit button when prompt is empty', () => {
+  it('disables submit button when prompt is empty', async () => {
     mockUseTripForm.mockReturnValue({
       state: {
         tripName: 'Paris Trip',
@@ -291,16 +307,17 @@ describe('SuggestionsPanel', () => {
       dispatch: mockDispatch
     });
 
-    render(<SuggestionsPanel />);
+    const { user } = renderSuggestionsPanel();
 
     const submitButton = screen.getByRole('button', { name: 'Get More Suggestions' });
     expect(submitButton).toBeDisabled();
 
     const textArea = screen.getByLabelText('What specific items or activities should we consider?');
-    fireEvent.change(textArea, { target: { value: 'business meetings' } });
+    await user.type(textArea, 'business meetings');
     expect(submitButton).not.toBeDisabled();
 
-    fireEvent.change(textArea, { target: { value: '   ' } });
+    await user.clear(textArea);
+    await user.type(textArea, '   ');
     expect(submitButton).toBeDisabled();
   });
 });

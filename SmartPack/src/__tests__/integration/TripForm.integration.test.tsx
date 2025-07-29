@@ -1,7 +1,11 @@
 import { renderWithProviders } from '../../../tests/testing-utils';
-import { screen, fireEvent, waitFor } from '@testing-library/react';
+import { screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { vi, beforeAll } from 'vitest';
+import { axe, toHaveNoViolations } from 'jest-axe';
 import App from '../../App';
+
+expect.extend(toHaveNoViolations);
 
 // Mock both the underlying utilities and the custom hook
 vi.mock('../../utils/weather', () => ({
@@ -32,28 +36,39 @@ describe('TripForm integration (weather & geocode)', () => {
   });
 
   function setup() {
-    return renderWithProviders(
+    const user = userEvent.setup();
+    const result = renderWithProviders(
       <App />,
       { initialEntries: ["/"] }
     );
+    return { user, ...result };
   }
+
+  it('should be accessible during trip form workflow', async () => {
+    const { container } = renderWithProviders(
+      <App />,
+      { initialEntries: ["/"] }
+    );
+    const results = await axe(container);
+    expect(results).toHaveNoViolations();
+  });
 
   it('validates and updates destination, fetches weather on submit', async () => {
     // NOTE: Destination input async correction is not reliably testable with React Testing Library. See TROUBLESHOOTING.md for details and sources. Manual browser validation required.
-    setup();
+    const { user } = setup();
 
     // Fill out the form
-    fireEvent.change(screen.getByLabelText(/Trip Name/i), { target: { value: 'Test Trip' } });
-    fireEvent.change(screen.getByTestId('destination-input-0'), { target: { value: 'Paris' } });
-    fireEvent.click(screen.getByLabelText('Plane'));
-    fireEvent.change(screen.getByLabelText(/Start Date/i), { target: { value: '2025-08-01' } });
-    fireEvent.change(screen.getByLabelText(/End Date/i), { target: { value: '2025-08-02' } });
+    await user.type(screen.getByLabelText(/Trip Name/i), 'Test Trip');
+    await user.type(screen.getByTestId('destination-input-0'), 'Paris');
+    await user.click(screen.getByLabelText('Plane'));
+    await user.type(screen.getByLabelText(/Start Date/i), '2025-08-01');
+    await user.type(screen.getByLabelText(/End Date/i), '2025-08-02');
 
     // Wait a moment for any validation to complete
     await new Promise(resolve => setTimeout(resolve, 100));
 
     // Submit the form
-    fireEvent.click(screen.getByText(/Next/i));
+    await user.click(screen.getByText(/Next/i));
 
     // Wait for navigation - look for any indication we've moved to the next page
     await waitFor(() => {

@@ -1,0 +1,186 @@
+<testsuites id="" name="" tests="40" failures="0" skipped="40" errors="0" time="0.30197199999999974">
+<testsuite name="ai-packing-suggestions.spec.ts" timestamp="2025-07-29T22:21:55.515Z" hostname="chromium" tests="4" failures="0" skipped="4" time="0" errors="0">
+<testcase name="SmartPack AI Packing Suggestions › generates business trip recommendations" classname="ai-packing-suggestions.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="SmartPack AI Packing Suggestions › generates beach vacation recommendations" classname="ai-packing-suggestions.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="SmartPack AI Packing Suggestions › generates adventure trip recommendations" classname="ai-packing-suggestions.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="SmartPack AI Packing Suggestions › adapts recommendations for cold weather destinations" classname="ai-packing-suggestions.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+</testsuite>
+<testsuite name="travel-modes.spec.ts" timestamp="2025-07-29T22:21:55.515Z" hostname="chromium" tests="4" failures="0" skipped="4" time="0" errors="0">
+<testcase name="SmartPack Travel Mode Optimization › optimizes packing for plane travel" classname="travel-modes.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="SmartPack Travel Mode Optimization › optimizes packing for road trip" classname="travel-modes.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="SmartPack Travel Mode Optimization › calculates quantities based on trip duration" classname="travel-modes.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="SmartPack Travel Mode Optimization › handles API errors gracefully" classname="travel-modes.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+</testsuite>
+<testsuite name="user-journey.spec.ts" timestamp="2025-07-29T22:21:55.515Z" hostname="chromium" tests="2" failures="0" skipped="2" time="0" errors="0">
+<testcase name="SmartPack Complete User Journey › completes full trip planning and packing workflow" classname="user-journey.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="SmartPack Complete User Journey › handles multiple destinations intelligently" classname="user-journey.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+</testsuite>
+<testsuite name="ai-packing-suggestions.spec.ts" timestamp="2025-07-29T22:21:55.515Z" hostname="firefox" tests="4" failures="0" skipped="4" time="0" errors="0">
+<testcase name="SmartPack AI Packing Suggestions › generates business trip recommendations" classname="ai-packing-suggestions.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="SmartPack AI Packing Suggestions › generates beach vacation recommendations" classname="ai-packing-suggestions.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="SmartPack AI Packing Suggestions › generates adventure trip recommendations" classname="ai-packing-suggestions.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="SmartPack AI Packing Suggestions › adapts recommendations for cold weather destinations" classname="ai-packing-suggestions.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+</testsuite>
+<testsuite name="travel-modes.spec.ts" timestamp="2025-07-29T22:21:55.515Z" hostname="firefox" tests="4" failures="0" skipped="4" time="0" errors="0">
+<testcase name="SmartPack Travel Mode Optimization › optimizes packing for plane travel" classname="travel-modes.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="SmartPack Travel Mode Optimization › optimizes packing for road trip" classname="travel-modes.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="SmartPack Travel Mode Optimization › calculates quantities based on trip duration" classname="travel-modes.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="SmartPack Travel Mode Optimization › handles API errors gracefully" classname="travel-modes.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+</testsuite>
+<testsuite name="user-journey.spec.ts" timestamp="2025-07-29T22:21:55.515Z" hostname="firefox" tests="2" failures="0" skipped="2" time="0" errors="0">
+<testcase name="SmartPack Complete User Journey › completes full trip planning and packing workflow" classname="user-journey.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="SmartPack Complete User Journey › handles multiple destinations intelligently" classname="user-journey.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+</testsuite>
+<testsuite name="ai-packing-suggestions.spec.ts" timestamp="2025-07-29T22:21:55.515Z" hostname="webkit" tests="4" failures="0" skipped="4" time="0" errors="0">
+<testcase name="SmartPack AI Packing Suggestions › generates business trip recommendations" classname="ai-packing-suggestions.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="SmartPack AI Packing Suggestions › generates beach vacation recommendations" classname="ai-packing-suggestions.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="SmartPack AI Packing Suggestions › generates adventure trip recommendations" classname="ai-packing-suggestions.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="SmartPack AI Packing Suggestions › adapts recommendations for cold weather destinations" classname="ai-packing-suggestions.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+</testsuite>
+<testsuite name="travel-modes.spec.ts" timestamp="2025-07-29T22:21:55.515Z" hostname="webkit" tests="4" failures="0" skipped="4" time="0" errors="0">
+<testcase name="SmartPack Travel Mode Optimization › optimizes packing for plane travel" classname="travel-modes.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="SmartPack Travel Mode Optimization › optimizes packing for road trip" classname="travel-modes.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="SmartPack Travel Mode Optimization › calculates quantities based on trip duration" classname="travel-modes.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="SmartPack Travel Mode Optimization › handles API errors gracefully" classname="travel-modes.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+</testsuite>
+<testsuite name="user-journey.spec.ts" timestamp="2025-07-29T22:21:55.515Z" hostname="webkit" tests="2" failures="0" skipped="2" time="0" errors="0">
+<testcase name="SmartPack Complete User Journey › completes full trip planning and packing workflow" classname="user-journey.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="SmartPack Complete User Journey › handles multiple destinations intelligently" classname="user-journey.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+</testsuite>
+<testsuite name="ai-packing-suggestions.spec.ts" timestamp="2025-07-29T22:21:55.515Z" hostname="Mobile Chrome" tests="4" failures="0" skipped="4" time="0" errors="0">
+<testcase name="SmartPack AI Packing Suggestions › generates business trip recommendations" classname="ai-packing-suggestions.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="SmartPack AI Packing Suggestions › generates beach vacation recommendations" classname="ai-packing-suggestions.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="SmartPack AI Packing Suggestions › generates adventure trip recommendations" classname="ai-packing-suggestions.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="SmartPack AI Packing Suggestions › adapts recommendations for cold weather destinations" classname="ai-packing-suggestions.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+</testsuite>
+<testsuite name="travel-modes.spec.ts" timestamp="2025-07-29T22:21:55.515Z" hostname="Mobile Chrome" tests="4" failures="0" skipped="4" time="0" errors="0">
+<testcase name="SmartPack Travel Mode Optimization › optimizes packing for plane travel" classname="travel-modes.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="SmartPack Travel Mode Optimization › optimizes packing for road trip" classname="travel-modes.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="SmartPack Travel Mode Optimization › calculates quantities based on trip duration" classname="travel-modes.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="SmartPack Travel Mode Optimization › handles API errors gracefully" classname="travel-modes.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+</testsuite>
+<testsuite name="user-journey.spec.ts" timestamp="2025-07-29T22:21:55.515Z" hostname="Mobile Chrome" tests="2" failures="0" skipped="2" time="0" errors="0">
+<testcase name="SmartPack Complete User Journey › completes full trip planning and packing workflow" classname="user-journey.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="SmartPack Complete User Journey › handles multiple destinations intelligently" classname="user-journey.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+</testsuite>
+</testsuites>

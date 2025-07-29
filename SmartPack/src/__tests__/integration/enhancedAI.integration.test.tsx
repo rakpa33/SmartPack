@@ -1,3 +1,44 @@
+/**
+ * Enhanced AI Integration Tests
+ * 
+ * PURPOSE: Tests the comprehensive AI-powered packing suggestion system with real trip scenarios
+ * 
+ * SCOPE - This file should contain:
+ * ✅ End-to-end AI workflow testing (form → AI generation → results display)
+ * ✅ Context-aware recommendations for different trip types (business, beach, adventure)
+ * ✅ Smart quantity calculations based on trip duration and weather
+ * ✅ Integration between AI service, weather data, and UI components
+ * ✅ Error handling for AI service failures
+ * ✅ Real user interaction patterns with AI features
+ * 
+ * SCOPE - This file should NOT contain:
+ * ❌ Pure UI component testing (belongs in component unit tests)
+ * ❌ API service unit testing (belongs in apiService.test.ts)
+ * ❌ Weather utility testing (belongs in weather.test.ts)
+ * ❌ Cross-browser E2E testing (belongs in playwright/)
+ * 
+ * DEPENDENCIES:
+ * - App component (full application integration)
+ * - API service mocks for generatePackingList
+ * - Weather and geocoding utility mocks
+ * - localStorage for state persistence
+ * - renderWithProviders for React Router context
+ * 
+ * MAINTENANCE:
+ * - Add new trip types when AI supports additional categories
+ * - Update test scenarios when AI logic evolves
+ * - Modify when new AI features are implemented (weather integration, duration calculations)
+ * - Review when API contracts change
+ * - Update when UI components for AI features change
+ * 
+ * TESTING PATTERNS:
+ * - Mocks external AI service calls for isolation
+ * - Tests realistic user workflows and interactions
+ * - Validates AI-generated content appears correctly in UI
+ * - Includes both success and error scenarios
+ * - Uses behavioral organization (trip type scenarios)
+ */
+
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';

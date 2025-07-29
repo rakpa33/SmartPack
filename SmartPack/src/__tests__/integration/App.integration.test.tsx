@@ -1,3 +1,41 @@
+/**
+ * App Integration Tests
+ * 
+ * PURPOSE: Tests the complete user workflow from trip form submission to main layout display
+ * 
+ * SCOPE - This file should contain:
+ * ✅ Complete form-to-layout navigation flow
+ * ✅ State persistence between route transitions
+ * ✅ Router integration and page transitions
+ * ✅ Layout component integration after form submission
+ * ✅ Critical user journey validation
+ * ✅ Form validation in context of full app flow
+ * 
+ * SCOPE - This file should NOT contain:
+ * ❌ Individual component unit testing (belongs in component tests)
+ * ❌ AI-specific feature testing (belongs in enhancedAI.integration.test.tsx)
+ * ❌ Pure form validation testing (belongs in TripForm.test.tsx)
+ * ❌ Cross-browser testing (belongs in playwright/)
+ * 
+ * DEPENDENCIES:
+ * - App component (complete application)
+ * - React Router for navigation testing
+ * - localStorage for state management
+ * - renderWithProviders for routing context
+ * 
+ * MAINTENANCE:
+ * - Update when new routes are added to the application
+ * - Modify when form fields or validation rules change
+ * - Review when layout components are restructured
+ * - Update when navigation patterns change
+ * 
+ * TESTING PATTERNS:
+ * - Tests realistic user workflows
+ * - Validates complete form-to-layout transitions
+ * - Includes timing-sensitive navigation testing
+ * - Uses extensive debugging for navigation issues
+ */
+
 // User flow tested in this integration test:
 // 1. User fills out all required fields in the TripForm: Trip Name, Destination, Travel Mode, Start Date, End Date, and (optionally) Trip Details.
 // 2. The "Next" button is clicked to submit the form.

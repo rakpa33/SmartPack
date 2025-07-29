@@ -1,4 +1,5 @@
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import '@testing-library/jest-dom';
 import { MemoryRouter } from 'react-router-dom';
 import App from '../../App';
@@ -36,15 +37,17 @@ describe('SuggestionsPanel Integration', () => {
   });
 
   const fillAndSubmitTripForm = async () => {
+    const user = userEvent.setup();
+
     // Fill out trip form
-    fireEvent.change(screen.getByLabelText(/trip name/i), { target: { value: 'Paris Vacation' } });
-    fireEvent.change(screen.getByTestId('destination-input-0'), { target: { value: 'Paris, France' } });
-    fireEvent.change(screen.getByLabelText(/start date/i), { target: { value: '2025-08-01' } });
-    fireEvent.change(screen.getByLabelText(/end date/i), { target: { value: '2025-08-10' } });
-    fireEvent.click(screen.getByLabelText(/plane/i));
+    await user.type(screen.getByLabelText(/trip name/i), 'Paris Vacation');
+    await user.type(screen.getByTestId('destination-input-0'), 'Paris, France');
+    await user.type(screen.getByLabelText(/start date/i), '2025-08-01');
+    await user.type(screen.getByLabelText(/end date/i), '2025-08-10');
+    await user.click(screen.getByLabelText(/plane/i));
 
     // Submit form
-    fireEvent.click(screen.getByText(/next/i));
+    await user.click(screen.getByText(/next/i));
 
     // Wait for navigation to MainLayout
     await waitFor(() => {
@@ -112,9 +115,10 @@ describe('SuggestionsPanel Integration', () => {
     });
 
     // Submit refinement request
+    const user = userEvent.setup();
     const promptInput = screen.getByLabelText('What specific items or activities should we consider?');
-    fireEvent.change(promptInput, { target: { value: 'business meetings' } });
-    fireEvent.click(screen.getByRole('button', { name: 'Get More Suggestions' }));
+    await user.type(promptInput, 'business meetings');
+    await user.click(screen.getByRole('button', { name: 'Get More Suggestions' }));
 
     // Wait for new suggestions
     await waitFor(() => {
@@ -124,7 +128,7 @@ describe('SuggestionsPanel Integration', () => {
 
     // Add a suggestion to the main packing list
     const addButton = screen.getByRole('button', { name: 'Add Business suit to packing list' });
-    fireEvent.click(addButton);
+    await user.click(addButton);
 
     // Verify the item appears in the packing list
     await waitFor(() => {
@@ -174,9 +178,10 @@ describe('SuggestionsPanel Integration', () => {
     });
 
     // Submit refinement request that will fail
+    const user2 = userEvent.setup();
     const promptInput = screen.getByLabelText('What specific items or activities should we consider?');
-    fireEvent.change(promptInput, { target: { value: 'business meetings' } });
-    fireEvent.click(screen.getByRole('button', { name: 'Get More Suggestions' }));
+    await user2.type(promptInput, 'business meetings');
+    await user2.click(screen.getByRole('button', { name: 'Get More Suggestions' }));
 
     // Should show error message
     await waitFor(() => {
@@ -212,8 +217,9 @@ describe('SuggestionsPanel Integration', () => {
     });
 
     // Add one suggestion
+    const user3 = userEvent.setup();
     const addButton = screen.getByRole('button', { name: 'Add Travel insurance to packing list' });
-    fireEvent.click(addButton);
+    await user3.click(addButton);
 
     // Verify that the remaining suggestion is still there
     expect(screen.getByText('Power bank')).toBeInTheDocument();

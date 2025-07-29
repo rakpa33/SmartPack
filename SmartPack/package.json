@@ -7,17 +7,30 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "type-check": "tsc --noEmit",
     "preview": "vite preview",
+    
     "test": "vitest",
-    "test:unit": "cd SmartPack && vitest --include src/__tests__/*.test.tsx src/__tests__/*.unit.test.ts src/__tests__/*.test.ts src/__tests__/*.unit.test.tsx",
-    "test:int": "vitest --include src/__tests__/integration/**/*.test.ts src/__tests__/integration/**/*.test.tsx",
+    "test:watch": "vitest --watch",
+    "test:coverage": "vitest --coverage",
+    "test:ui": "vitest --ui",
+    "test:unit": "vitest --include 'src/**/*.{test,spec}.{js,ts,jsx,tsx}' --exclude 'src/__tests__/integration/**'",
+    "test:integration": "vitest --include 'src/__tests__/integration/**/*.{test,spec}.{js,ts,jsx,tsx}'",
     "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "test:e2e:debug": "playwright test --debug",
+    "test:e2e:headed": "playwright test --headed",
+    "test:all": "npm run test:unit && npm run test:integration && npm run test:e2e",
+    
+    "playwright:install": "playwright install",
+    "playwright:update": "playwright install --force",
+    
     "lambda:dev": "node lambda/server.js",
     "lambda:build": "esbuild lambda/app.ts --bundle --platform=node --target=node20 --outfile=lambda/dist/app.js",
     "lambda:deploy": "cd lambda && serverless deploy",
     "lambda:test": "vitest --include lambda/app.test.ts",
-    "ollama:test": "node lambda/test-ollama.js",
-    "test:integration": "node test-ollama-integration.js"
+    "ollama:test": "node lambda/test-ollama.js"
   },
   "dependencies": {
     "@headlessui/react": "^2.2.6",
@@ -65,9 +78,5 @@
     "typescript-eslint": "^8.35.1",
     "vite": "^7.0.4",
     "vitest": "^3.2.4"
-  },
-  "vitest": {
-    "setupFiles": "./vitest.setup.ts",
-    "environment": "jsdom"
   }
 }

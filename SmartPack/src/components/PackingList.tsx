@@ -8,6 +8,7 @@ export const PackingList: React.FC = () => {
   const { items, categories, addItem, toggleItem, removeItem, loadAiGeneratedItems } = usePackingList();
   const { state } = useTripForm();
   const [smartAddItem, setSmartAddItem] = useState('');
+  const [categoryInputs, setCategoryInputs] = useState<Record<string, string>>({});
 
   // Smart categorization function
   const categorizeItem = (itemText: string): string => {
@@ -67,6 +68,16 @@ export const PackingList: React.FC = () => {
     }
   };
 
+  // Handle category-specific add
+  const handleCategoryAdd = (e: React.FormEvent, categoryId: string) => {
+    e.preventDefault();
+    const itemText = categoryInputs[categoryId]?.trim();
+    if (itemText) {
+      addItem({ label: itemText, checked: false, category: categoryId, aiGenerated: false });
+      setCategoryInputs(prev => ({ ...prev, [categoryId]: '' }));
+    }
+  };
+
   // Load AI-generated items when they become available
   useEffect(() => {
     if (state.generatedPackingList?.checklist) {
@@ -75,10 +86,9 @@ export const PackingList: React.FC = () => {
     }
   }, [state.generatedPackingList, loadAiGeneratedItems]);
 
-  // Filter out empty categories
-  const activeCategories = categories.filter(cat =>
-    items.some(item => item.category === cat.id)
-  );
+  // Show all available categories, not just ones with items
+  // This provides better UX and helps users understand available categories
+  const displayCategories = categories;
 
   return (
     <>
@@ -119,9 +129,29 @@ export const PackingList: React.FC = () => {
       </div>
 
       <div className="space-y-6">
-        {activeCategories.map((cat: { id: string; name: string }) => (
+        {displayCategories.map((cat: { id: string; name: string }) => (
           <div key={cat.id} className="mb-4">
             <h3 className="font-bold text-lg mb-2">{cat.name}</h3>
+
+            {/* Category-specific add form */}
+            <form onSubmit={(e) => handleCategoryAdd(e, cat.id)} className="flex gap-2 mb-3">
+              <input
+                type="text"
+                value={categoryInputs[cat.id] || ''}
+                onChange={(e) => setCategoryInputs(prev => ({ ...prev, [cat.id]: e.target.value }))}
+                placeholder={`Add item to ${cat.name}`}
+                className="flex-1 px-3 py-1 text-sm border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:text-gray-100"
+              />
+              <button
+                type="submit"
+                className="flex items-center gap-1 px-3 py-1 text-sm bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50"
+                disabled={!categoryInputs[cat.id]?.trim()}
+              >
+                <PlusIcon className="h-3 w-3" />
+                Add
+              </button>
+            </form>
+
             <ul className="space-y-2">
               {items.filter(item => item.category === cat.id).map(item => (
                 <ChecklistItem

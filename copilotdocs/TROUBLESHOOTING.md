@@ -359,6 +359,32 @@ Document common issues and their solutions here. Update this file as you encount
 
 - **Reference:** See `src/__tests__/App.integration.test.tsx` for current best practices.
 
+## Common Issues
+
+### Data Not Persisting on Page Reload (2025-07-29)
+
+- **Symptom:** User data (trip form, packing list items, theme preferences) does not persist when refreshing the page in development mode.
+- **Root Cause:** The `main.tsx` file was configured to clear all localStorage on every development reload with `if (import.meta.env.DEV) { window.localStorage.clear(); }`.
+- **Solution:** Modified the localStorage clearing logic to only clear when specifically requested via URL parameter:
+  ```typescript
+  // Only clear localStorage in development if specifically requested via URL parameter
+  if (
+    import.meta.env.DEV &&
+    new URLSearchParams(window.location.search).has('clearStorage')
+  ) {
+    console.log('Clearing localStorage for fresh development session...');
+    window.localStorage.clear();
+  }
+  ```
+- **Usage:** To clear localStorage during development, append `?clearStorage=true` to the URL.
+- **Prevention:**
+  - Added comprehensive unit tests for localStorage persistence behavior
+  - Enhanced PackingList component to show all categories (not just active ones) for better UX
+  - Added category-specific input fields to improve user experience
+  - Updated all test files to include `localStorage.clear()` in beforeEach hooks
+- **Files Modified:** `src/main.tsx`, `src/components/PackingList.tsx`, `src/__tests__/localStorage.persistence.test.tsx`
+- **Cross-References:** See `DEVLOG.md` for detailed implementation changes and localStorage test contamination patterns.
+
 ### TripForm Double-Click/Context Sync Issue (2025-07-27)
 
 - **Symptom:** Packing Checklist only appears after clicking Next twice in integration tests and manual testing.

@@ -1,3 +1,40 @@
+/**
+ * useTripForm Hook Unit Tests
+ * 
+ * PURPOSE: Tests the custom hook that manages trip form state and validation logic
+ * 
+ * SCOPE - This file should contain:
+ * ✅ Hook state initialization and updates
+ * ✅ Form validation logic and error handling
+ * ✅ Field update and change handling
+ * ✅ Form submission preparation
+ * ✅ State persistence and reset functionality
+ * ✅ Custom hook behavior isolation
+ * 
+ * SCOPE - This file should NOT contain:
+ * ❌ UI component rendering tests (belongs in TripForm.test.tsx)
+ * ❌ Navigation testing (belongs in integration tests)
+ * ❌ API integration testing (belongs in integration tests)
+ * ❌ Cross-browser testing (belongs in playwright/)
+ * 
+ * DEPENDENCIES:
+ * - useTripForm custom hook (primary test target)
+ * - React Testing Library's renderHook
+ * - Mock form data and validation scenarios
+ * 
+ * MAINTENANCE:
+ * - Add tests when new form fields are added
+ * - Update when validation rules change
+ * - Modify when hook state structure changes
+ * - Review when form submission logic changes
+ * 
+ * TESTING PATTERNS:
+ * - Uses renderHook for isolated hook testing
+ * - Tests hook state transitions and updates
+ * - Validates validation logic independently
+ * - Focuses on business logic without UI concerns
+ */
+
 import React from 'react';
 import { renderHook, act } from '@testing-library/react';
 import { TripFormProvider } from '../hooks/TripFormContext';
@@ -7,90 +44,117 @@ import { useTripForm } from '../hooks/useTripForm';
 // import { makeTrip } from '../../tests/factories/tripFactory';
 
 describe('useTripForm context', () => {
+  beforeEach(() => {
+    // Clear localStorage to prevent test contamination
+    localStorage.clear();
+  });
+
   function wrapper({ children }: { children: React.ReactNode }) {
     return <TripFormProvider>{children}</TripFormProvider>;
   }
 
-  it('initializes with default state', () => {
-    const { result } = renderHook(() => useTripForm(), { wrapper });
-    expect(result.current.state.tripName).toBe('');
-    expect(result.current.state.destinations).toEqual(['']);
-    expect(result.current.state.travelModes).toEqual([]);
-    expect(result.current.state.preferences).toEqual([]);
-    expect(result.current.state.step).toBe(0);
+  describe('when initializing', () => {
+    it('should initialize with default state', () => {
+      const { result } = renderHook(() => useTripForm(), { wrapper });
+      expect(result.current.state.tripName).toBe('');
+      expect(result.current.state.destinations).toEqual(['']);
+      expect(result.current.state.travelModes).toEqual([]);
+      expect(result.current.state.preferences).toEqual([]);
+      expect(result.current.state.step).toBe(0);
+    });
   });
 
-  it('can set trip name and dates', () => {
-    const { result } = renderHook(() => useTripForm(), { wrapper });
-    act(() => {
-      result.current.dispatch({ type: 'SET_FIELD', field: 'tripName', value: 'My Trip' });
-      result.current.dispatch({ type: 'SET_FIELD', field: 'startDate', value: '2025-08-01' });
-      result.current.dispatch({ type: 'SET_FIELD', field: 'endDate', value: '2025-08-10' });
+  describe('when updating form fields', () => {
+    it('should set trip name and dates', () => {
+      const { result } = renderHook(() => useTripForm(), { wrapper });
+      act(() => {
+        result.current.dispatch({ type: 'SET_FIELD', field: 'tripName', value: 'My Trip' });
+        result.current.dispatch({ type: 'SET_FIELD', field: 'startDate', value: '2025-08-01' });
+        result.current.dispatch({ type: 'SET_FIELD', field: 'endDate', value: '2025-08-10' });
+      });
+      expect(result.current.state.tripName).toBe('My Trip');
+      expect(result.current.state.startDate).toBe('2025-08-01');
+      expect(result.current.state.endDate).toBe('2025-08-10');
     });
-    expect(result.current.state.tripName).toBe('My Trip');
-    expect(result.current.state.startDate).toBe('2025-08-01');
-    expect(result.current.state.endDate).toBe('2025-08-10');
   });
 
-  it('can add, update, and remove destinations', () => {
-    const { result } = renderHook(() => useTripForm(), { wrapper });
-    act(() => {
-      result.current.dispatch({ type: 'ADD_DESTINATION', value: 'Paris' });
-      result.current.dispatch({ type: 'ADD_DESTINATION', value: 'London' });
+  describe('when managing destinations', () => {
+    it('should add, update, and remove destinations', () => {
+      const { result } = renderHook(() => useTripForm(), { wrapper });
+      act(() => {
+        result.current.dispatch({ type: 'ADD_DESTINATION', value: 'Paris' });
+        result.current.dispatch({ type: 'ADD_DESTINATION', value: 'London' });
+      });
+      expect(result.current.state.destinations).toEqual(['', 'Paris', 'London']);
+      act(() => {
+        result.current.dispatch({ type: 'UPDATE_DESTINATION', index: 1, value: 'Berlin' });
+      });
+      expect(result.current.state.destinations[1]).toBe('Berlin');
+      act(() => {
+        result.current.dispatch({ type: 'REMOVE_DESTINATION', index: 0 });
+      });
+      expect(result.current.state.destinations).toEqual(['Berlin', 'London']);
     });
-    expect(result.current.state.destinations).toEqual(['', 'Paris', 'London']);
-    act(() => {
-      result.current.dispatch({ type: 'UPDATE_DESTINATION', index: 1, value: 'Berlin' });
-    });
-    expect(result.current.state.destinations[1]).toBe('Berlin');
-    act(() => {
-      result.current.dispatch({ type: 'REMOVE_DESTINATION', index: 0 });
-    });
-    expect(result.current.state.destinations).toEqual(['Berlin', 'London']);
   });
 
-  it('can add and remove travel modes', () => {
-    const { result } = renderHook(() => useTripForm(), { wrapper });
-    act(() => {
-      result.current.dispatch({ type: 'ADD_TRAVEL_MODE', value: 'Plane' });
-      result.current.dispatch({ type: 'ADD_TRAVEL_MODE', value: 'Car' });
+  describe('when managing travel modes', () => {
+    it('should add and remove travel modes', () => {
+      const { result } = renderHook(() => useTripForm(), { wrapper });
+      act(() => {
+        result.current.dispatch({ type: 'ADD_TRAVEL_MODE', value: 'Plane' });
+        result.current.dispatch({ type: 'ADD_TRAVEL_MODE', value: 'Car' });
+      });
+      expect(result.current.state.travelModes).toEqual(['Plane', 'Car']);
+      act(() => {
+        result.current.dispatch({ type: 'REMOVE_TRAVEL_MODE', value: 'Plane' });
+      });
+      expect(result.current.state.travelModes).toEqual(['Car']);
     });
-    expect(result.current.state.travelModes).toEqual(['Plane', 'Car']);
-    act(() => {
-      result.current.dispatch({ type: 'REMOVE_TRAVEL_MODE', value: 'Plane' });
-    });
-    expect(result.current.state.travelModes).toEqual(['Car']);
   });
 
-  it('can set preferences', () => {
-    const { result } = renderHook(() => useTripForm(), { wrapper });
-    act(() => {
-      result.current.dispatch({ type: 'SET_PREFERENCES', value: ['Pack light', 'Business trip'] });
+  describe('when setting preferences', () => {
+    it('should set preferences', () => {
+      const { result } = renderHook(() => useTripForm(), { wrapper });
+      act(() => {
+        result.current.dispatch({ type: 'SET_PREFERENCES', value: ['Pack light', 'Business trip'] });
+      });
+      expect(result.current.state.preferences).toEqual(['Pack light', 'Business trip']);
     });
-    expect(result.current.state.preferences).toEqual(['Pack light', 'Business trip']);
   });
 
-  it('can navigate steps', () => {
-    const { result } = renderHook(() => useTripForm(), { wrapper });
-    act(() => {
-      result.current.dispatch({ type: 'NEXT_STEP' });
-      result.current.dispatch({ type: 'NEXT_STEP' });
-      result.current.dispatch({ type: 'PREV_STEP' });
+  describe('when navigating steps', () => {
+    it('should navigate between steps', () => {
+      const { result } = renderHook(() => useTripForm(), { wrapper });
+      act(() => {
+        result.current.dispatch({ type: 'NEXT_STEP' });
+        result.current.dispatch({ type: 'NEXT_STEP' });
+        result.current.dispatch({ type: 'PREV_STEP' });
+      });
+      expect(result.current.state.step).toBe(1);
     });
-    expect(result.current.state.step).toBe(1);
   });
 
-  it('persists and loads state from localStorage', () => {
-    // Simulate a saved state
-    window.localStorage.setItem('tripForm', JSON.stringify({ tripName: 'Saved Trip', destinations: ['Rome'], travelModes: ['Train'], preferences: ['Outdoor'], startDate: '2025-09-01', endDate: '2025-09-10', step: 2 }));
-    const { result } = renderHook(() => useTripForm(), { wrapper });
-    expect(result.current.state.tripName).toBe('Saved Trip');
-    expect(result.current.state.destinations).toEqual(['Rome']);
-    expect(result.current.state.travelModes).toEqual(['Train']);
-    expect(result.current.state.preferences).toEqual(['Outdoor']);
-    expect(result.current.state.startDate).toBe('2025-09-01');
-    expect(result.current.state.endDate).toBe('2025-09-10');
-    expect(result.current.state.step).toBe(2);
-    window.localStorage.removeItem('tripForm');
+  describe('when persisting state', () => {
+    it('should persist and load state from localStorage', () => {
+      // Simulate a saved state
+      window.localStorage.setItem('tripForm', JSON.stringify({
+        tripName: 'Saved Trip',
+        destinations: ['Rome'],
+        travelModes: ['Train'],
+        preferences: ['Outdoor'],
+        startDate: '2025-09-01',
+        endDate: '2025-09-10',
+        step: 2
+      }));
+      const { result } = renderHook(() => useTripForm(), { wrapper });
+      expect(result.current.state.tripName).toBe('Saved Trip');
+      expect(result.current.state.destinations).toEqual(['Rome']);
+      expect(result.current.state.travelModes).toEqual(['Train']);
+      expect(result.current.state.preferences).toEqual(['Outdoor']);
+      expect(result.current.state.startDate).toBe('2025-09-01');
+      expect(result.current.state.endDate).toBe('2025-09-10');
+      expect(result.current.state.step).toBe(2);
+      window.localStorage.removeItem('tripForm');
+    });
   });
 });

@@ -1,0 +1,212 @@
+name: SmartPack CI/CD - Modern Testing Pipeline
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+
+env:
+  NODE_VERSION: '20'
+  PLAYWRIGHT_BROWSERS_PATH: ~/.cache/playwright
+
+jobs:
+  # Job 1: Unit & Integration Tests
+  unit-tests:
+    name: Unit & Integration Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: SmartPack/package-lock.json
+
+      - name: Install dependencies
+        run: |
+          cd SmartPack
+          npm ci
+
+      - name: Run linting
+        run: |
+          cd SmartPack
+          npm run lint
+
+      - name: Run type checking
+        run: |
+          cd SmartPack
+          npm run type-check
+
+      - name: Run unit tests with coverage
+        run: |
+          cd SmartPack
+          npm run test:coverage
+
+      - name: Upload coverage reports
+        uses: codecov/codecov-action@v4
+        with:
+          directory: SmartPack/coverage
+          fail_ci_if_error: true
+          token: ${{ secrets.CODECOV_TOKEN }}
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: unit-test-results
+          path: SmartPack/test-results/
+          retention-days: 30
+
+  # Job 2: E2E Tests
+  e2e-tests:
+    name: E2E Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: SmartPack/package-lock.json
+
+      - name: Install dependencies
+        run: |
+          cd SmartPack
+          npm ci
+
+      - name: Install Playwright browsers
+        run: |
+          cd SmartPack
+          npx playwright install --with-deps
+
+      - name: Build application
+        run: |
+          cd SmartPack
+          npm run build
+
+      - name: Run E2E tests
+        run: |
+          cd SmartPack
+          npm run test:e2e
+
+      - name: Upload E2E test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: e2e-test-results
+          path: |
+            SmartPack/playwright-report/
+            SmartPack/test-results/
+          retention-days: 30
+
+  # Job 3: Accessibility & Performance Audit
+  audit:
+    name: Accessibility & Performance Audit
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: SmartPack/package-lock.json
+
+      - name: Install dependencies
+        run: |
+          cd SmartPack
+          npm ci
+
+      - name: Build application
+        run: |
+          cd SmartPack
+          npm run build
+
+      - name: Install Lighthouse CI
+        run: npm install -g @lhci/cli@0.12.x
+
+      - name: Run Lighthouse CI
+        run: |
+          cd SmartPack
+          lhci autorun
+        env:
+          LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
+
+  # Job 4: Security Scan
+  security:
+    name: Security Scan
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Run npm audit
+        run: |
+          cd SmartPack
+          npm audit --audit-level moderate
+
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: 'fs'
+          scan-ref: 'SmartPack'
+          format: 'sarif'
+          output: 'trivy-results.sarif'
+
+      - name: Upload Trivy scan results
+        uses: github/codeql-action/upload-sarif@v3
+        if: always()
+        with:
+          sarif_file: 'trivy-results.sarif'
+
+  # Job 5: Build & Deploy (on main branch)
+  deploy:
+    name: Build & Deploy
+    runs-on: ubuntu-latest
+    needs: [unit-tests, e2e-tests, audit, security]
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: SmartPack/package-lock.json
+
+      - name: Install dependencies
+        run: |
+          cd SmartPack
+          npm ci
+
+      - name: Build for production
+        run: |
+          cd SmartPack
+          npm run build
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: production-build
+          path: SmartPack/dist/
+          retention-days: 90
+
+    # Add deployment steps here when ready
+    # - name: Deploy to AWS S3
+    #   run: aws s3 sync SmartPack/dist/ s3://${{ secrets.S3_BUCKET_NAME }}

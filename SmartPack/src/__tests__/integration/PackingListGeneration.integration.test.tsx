@@ -1,5 +1,6 @@
 // Integration test for full packing list generation flow
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import '@testing-library/jest-dom';
 import { vi } from 'vitest';
 import type { MockedFunction } from 'vitest';
@@ -33,6 +34,7 @@ describe('Packing List Generation Integration', () => {
     };
     mockGeneratePackingList.mockResolvedValue(mockApiResponse);
 
+    const user = userEvent.setup();
     render(
       <MemoryRouter initialEntries={['/']}>
         <App />
@@ -40,16 +42,16 @@ describe('Packing List Generation Integration', () => {
     );
 
     // Fill out the trip form
-    fireEvent.change(screen.getByLabelText(/trip name/i), { target: { value: 'Winter Vacation' } });
-    fireEvent.change(screen.getByDisplayValue(''), { target: { value: 'Aspen, Colorado' } });
-    fireEvent.change(screen.getByLabelText(/start date/i), { target: { value: '2025-12-20' } });
-    fireEvent.change(screen.getByLabelText(/end date/i), { target: { value: '2025-12-27' } });
+    await user.type(screen.getByLabelText(/trip name/i), 'Winter Vacation');
+    await user.type(screen.getByTestId('destination-input-0'), 'Aspen, Colorado');
+    await user.type(screen.getByLabelText(/start date/i), '2025-12-20');
+    await user.type(screen.getByLabelText(/end date/i), '2025-12-27');
 
     // Check a travel mode
-    fireEvent.click(screen.getByLabelText(/plane/i));
+    await user.click(screen.getByLabelText(/plane/i));
 
     // Submit the form
-    fireEvent.click(screen.getByText(/next/i));
+    await user.click(screen.getByText(/next/i));
 
     // Wait for navigation to MainLayout and API call
     await waitFor(() => {
@@ -86,6 +88,7 @@ describe('Packing List Generation Integration', () => {
     // Mock API to throw an error
     mockGeneratePackingList.mockRejectedValue(new Error('API Error'));
 
+    const user2 = userEvent.setup();
     render(
       <MemoryRouter initialEntries={['/']}>
         <App />
@@ -93,11 +96,11 @@ describe('Packing List Generation Integration', () => {
     );
 
     // Fill out and submit form
-    fireEvent.change(screen.getByLabelText(/trip name/i), { target: { value: 'Test Trip' } });
-    fireEvent.change(screen.getByDisplayValue(''), { target: { value: 'Paris, France' } });
-    fireEvent.change(screen.getByLabelText(/start date/i), { target: { value: '2025-06-01' } });
-    fireEvent.change(screen.getByLabelText(/end date/i), { target: { value: '2025-06-07' } });
-    fireEvent.click(screen.getByText(/next/i));
+    await user2.type(screen.getByLabelText(/trip name/i), 'Test Trip');
+    await user2.type(screen.getByTestId('destination-input-0'), 'Paris, France');
+    await user2.type(screen.getByLabelText(/start date/i), '2025-06-01');
+    await user2.type(screen.getByLabelText(/end date/i), '2025-06-07');
+    await user2.click(screen.getByText(/next/i));
 
     // Should still navigate to MainLayout
     await waitFor(() => {
@@ -106,8 +109,8 @@ describe('Packing List Generation Integration', () => {
 
     // Should still be able to add manual items
     const clothingInput = screen.getByPlaceholderText(/add to clothing/i);
-    fireEvent.change(clothingInput, { target: { value: 'T-shirt' } });
-    fireEvent.click(screen.getByText(/add/i));
+    await user2.type(clothingInput, 'T-shirt');
+    await user2.click(screen.getByText(/add/i));
 
     expect(screen.getByText('T-shirt')).toBeInTheDocument();
   });

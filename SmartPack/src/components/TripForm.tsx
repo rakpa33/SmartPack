@@ -22,6 +22,19 @@ export const TripForm: React.FC = () => {
   const [touched, setTouched] = useState<{ [k: string]: boolean }>({});
   const [destinationErrors, setDestinationErrors] = useState<string[]>([]);
 
+  // Initialize local state from context/localStorage on component mount
+  useEffect(() => {
+    if (state) {
+      setTripName(state.tripName || '');
+      setDestinations(state.destinations.length > 0 && state.destinations[0] ? state.destinations : ['']);
+      setTravelModes(state.travelModes || []);
+      setStartDate(state.startDate || '');
+      setEndDate(state.endDate || '');
+      setPreferences(state.preferences.length > 0 ? state.preferences : ['']);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // Only run on mount to prevent overwriting user input during editing
+
   // Effect to detect navigation to MainLayout when step is already 2
   // This helps with test reliability by ensuring context is always consistent
   useEffect(() => {

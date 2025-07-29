@@ -12,6 +12,20 @@ dist
 dist-ssr
 *.local
 
+# Testing
+test-results/
+coverage/
+performance-results/
+playwright-report/
+.nyc_output/
+junit.xml
+
+# Playwright
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
@@ -22,3 +36,14 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Environment files
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Temporary files
+.tmp/
+.cache/
