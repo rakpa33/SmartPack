@@ -55,17 +55,18 @@ ${weatherSummary}
 1. Return ONLY a valid JSON object with this exact structure:
 {
   "checklist": [
-    {"id": "1", "text": "item description", "category": "category_name", "checked": false, "aiGenerated": true}
+    {"id": "1", "text": "Passport", "category": "Documents", "checked": false, "aiGenerated": true},
+    {"id": "2", "text": "Camera with extra batteries", "category": "Photography", "checked": false, "aiGenerated": true},
+    {"id": "3", "text": "Thermal underwear", "category": "Winter", "checked": false, "aiGenerated": true}
   ],
   "suggestedItems": ["suggestion1", "suggestion2"]
 }
 
-2. Categories: Create meaningful, context-aware categories based on the trip. Examples include:
-   - Core categories: Documents, Clothing, Footwear, Electronics, Toiletries, Health
-   - Activity-specific: Photography Gear, Business Items, Outdoor Equipment, Beach Essentials
-   - Travel-specific: Flight Essentials, Road Trip Items, International Travel
-   - Climate-specific: Cold Weather Gear, Rain Protection, Sun Protection
-   - Choose the most relevant categories for this specific trip
+2. Categories: Use concise, single-word or short category names that group items logically. Based on this trip, choose appropriate categories such as:
+   - Essential: Documents, Clothing, Footwear, Electronics, Toiletries, Health
+   - Specific: Photography, Business, Outdoor, Beach, Winter, Rain
+   - Travel: Flight, Road Trip, International
+   Use category names like "Photography" not "Photography Gear", "Winter" not "Cold Weather Gear"
 
 3. Consider:
    - Weather conditions for appropriate clothing
@@ -76,7 +77,8 @@ ${weatherSummary}
 
 4. Include 15-25 essential checklist items and 5-10 additional suggestions
 5. Be specific with quantities for items like underwear, socks based on trip length
-6. No explanations, just the JSON response
+6. IMPORTANT: Use simple category names like "Photography", "Winter", "Business" - NOT descriptive phrases
+7. No explanations, just the JSON response
 
 Generate the packing list:`;
 
