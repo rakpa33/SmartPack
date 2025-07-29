@@ -17,6 +17,27 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
   // Get the TripForm context state to check step
   const { state } = useTripForm();
 
+  // Give the context a moment to load from localStorage
+  const [isLoading, setIsLoading] = React.useState(true);
+
+  React.useEffect(() => {
+    // Allow context to initialize from localStorage
+    const timer = setTimeout(() => setIsLoading(false), 100);
+    return () => clearTimeout(timer);
+  }, []);
+
+  // Show loading during initialization
+  if (isLoading) {
+    return (
+      <div className="flex flex-col min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors">
+        <div className="flex-1 flex items-center justify-center">
+          <p className="text-lg">Loading...</p>
+        </div>
+        {children}
+      </div>
+    );
+  }
+
   // Ensure the step is 2 (completed form) - this fixes the visibility issues in tests
   // If state.step < 2, we're still in the form, so don't show MainLayout content
   if (!state || state.step < 2) {
@@ -24,7 +45,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
     return (
       <div className="flex flex-col min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors">
         <div className="flex-1 flex items-center justify-center">
-          <p className="text-lg">Loading...</p>
+          <p className="text-lg">Please complete your trip form first</p>
         </div>
         {children}
       </div>

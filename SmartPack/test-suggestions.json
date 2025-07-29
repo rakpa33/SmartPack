@@ -1,0 +1,19 @@
+{
+  "customPrompt": "What should I pack for street food tours and photography?",
+  "trip": {
+    "name": "Tokyo Adventure",
+    "startDate": "2024-01-15",
+    "endDate": "2024-01-20",
+    "destinations": ["Tokyo", "Shibuya"],
+    "travelModes": ["walking", "subway"],
+    "tripDetails": "Photography and food focused trip"
+  },
+  "weather": [
+    {
+      "location": "Tokyo",
+      "temperature": 8,
+      "conditions": "partly cloudy",
+      "precipitation": 2
+    }
+  ]
+}

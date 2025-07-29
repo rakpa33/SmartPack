@@ -19,34 +19,65 @@ VITE_API_URL=http://localhost:3000
 # Backend development (Express server runs on port 3000)
 PORT=3000
 NODE_ENV=development
+
+# Ollama AI Configuration
+OLLAMA_HOST=http://localhost:11434  # Local Ollama service
+OLLAMA_MODEL=llama3.1:8b           # AI model for packing recommendations
 ```
 
 ## Required Development Setup
+
+### Prerequisites
+
+1. **Node.js** v20.14.0 or later
+2. **npm** 10.7.0 or later
+3. **Ollama** installed and running locally
+   - Download from: https://ollama.ai/
+   - Install llama3.1:8b model: `ollama pull llama3.1:8b`
+   - Start service: `ollama serve` (runs on port 11434)
 
 ### Local Development Ports
 
 - **Frontend (Vite)**: `http://localhost:5173`
 - **Backend (Express)**: `http://localhost:3000`
+- **Ollama AI Service**: `http://localhost:11434`
 - **Health Check**: `http://localhost:3000/health`
 
 ### Startup Commands
 
 ```bash
-# Terminal 1: Start backend
+# Terminal 1: Start Ollama service (if not running as service)
+ollama serve
+
+# Terminal 2: Start backend with AI integration
 npm run lambda:dev
 
-# Terminal 2: Start frontend
+# Terminal 3: Start frontend
 npm run dev
+```
+
+### Installation Steps
+
+```bash
+# Install dependencies with legacy peer deps for compatibility
+npm install --legacy-peer-deps
+
+# Verify Ollama model availability
+ollama list  # Should show llama3.1:8b
+
+# Test Ollama integration
+ollama run llama3.1:8b "Generate a packing list for a 3-day business trip"
 ```
 
 ### Verification Steps
 
-1. Backend health check: Visit `http://localhost:3000/health`
-2. Frontend running: Visit `http://localhost:5173`
-3. **Enhanced AI Test**: Test intelligent recommendations with specific trip details (e.g., "4-day business trip to Chicago")
-4. **Professional UI Verification**: Confirm Heroicons vector icons display properly (edit, sparkles, refresh, chip icons)
-5. **Comprehensive Testing**: Run `npm test -- --run` and `npx playwright test` for full coverage
-6. Complete user flow: Plan trip → Generate intelligent checklist → Refine suggestions with context-aware AI
+1. **Ollama Service**: Verify `http://localhost:11434` responds
+2. **Backend Health**: Visit `http://localhost:3000/health`
+3. **Frontend Running**: Visit `http://localhost:5173`
+4. **AI Integration Test**: Generate packing list and verify real AI responses (not mock data)
+5. **Professional UI Verification**: Confirm Heroicons vector icons display properly
+6. **Testing Suite**: Run `npm test -- --run` and `npx playwright test`
+7. **Complete AI Workflow**: Plan trip → Generate AI checklist → Custom AI suggestions
 
 ## Production Environment
 

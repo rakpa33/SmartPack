@@ -11,9 +11,45 @@ Keep this file up-to-date with all frequently used command line prompts and scri
 
 ## Development
 
-- Start development server: `npm run dev`
-- Build for production: `npm run build`
-- Lint code: `npm run lint`
+### Installation & Setup
+
+- **Install dependencies**: `npm install --legacy-peer-deps`
+- **Verify Node version**: `node --version` (should be v20.14.0+)
+- **Check npm version**: `npm --version` (should be 10.7.0+)
+
+### Development Servers
+
+- **Start backend with AI**: `npm run lambda:dev`
+- **Start frontend**: `npm run dev`
+- **Build for production**: `npm run build`
+- **Lint code**: `npm run lint`
+
+## Ollama AI Integration
+
+### Ollama Setup
+
+- **Install Ollama**: Download from https://ollama.ai/
+- **Pull AI model**: `ollama pull llama3.1:8b`
+- **Start Ollama service**: `ollama serve`
+- **List available models**: `ollama list`
+- **Test AI directly**: `ollama run llama3.1:8b "test prompt"`
+
+### AI Integration Testing
+
+- **Test AI connection**: `curl http://localhost:11434/api/version`
+- **Test backend health**: `curl http://localhost:3000/health`
+- **Test AI checklist generation**:
+  ```bash
+  curl -X POST http://localhost:3000/generate \
+    -H "Content-Type: application/json" \
+    -d '{"trip":{"name":"Test","startDate":"2024-01-15","endDate":"2024-01-18","destinations":["Tokyo"],"travelModes":["walking"],"tripDetails":"test"},"weather":[{"location":"Tokyo","temperature":15,"conditions":"clear","precipitation":0}]}'
+  ```
+- **Test AI suggestions**:
+  ```bash
+  curl -X POST http://localhost:3000/suggestions \
+    -H "Content-Type: application-json" \
+    -d '{"customPrompt":"What to pack for photography?","trip":{"name":"Test","startDate":"2024-01-15","endDate":"2024-01-18","destinations":["Tokyo"],"travelModes":["walking"],"tripDetails":"test"},"weather":[{"location":"Tokyo","temperature":15,"conditions":"clear","precipitation":0}]}'
+  ```
 
 ## Testing
 

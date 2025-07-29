@@ -2,11 +2,71 @@ import React, { useState, useEffect } from 'react';
 import { usePackingList } from '../hooks/usePackingList';
 import { ChecklistItem } from './ChecklistItem';
 import { useTripForm } from '../hooks/useTripForm';
+import { PlusIcon } from '@heroicons/react/24/solid';
 
 export const PackingList: React.FC = () => {
   const { items, categories, addItem, toggleItem, removeItem, loadAiGeneratedItems } = usePackingList();
   const { state } = useTripForm();
   const [newItem, setNewItem] = useState<{ [catId: string]: string }>({});
+  const [smartAddItem, setSmartAddItem] = useState('');
+
+  // Smart categorization function
+  const categorizeItem = (itemText: string): string => {
+    const text = itemText.toLowerCase();
+
+    // Clothing keywords
+    if (/shirt|pants|dress|jacket|coat|sweater|underwear|socks|t-shirt|jeans|blouse|skirt|suit|tie|blazer|cardigan|hoodie|shorts/.test(text)) {
+      return 'clothing';
+    }
+
+    // Footwear keywords
+    if (/shoes|boots|sandals|sneakers|heels|flats|slippers|flip-flops/.test(text)) {
+      return 'footwear';
+    }
+
+    // Electronics keywords
+    if (/phone|charger|laptop|camera|headphones|power bank|adapter|cable|tablet|kindle|speaker/.test(text)) {
+      return 'electronics';
+    }
+
+    // Health & hygiene keywords
+    if (/toothbrush|shampoo|soap|medication|sunscreen|lotion|deodorant|perfume|cologne|vitamins|first aid/.test(text)) {
+      return 'health';
+    }
+
+    // Documents keywords
+    if (/passport|id|license|ticket|reservation|insurance|visa|card|cash|wallet/.test(text)) {
+      return 'documents';
+    }
+
+    // Accessories keywords
+    if (/hat|sunglasses|watch|jewelry|belt|scarf|gloves|bag|purse|backpack|umbrella/.test(text)) {
+      return 'accessories';
+    }
+
+    // Toiletries keywords
+    if (/toothpaste|shampoo|conditioner|body wash|face wash|moisturizer|razor|shaving cream/.test(text)) {
+      return 'toiletries';
+    }
+
+    // Default to other if no specific category found
+    return 'other';
+  };
+
+  // Handle smart add
+  const handleSmartAdd = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (smartAddItem.trim()) {
+      const categoryId = categorizeItem(smartAddItem);
+      addItem({
+        label: smartAddItem.trim(),
+        checked: false,
+        category: categoryId,
+        aiGenerated: false
+      });
+      setSmartAddItem('');
+    }
+  };
 
   // Load AI-generated items when they become available
   useEffect(() => {
@@ -15,6 +75,11 @@ export const PackingList: React.FC = () => {
       loadAiGeneratedItems(state.generatedPackingList.checklist);
     }
   }, [state.generatedPackingList, loadAiGeneratedItems]);
+
+  // Filter out empty categories
+  const activeCategories = categories.filter(cat =>
+    items.some(item => item.category === cat.id)
+  );
 
   return (
     <>
@@ -29,8 +94,33 @@ export const PackingList: React.FC = () => {
           </p>
         </div>
       )}
+
+      {/* Smart Add Input */}
+      <div className="mb-6">
+        <form onSubmit={handleSmartAdd} className="flex gap-2">
+          <input
+            type="text"
+            value={smartAddItem}
+            onChange={(e) => setSmartAddItem(e.target.value)}
+            placeholder="Add any item (it will be automatically categorized)"
+            className="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:text-gray-100"
+          />
+          <button
+            type="submit"
+            className="flex items-center gap-1 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50"
+            disabled={!smartAddItem.trim()}
+          >
+            <PlusIcon className="h-4 w-4" />
+            Add
+          </button>
+        </form>
+        <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+          Items will be automatically sorted into the right category
+        </p>
+      </div>
+
       <div className="space-y-6">
-        {categories.map((cat: { id: string; name: string }) => (
+        {activeCategories.map((cat: { id: string; name: string }) => (
           <div key={cat.id} className="mb-4">
             <h3 className="font-bold text-lg mb-2">{cat.name}</h3>
             <ul className="space-y-2">
@@ -61,9 +151,12 @@ export const PackingList: React.FC = () => {
                 value={newItem[cat.id] || ''}
                 onChange={e => setNewItem(prev => ({ ...prev, [cat.id]: e.target.value }))}
                 placeholder={`Add to ${cat.name}`}
-                className="input input-bordered flex-1"
+                className="flex-1 px-2 py-1 border border-gray-300 dark:border-gray-600 rounded text-sm bg-white dark:bg-gray-800 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
-              <button type="submit" className="btn btn-primary btn-sm">
+              <button
+                type="submit"
+                className="px-3 py-1 bg-blue-600 text-white rounded text-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+              >
                 Add
               </button>
             </form>

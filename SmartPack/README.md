@@ -1,51 +1,82 @@
 # SmartPack
 
-SmartPack is a smart packing assistant that helps you prepare for your trips by generating personalized packing lists based on your trip details and weather forecasts.
+SmartPack is a smart packing assistant that helps you prepare for your trips by generating **AI-powered** personalized packing lists based on your trip details and weather forecasts.
 
 ## Features
 
 - Create trip profiles with destinations, dates, and travel modes
 - Automatically fetch weather data for your destinations
-- Generate personalized packing lists based on trip details and weather
-- Get AI-powered suggestions for items you might have forgotten
-- Save and manage multiple packing lists
+- **🤖 AI-powered packing lists** using Ollama LLM integration
+- **🎯 Custom AI suggestions** based on your specific needs and prompts
+- **🔄 Intelligent fallback** to rule-based logic when AI is unavailable
+- Save and manage multiple packing lists with smart categorization
 
 ## Technology Stack
 
 - **Frontend:** React + TypeScript + Vite + Tailwind CSS + Headless UI
-- **Backend:** AWS Lambda (Express/Node) + Ollama
+- **Backend:** AWS Lambda (Express/Node) + **Ollama (Local AI)**
 - **Weather:** Open-Meteo API
 - **Deployment:** AWS (Lambda, S3, CloudFront)
 
-## Getting Started
+## Quick Start
 
 ### Prerequisites
 
 - Node.js (LTS version)
 - npm
+- **Ollama** (for AI functionality)
 - AWS CLI (for deployment)
-- Ollama (for local AI development)
 
 ### Installation
 
-1. Clone the repository
+1. **Setup Ollama AI** (required for smart features)
 
+   ```bash
+   # Install Ollama - see https://ollama.ai/download
+   ollama pull llama3.1:8b
+   ollama serve
    ```
+
+   📖 **Detailed setup:** See [OLLAMA_SETUP.md](./OLLAMA_SETUP.md)
+
+2. **Clone and install**
+
+   ```bash
    git clone https://github.com/your-username/smartpack.git
    cd smartpack
-   ```
-
-2. Install dependencies
-
-   ```
    npm install
    ```
 
-3. Start the development server
+3. **Start development servers**
 
-   ```
+   ```bash
+   # Terminal 1: Backend with AI
+   npm run lambda:dev
+
+   # Terminal 2: Frontend
    npm run dev
    ```
+
+## AI Features
+
+### 🎯 Smart Packing Lists
+
+- **Context-aware**: Analyzes destinations, weather, trip duration, travel modes
+- **Intelligent quantities**: Suggests appropriate amounts based on trip length
+- **Activity-specific**: Detects business trips, adventures, beach vacations, etc.
+- **Weather-adaptive**: Adjusts recommendations based on climate conditions
+
+### 💬 Custom AI Suggestions
+
+- Enter specific prompts like "business meetings", "hiking gear", "photography equipment"
+- Get targeted suggestions beyond the initial packing list
+- Add suggested items directly to your checklist
+
+### 🔄 Reliable Fallback
+
+- Automatically switches to rule-based logic if Ollama is unavailable
+- All core functionality works even without AI
+- Clear indicators when running in fallback mode
 
 4. Start the Lambda backend (in a separate terminal)
    ```

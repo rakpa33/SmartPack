@@ -11,6 +11,49 @@ Document common issues and their solutions here. Update this file as you encount
 
 ## Common Issues
 
+### Ollama AI Integration Issues
+
+#### npm install errors with ollama and React dependencies (RESOLVED)
+
+- **Symptom:** `npm install` fails with errors about non-existent packages or peer dependency conflicts
+- **Root Causes:**
+  - ollama@0.7.1 doesn't exist (latest is 0.5.16)
+  - React 19 has compatibility issues with testing libraries
+  - Peer dependency conflicts in the React ecosystem
+- **Solution:**
+  - **Fixed package.json versions:**
+    - `ollama`: 0.7.1 → 0.5.16 (stable release)
+    - `react`: 19.1.0 → 18.3.1 (ecosystem compatibility)
+    - `react-dom`: 19.1.0 → 18.3.1
+    - `@testing-library/react`: 16.1.0 → 14.3.1 (React 18 compatible)
+  - **Installation command:** `npm install --legacy-peer-deps`
+- **Result:** Clean dependency installation with all packages working correctly
+
+#### Ollama AI not generating responses
+
+- **Symptom:** Server falls back to mock data, AI generation fails
+- **Diagnostic Steps:**
+  1. Check Ollama service: `ollama serve` (should be running on port 11434)
+  2. Verify model availability: `ollama list` (should show llama3.1:8b)
+  3. Test Ollama directly: `ollama run llama3.1:8b "test prompt"`
+  4. Check server logs for AI generation attempts and error messages
+- **Common Solutions:**
+  - Install Ollama: Download from official Ollama website
+  - Pull model: `ollama pull llama3.1:8b`
+  - Start service: `ollama serve` (runs on localhost:11434)
+  - Check environment variables: OLLAMA_HOST, OLLAMA_MODEL
+
+#### Server.js syntax errors and missing endpoints (RESOLVED)
+
+- **Symptom:** Server fails to start with syntax errors, missing try-catch blocks, orphaned code
+- **Root Cause:** Incomplete function structure, missing endpoint definitions
+- **Solution:**
+  - Fixed function wrapper for generateMockChecklist()
+  - Added complete Express endpoints with proper error handling
+  - Implemented both /generate and /suggestions endpoints
+  - Added proper JSON response validation and fallback systems
+- **Result:** Clean server startup with both AI and fallback functionality
+
 ### Enhanced AI System Issues
 
 #### Repetitive "10 pairs underwear" suggestions (RESOLVED)

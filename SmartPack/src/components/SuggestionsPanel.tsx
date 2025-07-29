@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useTripForm } from '../hooks/useTripForm';
 import { usePackingList } from '../hooks/usePackingList';
-import { generatePackingList, type WeatherData } from '../services/apiService';
+import { generateAISuggestions, type WeatherData } from '../services/apiService';
 import type { TripFormData } from '../types';
 import { ArrowPathIcon, PlusIcon, XMarkIcon, CpuChipIcon } from '@heroicons/react/24/solid';
 
@@ -42,7 +42,7 @@ export const SuggestionsPanel: React.FC = () => {
       endDate: state.endDate,
       destinations: state.destinations,
       travelModes: state.travelModes,
-      tripDetails: customPrompt.trim()
+      tripDetails: `Travel preferences: ${state.preferences.join(', ') || 'general travel'}. Weather: ${state.weather?.summary || 'unknown conditions'}.`
     };
 
     // Convert current weather to WeatherData format
@@ -62,7 +62,8 @@ export const SuggestionsPanel: React.FC = () => {
     setError(null);
 
     try {
-      const response = await generatePackingList(tripData, weatherData);
+      // Use the dedicated AI suggestions endpoint
+      const response = await generateAISuggestions(customPrompt, tripData, weatherData);
 
       // Extract new suggestions from the response
       if (response.suggestedItems) {
@@ -119,7 +120,7 @@ export const SuggestionsPanel: React.FC = () => {
         endDate: state.endDate,
         destinations: state.destinations,
         travelModes: state.travelModes,
-        tripDetails: 'Refresh suggestions based on current trip and checklist details'
+        tripDetails: `Travel preferences: ${state.preferences.join(', ') || 'general travel'}. Weather: ${state.weather?.summary || 'unknown conditions'}.`
       };
 
       const weatherData: WeatherData[] = state.weather ? [{
@@ -129,7 +130,9 @@ export const SuggestionsPanel: React.FC = () => {
         precipitation: 0
       }] : [];
 
-      const response = await generatePackingList(tripData, weatherData);
+      // Use AI suggestions endpoint with a general refresh prompt
+      const refreshPrompt = 'Suggest additional useful packing items based on the trip details and current checklist';
+      const response = await generateAISuggestions(refreshPrompt, tripData, weatherData);
 
       if (response.suggestedItems) {
         const newSuggestions: SuggestionItem[] = response.suggestedItems.map((item: string, index: number) => ({
@@ -219,11 +222,12 @@ export const SuggestionsPanel: React.FC = () => {
                 <button
                   onClick={handleRefreshSuggestions}
                   disabled={isLoading}
-                  className="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="flex items-center gap-1 text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-200 disabled:opacity-50 disabled:cursor-not-allowed text-sm font-medium"
                   title="Refresh suggestions"
                   aria-label="Refresh suggestions"
                 >
                   <ArrowPathIcon className={`h-4 w-4 ${isLoading ? 'animate-spin' : ''}`} />
+                  Refresh
                 </button>
               )}
             </div>

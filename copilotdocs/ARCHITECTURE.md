@@ -12,7 +12,8 @@ This document provides a high-level overview of the system architecture, major c
 ## Overview
 
 - **Frontend:** React + TypeScript + Vite + Tailwind CSS + Heroicons
-- **Backend:** Enhanced AI Lambda (Express/Node) with intelligent trip analysis
+- **Backend:** Ollama AI-Integrated Lambda (Express/Node) with local llama3.1:8b model
+- **AI Engine:** Ollama local instance with llama3.1:8b for intelligent packing recommendations
 - **Weather:** Open-Meteo API (client-side)
 - **Icons:** Professional Heroicons vector icon system
 - **Testing:** Comprehensive Vitest + React Testing Library + Playwright suite
@@ -23,20 +24,41 @@ This document provides a high-level overview of the system architecture, major c
   - **MainLayout**: Three-column responsive layout (Trip Details, Packing Checklist, AI Suggestions)
   - **TripForm**: Multi-step trip planning with geocoding and weather integration
   - **PackingList**: Dynamic checklist with add, check, uncheck, and remove items/categories
-  - **SuggestionsPanel**: Enhanced AI-powered refinement UI with context-aware recommendations
+  - **SuggestionsPanel**: Ollama AI-powered refinement UI with real-time intelligent recommendations
   - **TripDetails**: Professional UI with Heroicons (PencilIcon for editing)
-  - **Enhanced AI Integration**: Smart recommendations based on trip context, duration, weather, and purpose
+  - **Ollama AI Integration**: Real AI-powered recommendations using local llama3.1:8b model
   - Includes robust checklist logic with state persisted to localStorage and reflected in UI
   - Professional vector icons replace emoji-based UI elements
   - Comprehensive test coverage with unit, integration, and E2E tests
-- `lambda/` - Enhanced AI Backend with intelligent analysis
-  - **app.ts**: Sophisticated trip analysis with 7-aspect intelligence (destinations, dates, modes, weather, purpose, duration, preferences)
-  - **server.js**: Consistent intelligent logic for development environment
-  - **Smart Features**: Context-aware quantity calculations, trip purpose recognition, weather adaptation, travel mode optimization
+- `lambda/` - Ollama AI-Integrated Backend with local AI processing
+  - **server.js**: Production server with Ollama integration and intelligent fallback system
+  - **server-ollama.js**: Backup comprehensive AI server implementation
+  - **Ollama Features**: Real-time AI generation, smart prompting, JSON parsing, error handling
+  - **Endpoints**: `/generate` (AI checklists), `/suggestions` (custom AI recommendations), `/health`
 - `copilotdocs/` - Project docs, logs, and commands
 - `__tests__/` - Comprehensive testing suite following external best practices
 
-## Enhanced AI Intelligence Features
+## Ollama AI Integration Architecture
+
+### Local AI Processing
+
+- **Ollama Host:** `http://localhost:11434` (configurable via OLLAMA_HOST env var)
+- **Model:** `llama3.1:8b` (configurable via OLLAMA_MODEL env var)
+- **Processing:** Local AI inference for privacy and performance
+- **Fallback:** Graceful degradation to intelligent mock data when AI unavailable
+
+### AI-Powered Endpoints
+
+- **`/generate`** - Comprehensive packing checklist generation
+  - Input: trip details (name, dates, destinations, modes, details) + weather data
+  - AI Processing: Context-aware prompting with trip analysis
+  - Output: 15-25 categorized checklist items + 5-10 suggested items
+- **`/suggestions`** - Custom AI recommendations
+  - Input: custom prompt + trip context + weather conditions
+  - AI Processing: Tailored suggestions based on specific user requests
+  - Output: 3-8 specific, actionable packing recommendations
+
+### Enhanced AI Intelligence Features
 
 ### Smart Quantity Calculations
 

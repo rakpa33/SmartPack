@@ -56,10 +56,32 @@ function reducer(state: TripFormState, action: TripFormAction): TripFormState {
   }
 }
 
+// Helper function to check if the form is complete
+function isFormComplete(state: TripFormState): boolean {
+  return !!(
+    state.tripName.trim() &&
+    state.destinations.length > 0 &&
+    state.destinations.every(d => d.trim()) &&
+    state.travelModes.length > 0 &&
+    state.startDate &&
+    state.endDate
+  );
+}
+
 export const TripFormProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initialState, (init) => {
     const saved = localStorage.getItem('tripForm');
-    return saved ? { ...init, ...JSON.parse(saved) } : init;
+    if (saved) {
+      const parsedState = { ...init, ...JSON.parse(saved) };
+      // Fix step based on form completion status after loading from localStorage
+      if (isFormComplete(parsedState)) {
+        parsedState.step = Math.max(parsedState.step, 2);
+      } else {
+        parsedState.step = Math.min(parsedState.step, 1);
+      }
+      return parsedState;
+    }
+    return init;
   });
 
   useEffect(() => {

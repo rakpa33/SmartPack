@@ -15,6 +15,7 @@ export const TripDetails: React.FC = () => {
   const { loadAiGeneratedItems } = usePackingList();
   const [isEditing, setIsEditing] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
+  const [tempUnit, setTempUnit] = useState<'C' | 'F'>('C');
   const [editForm, setEditForm] = useState<{
     tripName: string;
     startDate: string;
@@ -176,6 +177,19 @@ export const TripDetails: React.FC = () => {
   // Get weather types for trip
   const weatherTypes = weather ? getExpectedWeatherTypes(weather.weathercode, weather.weathercodeEnd) : [];
 
+  // Temperature conversion helpers
+  const convertTemp = (celsius: number, unit: 'C' | 'F') => {
+    if (unit === 'F') {
+      return Math.round((celsius * 9 / 5) + 32);
+    }
+    return Math.round(celsius);
+  };
+
+  const formatTemp = (celsius: number | null, unit: 'C' | 'F') => {
+    if (celsius === null) return 'N/A';
+    return `${convertTemp(celsius, unit)}°${unit}`;
+  };
+
   // Debug: log the state to see if weather data is present
   console.log('TripDetails state:', state);
   console.log('Weather data:', weather);
@@ -298,9 +312,44 @@ export const TripDetails: React.FC = () => {
           <div className="flex gap-2 pt-2">
             <button
               onClick={handleSaveEdit}
-              className="px-3 py-1 bg-blue-600 text-white rounded text-sm hover:bg-blue-700"
+              className="px-3 py-1 bg-blue-600 text-white rounded text-sm hover:bg-blue-700 flex items-center gap-1"
             >
+              <PencilIcon className="h-3 w-3" />
               Save
+            </button>
+            <button
+              onClick={handleUpdatePackingList}
+              disabled={isUpdating}
+              className="px-3 py-1 bg-green-600 text-white rounded text-sm hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1"
+            >
+              {isUpdating ? (
+                <>
+                  <ArrowPathIcon className="h-3 w-3 animate-spin" />
+                  Updating...
+                </>
+              ) : (
+                <>
+                  <ArrowPathIcon className="h-3 w-3" />
+                  Update Full List
+                </>
+              )}
+            </button>
+            <button
+              onClick={handleUpdateSuggestions}
+              disabled={isUpdating}
+              className="px-3 py-1 bg-purple-600 text-white rounded text-sm hover:bg-purple-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1"
+            >
+              {isUpdating ? (
+                <>
+                  <ArrowPathIcon className="h-3 w-3 animate-spin" />
+                  Updating...
+                </>
+              ) : (
+                <>
+                  <SparklesIcon className="h-3 w-3" />
+                  Update Suggestions
+                </>
+              )}
             </button>
             <button
               onClick={() => setIsEditing(false)}
@@ -344,31 +393,39 @@ export const TripDetails: React.FC = () => {
           {/* Enhanced Weather Display */}
           {weather && (
             <div className="mt-4 p-3 bg-blue-50 dark:bg-blue-900 rounded" data-testid="weather-display">
-              <div className="flex items-center gap-2 mb-2">
-                <span className="text-2xl">{getWeatherIcon(weather.weathercode || 0)}</span>
-                <div>
-                  <div className="text-lg font-semibold" data-testid="weather-summary">{weather.summary}</div>
-                  <div className="text-sm text-gray-600 dark:text-gray-400">Average Temperature</div>
+              <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center gap-2">
+                  <span className="text-2xl">{getWeatherIcon(weather.weathercode || 0)}</span>
+                  <div>
+                    <div className="text-lg font-semibold" data-testid="weather-summary">{weather.summary}</div>
+                    <div className="text-sm text-gray-600 dark:text-gray-400">Average Temperature</div>
+                  </div>
                 </div>
+                <button
+                  onClick={() => setTempUnit(tempUnit === 'C' ? 'F' : 'C')}
+                  className="text-xs bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded px-2 py-1 hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors"
+                >
+                  °{tempUnit === 'C' ? 'F' : 'C'}
+                </button>
               </div>
 
               <div className="grid grid-cols-3 gap-2 text-sm">
                 <div className="text-center">
                   <div className="font-medium text-blue-600 dark:text-blue-400">Low</div>
                   <div data-testid="weather-temperature-min">
-                    {weather.temperatureMin !== null ? `${Math.round(weather.temperatureMin)}°C` : 'N/A'}
+                    {formatTemp(weather.temperatureMin, tempUnit)}
                   </div>
                 </div>
                 <div className="text-center">
                   <div className="font-medium text-blue-600 dark:text-blue-400">High</div>
                   <div data-testid="weather-temperature-max">
-                    {weather.temperatureMax !== null ? `${Math.round(weather.temperatureMax)}°C` : 'N/A'}
+                    {formatTemp(weather.temperatureMax, tempUnit)}
                   </div>
                 </div>
                 <div className="text-center">
                   <div className="font-medium text-blue-600 dark:text-blue-400">Avg</div>
                   <div data-testid="weather-temperature">
-                    {weather.averageTemp !== null ? `${Math.round(weather.averageTemp)}°C` : 'N/A'}
+                    {formatTemp(weather.averageTemp, tempUnit)}
                   </div>
                 </div>
               </div>
@@ -388,44 +445,6 @@ export const TripDetails: React.FC = () => {
               )}
             </div>
           )}
-
-          {/* Action Buttons */}
-          <div className="mt-4 space-y-2">
-            <button
-              onClick={handleUpdatePackingList}
-              disabled={isUpdating}
-              className="w-full flex items-center justify-center gap-2 px-3 py-2 bg-green-600 text-white rounded text-sm hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {isUpdating ? (
-                <>
-                  <ArrowPathIcon className="h-4 w-4 animate-spin" />
-                  Updating...
-                </>
-              ) : (
-                <>
-                  <ArrowPathIcon className="h-4 w-4" />
-                  Update Full Packing List
-                </>
-              )}
-            </button>
-            <button
-              onClick={handleUpdateSuggestions}
-              disabled={isUpdating}
-              className="w-full flex items-center justify-center gap-2 px-3 py-2 bg-blue-600 text-white rounded text-sm hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {isUpdating ? (
-                <>
-                  <ArrowPathIcon className="h-4 w-4 animate-spin" />
-                  Updating...
-                </>
-              ) : (
-                <>
-                  <SparklesIcon className="h-4 w-4" />
-                  Update Suggestions Only
-                </>
-              )}
-            </button>
-          </div>
 
           {/* Add a fallback div to help with testing */}
           {!weather && (

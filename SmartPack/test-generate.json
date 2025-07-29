@@ -1,0 +1,18 @@
+{
+  "trip": {
+    "name": "Paris Getaway",
+    "startDate": "2024-01-15",
+    "endDate": "2024-01-18",
+    "destinations": ["Paris"],
+    "travelModes": ["walking", "metro"],
+    "tripDetails": "Sightseeing and museum visits"
+  },
+  "weather": [
+    {
+      "location": "Paris",
+      "temperature": 12,
+      "conditions": "partly cloudy",
+      "precipitation": 2
+    }
+  ]
+}

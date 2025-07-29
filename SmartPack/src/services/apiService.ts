@@ -61,6 +61,40 @@ export async function generatePackingList(
 }
 
 /**
+ * Generate AI suggestions based on custom prompt
+ */
+export async function generateAISuggestions(
+  customPrompt: string,
+  tripData: TripFormData, 
+  weatherData: WeatherData[]
+): Promise<{ suggestedItems: string[] }> {
+  try {
+    const response = await fetch(`${API_URL}/suggestions`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        customPrompt,
+        trip: tripData,
+        weather: weatherData,
+      }),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || 'Failed to generate AI suggestions');
+    }
+
+    const data: { suggestedItems: string[] } = await response.json();
+    return data;
+  } catch (error) {
+    console.error('AI suggestions API error:', error);
+    throw error;
+  }
+}
+
+/**
  * Check if the API is available (health check)
  */
 export async function checkApiHealth(): Promise<boolean> {

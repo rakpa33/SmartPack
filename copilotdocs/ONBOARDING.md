@@ -11,42 +11,70 @@ Welcome! This guide will help you (or future contributors) get up and running qu
 
 ## Prerequisites
 
-- Node.js (LTS)
-- npm
-- AWS CLI (configured)
-- Ollama (local/self-hosted, running)
+- **Node.js** v20.14.0+ (LTS)
+- **npm** 10.7.0+
+- **Ollama** (local AI service)
+  - Download from: https://ollama.ai/
+  - Must have llama3.1:8b model installed
 - **Modern Browser**: For Heroicons vector icon rendering and accessibility features
+- **(Optional)** AWS CLI (configured) for deployment
 - **(Optional)** AWS S3 bucket for frontend deployment
 - **Testing Environment**: Playwright for E2E test execution
 
 ## Setup Steps
 
-1. Clone the repository
-2. Install dependencies: `npm install`
-3. Copy `.env.example` to `.env` and fill in required values (see ENVIRONMENT.md)
-4. **Start both development servers:**
-   - **Enhanced AI Backend**: `npm run lambda:dev` (runs on port 3000)
-   - **Professional UI Frontend**: `npm run dev` (runs on port 5173)
-5. **Verify enhanced setup:**
-   - Backend health: Visit `http://localhost:3000/health`
-   - Frontend: Visit `http://localhost:5173`
-   - **Enhanced AI Test**: Create trip with specific details (e.g., "4-day business trip") and verify intelligent recommendations
+1. **Clone the repository**
+2. **Install Ollama and AI model:**
+   ```bash
+   # Download Ollama from https://ollama.ai/
+   ollama pull llama3.1:8b
+   ollama serve  # Start service on port 11434
+   ```
+3. **Install project dependencies:**
+   ```bash
+   npm install --legacy-peer-deps
+   ```
+4. **Copy environment configuration:**
+   ```bash
+   # Copy .env.example to .env and configure (see ENVIRONMENT.md)
+   # Key variables: OLLAMA_HOST=http://localhost:11434, OLLAMA_MODEL=llama3.1:8b
+   ```
+5. **Start development environment:**
+
+   ```bash
+   # Terminal 1: Ollama service (if not running as system service)
+   ollama serve
+
+   # Terminal 2: AI-integrated backend
+   npm run lambda:dev
+
+   # Terminal 3: Frontend
+   npm run dev
+   ```
+
+6. **Verify complete setup:**
+   - **Ollama AI**: `http://localhost:11434` (service running)
+   - **Backend Health**: `http://localhost:3000/health` (API ready)
+   - **Frontend**: `http://localhost:5173` (UI running)
+   - **AI Integration Test**: Create trip and verify real AI-generated recommendations (not mock data)
    - **Professional UI Check**: Confirm Heroicons vector icons render properly
-6. **Run comprehensive test suite**:
-   - Unit/Integration tests: `npm test -- --run`
-   - E2E tests: `npx playwright test`
-   - Enhanced AI validation: `npm test -- enhancedAI`
+7. **Run comprehensive test suite:**
+   ```bash
+   npm test -- --run                    # Unit/Integration tests
+   npx playwright test                   # E2E tests
+   npm test -- enhancedAI               # AI-specific validation
+   ```
 
 ## Development Workflow
 
-### Daily Development
+### Daily Development Setup
 
-1. **Start Enhanced AI Backend**: `npm run lambda:dev`
-2. **Start Professional UI Frontend**: `npm run dev` (in separate terminal)
-3. Both must be running for Enhanced AI Suggestions to work properly
-4. **Verify Enhanced Features**: Test intelligent recommendations and professional icons
-5. **Run Test Suite**: Validate changes with comprehensive testing
-6. Test changes, run tests, commit
+1. **Verify Ollama**: `ollama list` (confirm llama3.1:8b available)
+2. **Start AI-Integrated Backend**: `npm run lambda:dev`
+3. **Start Professional UI Frontend**: `npm run dev` (separate terminal)
+4. **Validate AI Integration**: Test that checklist generation uses real AI (not fallback)
+5. **Verify Enhanced Features**: Test intelligent recommendations and professional icons
+6. **Development Cycle**: Make changes → Test AI integration → Run test suite → Commit
 
 ### Enhanced Testing Strategy
 
