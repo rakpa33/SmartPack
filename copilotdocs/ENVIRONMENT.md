@@ -1,8 +1,58 @@
 <!--
-This file documents environment variables, setup, and configuration for SmartPack.
+This file documents environment variables, configuration settings, deployment procedures, and development environment setup for SmartPack.
 Keep this comment at the top; do not overwrite or remove it when updating the document.
 
-How to update: Add or update entries whenever you add, remove, or change environment variables, setup steps, or configuration. Review after onboarding or infra changes.
+DOCUMENT PURPOSE:
+- Complete environment configuration reference for all deployment contexts
+- Development environment setup with enhanced AI and professional UI requirements
+- Production deployment procedures for AWS Lambda and static hosting
+- Environment variable documentation with purpose and usage examples
+- Port configuration and service startup procedures
+- Troubleshooting guide for environment-specific issues
+
+ENVIRONMENT CONTEXTS:
+- **Development**: Local Vite + Express + Ollama AI setup with enhanced features
+- **Testing**: CI/CD environment configuration for comprehensive test suite
+- **Production**: AWS Lambda backend + static frontend deployment
+- **Hybrid**: Local development with cloud service integration
+
+WHEN TO UPDATE:
+1. NEW ENVIRONMENT VARIABLES: API URLs, service endpoints, configuration flags
+2. PORT CHANGES: Service port updates, proxy configurations, development server changes
+3. DEPLOYMENT UPDATES: AWS configuration, serverless framework changes, hosting updates
+4. SERVICE INTEGRATION: New external APIs, enhanced AI features, professional UI dependencies
+5. TESTING ENVIRONMENT: CI/CD configuration, test database setup, mock service configuration
+6. SECURITY UPDATES: API keys, authentication methods, CORS configuration
+
+UPDATE GUIDELINES:
+- Document both development and production values for each environment variable
+- Include clear purpose statements for each configuration setting
+- Provide verification steps and expected outputs for environment validation
+- Cross-reference with COMMANDS.md for startup procedures and TROUBLESHOOTING.md for common issues
+- Maintain current status sections reflecting enhanced AI and professional UI features
+- Include specific version requirements and compatibility notes
+
+CONFIGURATION CATEGORIES:
+- **Core Services**: Frontend (Vite), Backend (Express/Lambda), AI (Ollama)
+- **Development Tools**: Testing frameworks, build tools, development servers
+- **External APIs**: Weather services, geocoding, enhanced AI integration
+- **Deployment**: AWS credentials, serverless configuration, static hosting
+- **Security**: CORS settings, API authentication, environment isolation
+
+VERIFICATION PROCEDURES:
+- All required services accessible on documented ports
+- Enhanced AI integration functional with intelligent responses
+- Professional UI features rendering correctly (Heroicons, accessibility)
+- Complete test suite passing in environment
+- Production deployment health checks successful
+
+HOW TO USE FOR AI ASSISTANCE:
+- Reference this document for complete environment setup before troubleshooting connectivity issues
+- Use verification procedures to systematically diagnose environment problems
+- Check current integration status to understand implemented features and deployment readiness
+- Cross-reference with ONBOARDING.md for step-by-step setup and COMMANDS.md for specific command syntax
+- Validate that environment configuration aligns with current project dependencies and enhanced features
+- Use troubleshooting sections to resolve common environment-specific issues
 -->
 
 # Environment Variables for SmartPack

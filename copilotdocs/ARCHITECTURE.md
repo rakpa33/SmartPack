@@ -1,279 +1,408 @@
 <!--
-This file describes the high-level system architecture, major components, and data flows for SmartPack.
+This file provides comprehensive system architecture documentation for SmartPack following the arc42 template industry standard.
 Keep this comment at the top; do not overwrite or remove it when updating the document.
 
-How to update: Update this doc whenever you add, remove, or change major components, data flows, or integration points. Review after any significant frontend, backend, or API change.
+DOCUMENT PURPOSE:
+- Central architecture reference following arc42 template (12 sections)
+- Technical decision documentation with rationale and consequences
+- System structure, components, and integration patterns
+- Quality requirements with industry-standard metrics (WCAG 2.1, Web Vitals, OWASP)
+- Risk assessment and technical debt tracking
+
+WHEN TO UPDATE:
+1. MAJOR CHANGES: Component additions/removals, new integrations, architectural decisions
+2. QUALITY UPDATES: New requirements, testing strategies, performance targets
+3. DEPLOYMENT CHANGES: Infrastructure updates, environment modifications
+4. TECHNOLOGY DECISIONS: Stack changes, library additions, tool updates
+5. CROSS-REFERENCES: Update links when other docs are restructured
+
+UPDATE GUIDELINES:
+- Follow arc42 section structure (1-12) - do not reorganize sections
+- Update ADRs (Section 9) for significant technical decisions with Status/Decision/Rationale/Consequences
+- Keep quality requirements (Section 1.2) aligned with actual implementation and industry standards
+- Update building block view (Section 5) when component structure changes
+- Maintain visual diagrams in sync with actual system structure
+- Reference specific files, components, and external documentation
+
+QUALITY STANDARDS:
+- All requirements must be SMART (Specific, Measurable, Achievable, Relevant, Time-bound)
+- Include industry references (WCAG 2.1 AA, Google Web Vitals, OWASP guidelines)
+- Provide implementation details with specific tools and thresholds
+- Link to detailed implementation in DEVLOG.md and TROUBLESHOOTING.md
+
+CROSS-REFERENCE MAINTENANCE:
+- Update "See Also" section when prompt files or documentation structure changes
+- Validate external links and industry standard references quarterly
+- Ensure consistency with CHECKLIST.md progress tracking and ROADMAP.md phases
+- Keep glossary (Section 12) current with project terminology
+
+HOW TO USE FOR AI ASSISTANCE:
+- Reference this document for system understanding before making changes
+- Use ADRs to understand why decisions were made before proposing alternatives
+- Check quality requirements before implementing features to ensure compliance
+- Consult building block view for component relationships and dependencies
 -->
 
 # Architecture Overview for SmartPack
 
-This document provides a high-level overview of the system architecture, major components, and data flows.
+This document follows the [arc42 template](https://arc42.org) for architecture documentation and provides a comprehensive view of the SmartPack travel packing application.
 
-## Overview
+## 1. Introduction and Goals
 
-- **Frontend:** React + TypeScript + Vite + Tailwind CSS + Heroicons
-- **Backend:** Ollama AI-Integrated Lambda (Express/Node) with local llama3.1:8b model
-- **AI Engine:** Ollama local instance with llama3.1:8b for intelligent packing recommendations
-- **Weather:** Open-Meteo API (client-side)
-- **Icons:** Professional Heroicons vector icon system
-- **Testing:** Comprehensive Vitest + React Testing Library + Playwright suite
+### 1.1 Requirements Overview
 
-## Major Components
+SmartPack is a mobile-first, single-user travel packing application that provides AI-powered packing recommendations based on trip details and weather conditions.
 
-- `src/` - Frontend code with enhanced AI integration
-  - **MainLayout**: Three-column responsive layout (Trip Details, Packing Checklist, AI Suggestions)
-  - **TripForm**: Multi-step trip planning with geocoding and weather integration
-  - **PackingList**: Dynamic checklist with add, check, uncheck, and remove items/categories
-  - **SuggestionsPanel**: Ollama AI-powered refinement UI with real-time intelligent recommendations
-  - **TripDetails**: Professional UI with Heroicons (PencilIcon for editing)
-  - **Ollama AI Integration**: Real AI-powered recommendations using local llama3.1:8b model
-  - Includes robust checklist logic with state persisted to localStorage and reflected in UI
-  - Professional vector icons replace emoji-based UI elements
-  - Comprehensive test coverage with unit, integration, and E2E tests
-- `lambda/` - Ollama AI-Integrated Backend with local AI processing
-  - **server.js**: Production server with Ollama integration and intelligent fallback system
-  - **server-ollama.js**: Backup comprehensive AI server implementation
-  - **Ollama Features**: Real-time AI generation, smart prompting, JSON parsing, error handling
-  - **Endpoints**: `/generate` (AI checklists), `/suggestions` (custom AI recommendations), `/health`
-- `copilotdocs/` - Project docs, logs, and commands
-- `__tests__/` - Comprehensive testing suite following external best practices
+**Key Features:**
 
-## Ollama AI Integration Architecture
+- Intelligent packing list generation using local AI (Ollama)
+- Weather-aware recommendations via Open-Meteo API
+- Persistent storage using browser localStorage
+- Responsive design for mobile and desktop use
 
-### Local AI Processing
+### 1.2 Quality Goals
 
-- **Ollama Host:** `http://localhost:11434` (configurable via OLLAMA_HOST env var)
-- **Model:** `llama3.1:8b` (configurable via OLLAMA_MODEL env var)
-- **Processing:** Local AI inference for privacy and performance
-- **Fallback:** Graceful degradation to intelligent mock data when AI unavailable
+The following quality requirements are aligned with industry standards and define testable scenarios with clear success metrics:
 
-### AI-Powered Endpoints
+| ID          | Quality Attribute                  | Proposed Requirement                                                                                                                                                          | Industry Reference                   |
+| ----------- | ---------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------ |
+| **A11Y-1**  | Accessibility                      | Meet **WCAG 2.1 AA** for color-contrast, keyboard nav, alt-text, ARIA roles, focus order, error messages. Automated axe-core scan must report 0 critical issues in CI.        | W3C WCAG 2.1 standard                |
+| **PERF-1**  | Performance                        | Largest Contentful Paint (LCP) ≤ **2.5s** at 75th-percentile on home-Wi-Fi (Cable/3G in WebPageTest).                                                                         | Google Web Vitals threshold          |
+| **REL-1**   | Reliability / Graceful Degradation | If `/generate` fails (network or Ollama) → show cached list within 1s and banner "AI offline". Local data persists across refresh/tab close via `localStorage`.               | Industry standard for SPA resilience |
+| **SEC-1**   | Privacy & Security                 | No third-party analytics. All trip data stored only in `localStorage`. Add Content-Security-Policy: `default-src 'self'`. Follow OWASP guidance for safe client-storage.      | OWASP HTML5 Security Cheat Sheet     |
+| **MAINT-1** | Maintainability & Code Quality     | Codebase must:<br>• ≥ 80% line & branch coverage (Vitest)<br>• Pass ESLint + Prettier in CI<br>• Have clear comments per Copilot rules<br>• Merged PRs auto-deploy within 1h. | Industry best practices for CI/CD    |
 
-- **`/generate`** - Comprehensive packing checklist generation
-  - Input: trip details (name, dates, destinations, modes, details) + weather data
-  - AI Processing: Context-aware prompting with trip analysis
-  - Output: 15-25 categorized checklist items + 5-10 suggested items
-- **`/suggestions`** - Custom AI recommendations
-  - Input: custom prompt + trip context + weather conditions
-  - AI Processing: Tailored suggestions based on specific user requests
-  - Output: 3-8 specific, actionable packing recommendations
+### 1.3 Maintainability & Code Quality Implementation
 
-### Enhanced AI Intelligence Features
+| Area                | Recommended Practice                                                                         |
+| ------------------- | -------------------------------------------------------------------------------------------- |
+| **Coverage**        | Keep global ≥ 80%. Exclude generated/vendor code with `/* istanbul ignore file */` comments. |
+| **Static Analysis** | ESLint strict + TypeScript `noImplicitAny`, Prettier auto-format; CI fails on lint errors.   |
+| **Testing Pyramid** | Many unit tests (RTL), some integration (Supertest), handful of E2E (Playwright).            |
+| **CI Time-to-Prod** | GitHub Actions → S3 & Lambda deploy ≤ 60 min after merge.                                    |
+| **Code Review**     | PR template: check tests added, coverage unchanged, a11y queries used, no console.logs.      |
 
-### Smart Quantity Calculations
+### 1.4 Stakeholders
 
-- **Duration-based**: 1-3 days (4 pairs), 4-7 days (7 pairs), 8+ days (caps at 14 pairs)
-- **Item scaling**: Shirts, pants, and accessories scale appropriately with trip length
-- **Realistic limits**: Prevents unrealistic quantities for extended trips
+| Role       | Expectations                              | Influence |
+| ---------- | ----------------------------------------- | --------- |
+| End Users  | Fast, accurate packing suggestions        | High      |
+| Developers | Clean, testable, well-documented code     | High      |
+| DevOps     | Simple deployment, minimal infrastructure | Medium    |
 
-### Trip Purpose Recognition
+## 2. Architecture Constraints
 
-- **Business trips**: Detects keywords like "business", "meeting", "conference", "presentation"
-  - Generates: Business suits, laptop + charger, business cards, professional materials
-- **Beach vacations**: Detects "beach", "swimming", "surfing", "tropical"
-  - Generates: Swimwear, beach towel, sunscreen (SPF 30+), sun protection gear
-- **Adventure trips**: Detects "hiking", "camping", "outdoor", "mountain"
-  - Generates: Hiking boots, first aid kit, outdoor gear, safety equipment
+### 2.1 Technical Constraints
 
-### Weather-Based Adaptation
+- **Browser Compatibility:** Modern browsers with ES2020+ support
+- **Data Storage:** localStorage only (no cloud sync)
+- **AI Processing:** Local Ollama instance required for full functionality
+- **API Dependencies:** Open-Meteo API for weather data
 
-- **Cold weather (<15°C)**: Winter jacket, warm gloves, thermal underwear, insulated boots
-- **Hot weather (>25°C)**: Sunscreen, sunglasses, light summer clothes, sun hat
-- **Rainy conditions**: Umbrella, rain jacket, waterproof shoes, quick-dry clothing
+### 2.2 Organizational Constraints
 
-### Travel Mode Optimization
+- **Team Size:** Single developer project
+- **Technology Stack:** React + TypeScript + Vite ecosystem
+- **Deployment:** Static hosting with serverless backend
 
-- **Plane travel**: Neck pillow, headphones, eye mask & earplugs, passport, compression socks
-- **Car travel**: Driver's license, car phone charger, snacks & water, emergency kit
-- **Train travel**: Comfortable seating accessories, entertainment, light luggage
+### 2.3 Conventions
 
-### Destination Intelligence
+- **Code Quality:** TypeScript strict mode, comprehensive testing
+- **Documentation:** README-driven development, inline code documentation
+- **Version Control:** Git with conventional commits
 
-- **Asia destinations**: Universal travel adapter, translation app, respectful temple clothing, cultural considerations
-- **Europe destinations**: Comfortable walking shoes, light evening jacket, regional suggestions
-- **Tropical destinations**: Insect repellent, after-sun lotion, beach gear, sun protection
+## 3. System Context and Scope
 
-### Flexible Category System
+### 3.1 Business Context
 
-- **Dynamic Categories**: AI generates contextual categories based on trip type and needs
-- **Concise Naming**: Categories like "Photography", "Winter", "Business" instead of verbose descriptions
-- **Context-Aware**: Categories adapt to specific trip characteristics (e.g., "Electronics", "Documents", "Health")
-- **User-Friendly**: Clean, intuitive category names that enhance UI organization
+```
+[User] --uses--> [SmartPack App] --fetches--> [Open-Meteo API]
+                      |
+                 --queries--> [Local Ollama AI]
+```
 
-## Frontend AI Integration
+**External Entities:**
 
-### Visual AI Indicators
+- **Users:** Travelers planning packing lists
+- **Open-Meteo API:** Weather data provider
+- **Ollama Service:** Local AI inference engine
 
-- **Ollama Branding**: Professional AI badges with gradient styling and animations
-- **Status Tracking**: Real-time indicators showing AI vs fallback data usage
-- **Response Types**: Clear visual distinction between AI-generated and mock data
-- **Transparency**: Fallback reasons displayed when AI is unavailable
+### 3.2 Technical Context
 
-### Enhanced SuggestionsPanel
+- **Frontend:** Single-page application served statically
+- **Backend:** Express.js Lambda for AI processing
+- **Storage:** Browser localStorage (no external databases)
+- **AI:** Local Ollama instance running llama3.1:8b model
 
-- **AI Status Display**: Shows Ollama connection status and processing state
-- **Interactive Features**: AI-powered refinement with custom prompt support
-- **Visual Feedback**: Animated indicators during AI processing
-- **Error Handling**: Graceful degradation with clear error messaging
+## 4. Solution Strategy
 
-## Data Flow
+### 4.1 Technology Decisions
 
-### Enhanced AI Workflow
+| Decision               | Rationale                                 | Trade-offs                              |
+| ---------------------- | ----------------------------------------- | --------------------------------------- |
+| **Local AI (Ollama)**  | Privacy, no API costs, offline capability | Setup complexity, hardware requirements |
+| **localStorage**       | Simple deployment, no backend needed      | Limited storage, no sync across devices |
+| **React + TypeScript** | Developer productivity, type safety       | Bundle size, build complexity           |
+| **Tailwind CSS**       | Rapid UI development, consistency         | CSS bundle size, learning curve         |
 
-- User enters trip details in frontend with geocoding validation and weather fetching
-- Weather data fetched client-side from Open-Meteo API with temperature and precipitation analysis
-- Trip + weather data sent to `/generate` Lambda endpoint with enhanced intelligence
-- **Enhanced AI Analysis**: Backend processes 7 aspects of trip data:
-  1. **Destinations**: Geographic analysis for regional recommendations
-  2. **Dates**: Duration calculations for smart quantity algorithms
-  3. **Travel Modes**: Mode-specific item generation (plane/car/train)
-  4. **Weather**: Temperature and precipitation-based gear recommendations
-  5. **Trip Purpose**: Business/leisure/adventure recognition via NLP
-  6. **Duration**: Smart quantity scaling with realistic caps
-  7. **Preferences**: User preference integration for personalization
-- Lambda generates context-aware recommendations with intelligent quantities
-- User can refine suggestions via SuggestionsPanel with custom prompts
-- Enhanced suggestions returned with categorized items and smart quantities
-- User can add suggestions to main checklist with one-click
-- Checklist state changes (add/remove/check/uncheck) are persisted to localStorage and reflected in UI immediately
-- Professional Heroicons provide consistent, accessible UI elements
+### 4.2 Quality Achievement
 
-### Testing Data Flow
+- **Privacy:** Local-only AI processing and data storage
+- **Performance:** Client-side rendering, optimized bundles
+- **Reliability:** Fallback data when AI unavailable
+- **Maintainability:** TypeScript, testing pyramid, documentation
 
-- **Unit Tests**: Mock API responses to test intelligent algorithms
-- **Integration Tests**: Complete form-to-AI-to-results workflows
-- **E2E Tests**: Real browser interactions with actual AI recommendations
-- **Error Handling**: Graceful degradation for API failures and network issues
+## 5. Building Block View
 
-## Integration Points
+### 5.1 Level 1: System Overview
 
-- **Enhanced AI API**: `/generate` endpoint with intelligent trip analysis and context-aware recommendations
-- **LocalStorage**: Persists user data (including checklist state, trip form state, theme, AI-generated items)
-- **Open-Meteo API**: Weather data with geocoding integration for temperature and precipitation analysis
-- **Context API**: React contexts for TripForm and PackingList state management
-- **Heroicons Integration**: Professional vector icon system for consistent UI
-- **Testing Infrastructure**: Comprehensive test suite with external API mocking and browser automation
+### 5.1 Level 1: System Overview
 
-## Professional UI System
+```
+┌─────────────────────────────────────────────────────────┐
+│                    SmartPack System                    │
+├─────────────────────┬───────────────────────────────────┤
+│   Frontend (SPA)    │      Backend (Lambda)            │
+│                     │                                   │
+│ • React UI          │ • Express.js API                  │
+│ • Trip Planning     │ • AI Integration                  │
+│ • Packing Lists     │ • Weather Processing              │
+│ • Local Storage     │ • Ollama Client                   │
+└─────────────────────┴───────────────────────────────────┘
+```
 
-### Icon Architecture
+### 5.2 Level 2: Frontend Components
 
-- **Heroicons React**: Professional vector icon library replacing emoji-based UI
-- **Key Icons Used**:
-  - `PencilIcon`: Edit functionality in TripDetails
-  - `SparklesIcon`: AI feature indicators in SuggestionsPanel
-  - `ArrowPathIcon`: Regeneration and refresh actions
-  - `CpuChipIcon`: AI processing indicators
-- **Accessibility**: All icons include proper ARIA labels and semantic markup
-- **Performance**: Optimized tree-shaking for minimal bundle size
+**Core Components:**
 
-### Testing Architecture
+- **TripForm:** Multi-step trip planning with validation
+- **MainLayout:** Three-column responsive layout
+- **PackingList:** Dynamic checklist with CRUD operations
+- **SuggestionsPanel:** AI-powered recommendation interface
+- **TripDetails:** Trip information display with editing
 
-- **Unit Tests** (`enhancedAI.unit.test.ts`): API service layer testing with comprehensive mocking
-- **Integration Tests** (`enhancedAI.integration.test.tsx`): Complete user workflow validation
-- **E2E Tests** (`enhancedAI.e2e.test.ts`): Real browser scenario testing with Playwright
-- **Test Utilities**: Reusable testing components and mock data generators
-- **Coverage Metrics**: 100% coverage of enhanced AI features with quality gates
+**Supporting Components:**
 
-## Local Development Setup
+- **Context Providers:** State management for trip and checklist data
+- **Hooks:** Custom hooks for localStorage, weather API, and AI services
+- **Utils:** Validation, formatting, and helper functions
 
-- **Frontend**: Runs on `http://localhost:5173` (Vite default)
-- **Backend**: Runs on `http://localhost:3000` (Express server)
-- **Critical**: Both servers must be running for AI Suggestions to work
-- **Start Commands**:
-  - Frontend: `npm run dev`
-  - Backend: `npm run lambda:dev`
-- **Health Check**: Visit `http://localhost:3000/health` to verify backend
+### 5.3 Level 2: Backend Services
 
-## API Endpoints
+**API Layer:**
 
-### Lambda Backend
+- **Health Check Endpoint:** System status verification
+- **Generate Endpoint:** AI-powered packing list creation
+- **Suggestions Endpoint:** Custom AI recommendations
 
-1. **Health Check**
+**AI Integration Layer:**
 
-   - **Endpoint**: `/health`
-   - **Method**: GET
-   - **Description**: Simple health check to verify API is running
-   - **Response**: `{ status: "ok", message: "SmartPack API is running" }`
+- **Ollama Client:** Local AI model communication
+- **Prompt Engineering:** Context-aware prompt generation
+- **Fallback Service:** Mock data when AI unavailable
 
-2. **Generate Packing List**
-   - **Endpoint**: `/generate`
-   - **Method**: POST
-   - **Description**: Generates a packing list based on trip and weather data
-   - **Request Body**:
-     ```json
-     {
-       "trip": {
-         "name": "Trip Name",
-         "startDate": "YYYY-MM-DD",
-         "endDate": "YYYY-MM-DD",
-         "destinations": ["City, Country"],
-         "travelModes": ["plane", "car", "train", "bus", "boat"],
-         "tripDetails": "Additional details about the trip"
-       },
-       "weather": [
-         {
-           "location": "City, Country",
-           "temperature": 20,
-           "conditions": "Sunny",
-           "precipitation": 0
-         }
-       ]
-     }
-     ```
-   - **Response**:
-     ```json
-     {
-       "checklist": [
-         {
-           "id": "1",
-           "text": "Passport/ID",
-           "category": "Documents",
-           "checked": false,
-           "aiGenerated": true
-         }
-       ],
-       "suggestedItems": [
-         "Travel insurance documentation",
-         "Emergency contact list"
-       ]
-     }
-     ```
+## 6. Runtime View
 
-## Testing & Validation Protocol
+### 6.1 Primary Use Case: Generate Packing List
 
-- All checklist and trip flows are covered by robust E2E/integration tests (see TESTING_GUIDELINES.md).
-- When diagnosing test failures, always validate the behavior live (via `npm run dev`) before assuming the test is incorrect.
-- Validate against external sources for best practices (e.g., React Testing Library, accessibility, and E2E patterns).
-- Only update tests if the live UI matches the intended acceptance criteria and best practices.
+```mermaid
+sequenceDiagram
+    participant U as User
+    participant F as Frontend
+    participant B as Backend
+    participant O as Ollama
+    participant W as Weather API
 
-## Testing Architecture Insights
+    U->>F: Enter trip details
+    F->>W: Fetch weather data
+    W-->>F: Weather response
+    F->>B: POST /generate (trip + weather)
+    B->>O: Generate suggestions
+    O-->>B: AI recommendations
+    B-->>F: Categorized checklist
+    F->>F: Save to localStorage
+    F-->>U: Display packing list
+```
 
-### Component Dependencies and Conditional Rendering
+### 6.2 Error Handling Scenarios
 
-- **TripForm Component**: Automatically navigates to `/MainLayout` when `state.step === 2`
-- **MainLayout Component**: Has guard clause `if (!state || state.step < 2)` that shows loading state instead of content
-- **Key Insight**: Understanding conditional rendering is crucial for writing reliable integration tests
+**AI Service Unavailable:**
 
-### localStorage Dependencies
+1. User requests suggestions
+2. Backend attempts Ollama connection
+3. Connection fails (timeout/error)
+4. Backend returns fallback mock data
+5. Frontend displays suggestions with "fallback" indicator
 
-- **Trip Form State**: Stored in `localStorage.getItem('tripForm')` with step tracking
-- **Checklist Items**: Stored in `localStorage.getItem('smartpack_checklist')`
-- **Categories**: Stored in `localStorage.getItem('smartpack_categories')`
-- **Theme**: Stored in `localStorage.getItem('theme')`
-- **Test Impact**: Components initialize from localStorage, making proper cleanup essential
+**Weather API Failure:**
 
-### Test Contamination Patterns
+1. User enters destination
+2. Weather API request fails
+3. Frontend shows generic weather placeholder
+4. AI still generates suggestions without weather context
 
-- **Root Cause**: localStorage persistence between tests causing state leakage
-- **Symptoms**: Tests showing data from previous runs, wrong component rendering
-- **Solution**: Comprehensive localStorage cleanup in beforeEach hooks
+## 7. Deployment View
 
-### Routing and Navigation Testing
+### 7.1 Development Environment
 
-- **Challenge**: Complex navigation flows are harder to test reliably than direct component testing
-- **Best Practice**: Start tests at the target route when testing specific functionality
-- **Example**: Use `/MainLayout` directly for packing list tests instead of navigating through trip form
+```
+┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
+│   Frontend      │    │    Backend      │    │  Ollama Service │
+│                 │    │                 │    │                 │
+│ localhost:5173  │◄──►│ localhost:3000  │◄──►│ localhost:11434 │
+│ (Vite Dev)      │    │ (Express)       │    │ (AI Model)      │
+└─────────────────┘    └─────────────────┘    └─────────────────┘
+```
+
+### 7.2 Production Environment (Planned)
+
+```
+┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
+│   Static Host   │    │  AWS Lambda     │    │  Cloud Instance │
+│                 │    │                 │    │                 │
+│ S3 + CloudFront │◄──►│ Express Handler │◄──►│ Ollama Service  │
+│ (React SPA)     │    │ (API Gateway)   │    │ (Docker)        │
+└─────────────────┘    └─────────────────┘    └─────────────────┘
+```
+
+### 7.3 Infrastructure Requirements
+
+**Development:**
+
+- Node.js 18+ (Frontend build tools)
+- Ollama service running locally
+- Modern browser (ES2020+ support)
+
+**Production:**
+
+- Static hosting (S3, Netlify, Vercel)
+- Serverless runtime (AWS Lambda)
+- Docker container for Ollama (cloud instance)
+
+## 8. Cross-cutting Concepts
+
+### 8.1 Domain Model
+
+**Core Entities:**
+
+- **Trip:** Dates, destinations, travel modes, details
+- **ChecklistItem:** Text, category, completion status, AI-generated flag
+- **Category:** Name, items collection, UI organization
+- **Weather:** Location, temperature, conditions, precipitation
+
+### 8.2 User Experience Patterns
+
+- **Progressive Enhancement:** Core functionality works without AI
+- **Mobile-First Design:** Touch-friendly interfaces, responsive layouts
+- **Accessibility:** WCAG 2.1 AA compliance, semantic HTML, ARIA labels
+- **Performance:** Lazy loading, code splitting, optimized bundles
+
+### 8.3 Security Concepts
+
+- **Data Privacy:** All data remains on user's device
+- **Input Validation:** Client and server-side validation
+- **API Security:** Rate limiting, request sanitization
+- **Error Handling:** No sensitive information in error messages
+
+### 8.4 Testing Strategy
+
+```
+E2E Tests (Playwright)     ←→ User Workflows
+Integration Tests (RTL)    ←→ Component Interactions
+Unit Tests (Vitest)        ←→ Business Logic
+```
+
+## 9. Architecture Decisions
+
+### 9.1 ADR-001: Local AI Processing
+
+**Status:** Accepted  
+**Decision:** Use local Ollama instance instead of cloud AI APIs  
+**Rationale:** Privacy, cost control, offline capability  
+**Consequences:** Setup complexity, hardware requirements
+
+### 9.2 ADR-002: localStorage for Persistence
+
+**Status:** Accepted  
+**Decision:** Use browser localStorage instead of backend database  
+**Rationale:** Simplified deployment, privacy, no backend costs  
+**Consequences:** No cross-device sync, storage limitations
+
+### 9.3 ADR-003: React + TypeScript Stack
+
+**Status:** Accepted  
+**Decision:** React with TypeScript for frontend development  
+**Rationale:** Developer productivity, type safety, ecosystem  
+**Consequences:** Bundle size, build complexity
+
+## 10. Quality Requirements
+
+### 10.1 Quality Implementation Details
+
+The core quality requirements are defined in Section 1.2 above. This section provides implementation guidance and additional context:
+
+### 10.2 Accessibility Implementation (A11Y-1)
+
+- **WCAG 2.1 AA Compliance:** All contrast ratios ≥ 4.5:1, keyboard navigation support
+- **Screen Reader Support:** Semantic HTML, ARIA labels, proper heading hierarchy
+- **Automated Testing:** axe-core integration in CI pipeline with 0 critical issues tolerance
+- **Testing Tools:** @axe-core/react, jest-axe, Playwright accessibility assertions
+
+### 10.3 Performance Implementation (PERF-1)
+
+- **Web Vitals Monitoring:** LCP ≤ 2.5s measured via WebPageTest at 75th percentile
+- **Bundle Optimization:** Code splitting, tree shaking, dynamic imports for routes
+- **Resource Optimization:** Image compression, font optimization, preload critical resources
+- **Measurement Tools:** Lighthouse CI, WebPageTest API, Core Web Vitals Chrome extension
+
+### 10.4 Reliability Implementation (REL-1)
+
+- **Graceful Degradation:** Cached data display with clear offline indicators
+- **Data Persistence:** localStorage with error handling and corruption recovery
+- **Network Resilience:** Retry logic, timeout handling, connection status detection
+- **Testing Strategy:** Playwright network simulation, localStorage persistence tests
+
+### 10.5 Security Implementation (SEC-1)
+
+- **Privacy by Design:** No third-party analytics, no data transmission to external services
+- **Content Security Policy:** Strict CSP headers preventing XSS and data exfiltration
+- **Client-side Security:** Input sanitization, safe localStorage usage patterns
+- **Compliance Tools:** OWASP ZAP scans, Lighthouse privacy audits, CSP validation
+
+### 10.6 Maintainability Implementation (MAINT-1)
+
+- **Code Coverage:** ≥80% line and branch coverage with Istanbul exclusion comments
+- **Static Analysis:** ESLint strict + TypeScript noImplicitAny, Prettier auto-format
+- **CI/CD Pipeline:** GitHub Actions with automated testing, linting, and deployment
+- **Code Review Process:** PR templates ensuring quality gates are met before merge
+
+## 11. Risks and Technical Debt
+
+### 11.1 Technical Risks
+
+| Risk                     | Probability | Impact | Mitigation                        |
+| ------------------------ | ----------- | ------ | --------------------------------- |
+| Ollama setup complexity  | High        | Medium | Comprehensive setup documentation |
+| localStorage size limits | Medium      | Low    | Data cleanup strategies           |
+| Browser compatibility    | Low         | Medium | Progressive enhancement           |
+
+### 11.2 Technical Debt
+
+- **Missing Production Deployment:** No production infrastructure defined
+- **Limited Error Monitoring:** No centralized error tracking
+- **Manual Testing:** E2E tests require manual Ollama setup
+
+## 12. Glossary
+
+| Term             | Definition                                   |
+| ---------------- | -------------------------------------------- |
+| **Ollama**       | Local AI inference platform for running LLMs |
+| **llama3.1:8b**  | 8-billion parameter language model           |
+| **Open-Meteo**   | Free weather API service                     |
+| **localStorage** | Browser API for client-side data storage     |
+| **SPA**          | Single Page Application                      |
+| **PWA**          | Progressive Web Application                  |
+| **RTL**          | React Testing Library                        |
 
 ## See Also
 

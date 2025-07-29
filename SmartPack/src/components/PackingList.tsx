@@ -7,7 +7,6 @@ import { PlusIcon } from '@heroicons/react/24/solid';
 export const PackingList: React.FC = () => {
   const { items, categories, addItem, toggleItem, removeItem, loadAiGeneratedItems } = usePackingList();
   const { state } = useTripForm();
-  const [newItem, setNewItem] = useState<{ [catId: string]: string }>({});
   const [smartAddItem, setSmartAddItem] = useState('');
 
   // Smart categorization function
@@ -136,30 +135,6 @@ export const PackingList: React.FC = () => {
                 />
               ))}
             </ul>
-            <form
-              onSubmit={e => {
-                e.preventDefault();
-                if (newItem[cat.id]?.trim()) {
-                  addItem({ label: newItem[cat.id], checked: false, category: cat.id });
-                  setNewItem(prev => ({ ...prev, [cat.id]: '' }));
-                }
-              }}
-              className="flex gap-2 mt-2"
-            >
-              <input
-                type="text"
-                value={newItem[cat.id] || ''}
-                onChange={e => setNewItem(prev => ({ ...prev, [cat.id]: e.target.value }))}
-                placeholder={`Add to ${cat.name}`}
-                className="flex-1 px-2 py-1 border border-gray-300 dark:border-gray-600 rounded text-sm bg-white dark:bg-gray-800 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-              <button
-                type="submit"
-                className="px-3 py-1 bg-blue-600 text-white rounded text-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-              >
-                Add
-              </button>
-            </form>
           </div>
         ))}
       </div>

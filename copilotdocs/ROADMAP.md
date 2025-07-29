@@ -1,4 +1,5 @@
-<!-- Project roadmap, phases, deliverables -->
+<!-- Project roadmap, phases, deliverables
+-->
 
 # SmartPack – Roadmap
 

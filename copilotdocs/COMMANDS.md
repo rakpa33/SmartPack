@@ -1,8 +1,50 @@
 <!--
-This file lists all frequently used commands and scripts for SmartPack development, testing, and deployment.
+This file provides a comprehensive reference of all commands, scripts, and CLI operations for SmartPack development, testing, and deployment.
 Keep this comment at the top; do not overwrite or remove it when updating the document.
 
-How to update: Add or update commands whenever you add, remove, or change scripts, workflows, or dev/test/deploy steps. Review after adding new tools or scripts.
+DOCUMENT PURPOSE:
+- Central command reference for development workflow
+- Testing commands for unit, integration, and E2E test suites
+- AI/Ollama integration and troubleshooting commands
+- Backend/serverless deployment and debugging commands
+- Environment setup and dependency management
+- Troubleshooting guide for common development issues
+
+WHEN TO UPDATE:
+1. NEW SCRIPTS: Package.json script additions or modifications
+2. TOOL CHANGES: New testing frameworks, build tools, or CLI utilities
+3. DEPLOYMENT UPDATES: New deployment targets, environment configurations
+4. AI INTEGRATION: Ollama model updates, API endpoint changes
+5. TROUBLESHOOTING: New common issues and their resolution commands
+6. ENVIRONMENT CHANGES: Node.js version updates, dependency changes
+
+UPDATE GUIDELINES:
+- Organize by logical workflow: Development → Testing → Deployment → Troubleshooting
+- Include both basic and advanced usage examples for each command
+- Provide context for when to use specific commands (development vs. production)
+- Add curl examples for API testing with realistic payload data
+- Include expected outputs or success indicators where helpful
+- Cross-reference with TROUBLESHOOTING.md for complex issues
+
+COMMAND CATEGORIES:
+- **Development**: Setup, servers, build processes
+- **Testing**: Unit, integration, E2E, coverage, debugging
+- **AI Integration**: Ollama setup, model management, API testing
+- **Backend**: Lambda development, serverless deployment
+- **Troubleshooting**: Common issues, port conflicts, dependency problems
+
+MAINTENANCE NOTES:
+- Verify commands actually work before documenting them
+- Update version numbers and compatibility requirements when dependencies change
+- Remove deprecated commands and mark legacy approaches clearly
+- Keep troubleshooting section current with recently discovered issues
+- Reference specific file paths and configuration for context
+
+HOW TO USE FOR AI ASSISTANCE:
+- Reference this document before suggesting commands to ensure accuracy
+- Use established patterns for new command documentation
+- Check troubleshooting section before proposing solutions to common issues
+- Validate that suggested commands align with current project setup and dependencies
 -->
 
 # COMMANDS for SmartPack

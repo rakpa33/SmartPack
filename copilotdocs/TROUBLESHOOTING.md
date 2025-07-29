@@ -1,8 +1,57 @@
 <!--
-This file documents common issues, solutions, and debugging tips for SmartPack.
+This file documents known issues, solutions, debugging procedures, and resolution strategies for SmartPack development and deployment.
 Keep this comment at the top; do not overwrite or remove it when updating the document.
 
-How to update: Add a new entry whenever you encounter, fix, or learn about a new issue or solution. Review after major bugfixes or dependency changes.
+DOCUMENT PURPOSE:
+- Comprehensive issue database with symptoms, root causes, and verified solutions
+- Debugging procedures for common development workflow problems
+- Historical problem tracking with resolution status and prevention strategies
+- Quick reference for AI assistance and developer onboarding
+- Cross-reference hub linking to COMMANDS.md, DEVLOG.md, and external resources
+
+ISSUE DOCUMENTATION STRUCTURE:
+- **Symptom:** Clear description of what the user/developer observes
+- **Root Cause:** Technical explanation of why the issue occurs
+- **Diagnostic Steps:** Numbered procedure to identify and confirm the issue
+- **Solution:** Step-by-step resolution with specific commands and code changes
+- **Prevention:** Best practices to avoid recurrence
+- **Status:** RESOLVED/ONGOING/WORKAROUND with date stamps
+
+WHEN TO UPDATE:
+1. NEW ISSUES: Any problem that takes >30 minutes to resolve
+2. ENVIRONMENT CHANGES: Node.js updates, dependency changes, tool updates
+3. INTEGRATION PROBLEMS: API failures, service connectivity, deployment issues
+4. TESTING ISSUES: Flaky tests, environment inconsistencies, framework problems
+5. RESOLVED ITEMS: Mark status and add prevention strategies
+6. WORKFLOW CHANGES: New tools, updated procedures, deprecated approaches
+
+UPDATE GUIDELINES:
+- Use clear, searchable symptom descriptions (what developers actually see)
+- Include specific error messages, version numbers, and environment details
+- Provide both quick fixes and comprehensive solutions
+- Reference specific files, line numbers, and configuration when applicable
+- Cross-reference with COMMANDS.md for command syntax and DEVLOG.md for implementation context
+- Include external links to GitHub issues, Stack Overflow, or official documentation
+
+ORGANIZATION PRINCIPLES:
+- Group by functional area (AI Integration, Testing, Backend, Frontend, etc.)
+- Order by frequency/severity within each group
+- Use consistent formatting for easy scanning
+- Include resolution timestamps for currency tracking
+- Mark resolved items clearly but keep for reference
+
+DIAGNOSTIC COMMAND PATTERNS:
+- Always include verification commands (curl, netstat, tasklist)
+- Provide both Windows and cross-platform alternatives where applicable
+- Reference COMMANDS.md for full command documentation
+- Include expected outputs for successful verification
+
+HOW TO USE FOR AI ASSISTANCE:
+- Search symptoms before proposing new solutions
+- Reference diagnostic steps before suggesting debugging approaches
+- Check resolution status to avoid suggesting outdated solutions
+- Use this document to understand common project pain points and prevention strategies
+- Cross-reference with COMMANDS.md for accurate command syntax
 -->
 
 # Troubleshooting Guide for SmartPack

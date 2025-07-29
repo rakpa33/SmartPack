@@ -1,8 +1,61 @@
 <!--
-This file provides onboarding instructions and key setup steps for new contributors to SmartPack.
+This file provides comprehensive onboarding instructions, environment setup, and workflow guidance for new contributors to SmartPack.
 Keep this comment at the top; do not overwrite or remove it when updating the document.
 
-How to update: Update this doc whenever onboarding steps, prerequisites, or key docs change. Review after major project or process changes.
+DOCUMENT PURPOSE:
+- Complete setup guide for development environment (Node.js, Ollama AI, dependencies)
+- Step-by-step onboarding workflow with verification checkpoints
+- Current project status summary with enhanced AI features and testing coverage
+- Key documentation navigation for new contributors
+- Development workflow patterns and daily procedures
+- Integration testing guidance for enhanced AI and professional UI features
+
+TARGET AUDIENCE:
+- New developers joining the SmartPack project
+- AI assistants providing onboarding support
+- Contributors returning after extended absence
+- Deployment engineers setting up production environments
+- QA engineers validating complete system functionality
+
+WHEN TO UPDATE:
+1. DEPENDENCY CHANGES: Node.js version updates, npm version changes, new required tools
+2. ENVIRONMENT SETUP: Ollama model updates, new environment variables, configuration changes
+3. WORKFLOW UPDATES: New development scripts, testing procedures, deployment processes
+4. FEATURE COMPLETION: Major milestones, enhanced AI updates, UI improvements
+5. TOOLING CHANGES: New testing frameworks, build tools, development utilities
+6. DOCUMENTATION STRUCTURE: New docs, reorganized files, updated cross-references
+
+UPDATE GUIDELINES:
+- Keep prerequisites current with actual project requirements and package.json engines
+- Verify all setup commands work on clean environments before documenting
+- Update status sections when major features are completed or enhanced
+- Maintain step-by-step verification procedures with expected outputs
+- Cross-reference with COMMANDS.md for command syntax and TROUBLESHOOTING.md for common issues
+- Include version numbers and compatibility requirements for all tools
+
+SETUP VERIFICATION CHECKLIST:
+- All prerequisite tools installed with correct versions
+- Ollama AI service running with required model (llama3.1:8b)
+- Backend health endpoint responding correctly
+- Frontend development server accessible
+- Enhanced AI integration functional (not falling back to mock data)
+- Professional UI features rendering properly (Heroicons, accessibility)
+- Complete test suite passing (unit, integration, E2E)
+
+WORKFLOW INTEGRATION:
+- Daily development startup sequence with service verification
+- Testing strategy explanation for different test types
+- Development cycle patterns for enhanced AI features
+- Quality gates and validation procedures
+- Cross-document references for detailed technical guidance
+
+HOW TO USE FOR AI ASSISTANCE:
+- Reference this document for complete environment setup before troubleshooting
+- Use verification checkpoints to diagnose setup issues systematically
+- Check current status sections to understand implemented features and capabilities
+- Cross-reference with COMMANDS.md for specific command syntax and options
+- Consult TROUBLESHOOTING.md for common setup and integration issues
+- Validate that setup instructions align with current project dependencies and requirements
 -->
 
 # Onboarding Guide for SmartPack
