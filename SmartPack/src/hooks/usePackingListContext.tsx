@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import type { ReactNode } from 'react';
 import { PackingListContext } from './PackingListContext';
 import type { ChecklistItem, ChecklistCategory } from './PackingListContext';
+import { getDefaultCategories, createCategoryIfNotExists, mergeAndCleanupCategories } from '../utils/categoryUtils';
 
 const LOCAL_STORAGE_KEY = 'smartpack_checklist';
 const LOCAL_STORAGE_CATEGORIES_KEY = 'smartpack_categories';
@@ -18,12 +19,7 @@ export const PackingListProvider = ({ children }: { children: ReactNode }) => {
   const [categories, setCategories] = useState<ChecklistCategory[]>(
     () => {
       const savedCategories = localStorage.getItem(LOCAL_STORAGE_CATEGORIES_KEY);
-      return savedCategories ? JSON.parse(savedCategories) : [
-        { id: 'clothing', name: 'Clothing' },
-        { id: 'toiletries', name: 'Toiletries' },
-        { id: 'electronics', name: 'Electronics' },
-        { id: 'other', name: 'Other' },
-      ];
+      return savedCategories ? JSON.parse(savedCategories) : getDefaultCategories();
     }
   );
 
@@ -35,13 +31,22 @@ export const PackingListProvider = ({ children }: { children: ReactNode }) => {
   }, [categories]);
 
   const addItem = (item: Omit<ChecklistItem, 'id'>) => {
+    // Auto-create category if it doesn't exist
+    setCategories(prev => createCategoryIfNotExists(prev, item.category));
     setItems((prev) => [...prev, { ...item, id: generateId() }]);
   };
   const editItem = (id: string, updates: Partial<Omit<ChecklistItem, 'id'>>) => {
     setItems((prev) => prev.map((item) => (item.id === id ? { ...item, ...updates } : item)));
   };
   const removeItem = (id: string) => {
-    setItems((prev) => prev.filter((item) => item.id !== id));
+    setItems((prev) => {
+      const newItems = prev.filter((item) => item.id !== id);
+      // Clean up categories after removing item
+      setTimeout(() => {
+        setCategories(currentCategories => mergeAndCleanupCategories(currentCategories, newItems));
+      }, 0);
+      return newItems;
+    });
   };
   const toggleItem = (id: string) => {
     setItems((prev) => prev.map((item) => (item.id === id ? { ...item, checked: !item.checked } : item)));
@@ -70,14 +75,14 @@ export const PackingListProvider = ({ children }: { children: ReactNode }) => {
       aiGenerated: true
     }));
 
-    // Add AI-generated categories if they don't exist
+    // Add AI-generated categories if they don't exist using the utility
     const newCategories = [...new Set(aiItems.map(item => item.category.toLowerCase()))];
-    newCategories.forEach(categoryId => {
-      const categoryExists = categories.some(cat => cat.id === categoryId);
-      if (!categoryExists) {
-        const categoryName = categoryId.charAt(0).toUpperCase() + categoryId.slice(1);
-        setCategories(prev => [...prev, { id: categoryId, name: categoryName }]);
-      }
+    setCategories(prev => {
+      let updatedCategories = prev;
+      newCategories.forEach(categoryId => {
+        updatedCategories = createCategoryIfNotExists(updatedCategories, categoryId);
+      });
+      return updatedCategories;
     });
 
     setItems((prev) => [...prev, ...newItems]);

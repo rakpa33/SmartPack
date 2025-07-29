@@ -64,7 +64,7 @@ describe('Packing Checklist E2E', () => {
 
       // Find all category headings
       const headings = await screen.findAllByRole('heading', { level: 3 });
-      const clothingHeading = headings.find(h => h.textContent?.includes('Clothing'));
+      const clothingHeading: HTMLElement | undefined = headings.find((h: HTMLElement) => h.textContent?.includes('Clothing'));
       expect(clothingHeading).toBeTruthy();
 
       if (!clothingHeading) throw new Error('Clothing heading not found');
@@ -146,7 +146,10 @@ describe('Packing Checklist E2E', () => {
 
       // Find all category headings
       const headings = await screen.findAllByRole('heading', { level: 3 });
-      const electronicsHeading = headings.find(h => h.textContent?.includes('Electronics'));
+      interface HeadingElement extends HTMLElement {
+        textContent: string | null;
+      }
+      const electronicsHeading: HeadingElement | undefined = headings.find((h: HTMLElement) => h.textContent?.includes('Electronics'));
       expect(electronicsHeading).toBeTruthy();
 
       if (!electronicsHeading) throw new Error('Electronics heading not found');

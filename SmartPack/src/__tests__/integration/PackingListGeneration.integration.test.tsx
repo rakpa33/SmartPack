@@ -1,17 +1,19 @@
 // Integration test for full packing list generation flow
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
+import { vi } from 'vitest';
+import type { MockedFunction } from 'vitest';
 import { MemoryRouter } from 'react-router-dom';
 import App from '../../App';
 import { generatePackingList } from '../../services/apiService';
 
 // Mock the API service to return test data
-jest.mock('../../services/apiService', () => ({
-  generatePackingList: jest.fn(),
-  checkApiHealth: jest.fn().mockResolvedValue(true)
+vi.mock('../../services/apiService', () => ({
+  generatePackingList: vi.fn(),
+  checkApiHealth: vi.fn().mockResolvedValue(true)
 }));
 
-const mockGeneratePackingList = generatePackingList as jest.MockedFunction<typeof generatePackingList>;
+const mockGeneratePackingList = generatePackingList as MockedFunction<typeof generatePackingList>;
 
 describe('Packing List Generation Integration', () => {
   beforeEach(() => {

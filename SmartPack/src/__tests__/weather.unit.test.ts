@@ -12,6 +12,7 @@ describe('fetchWeather', () => {
       json: async () => ({
         daily: {
           temperature_2m_max: [25],
+          temperature_2m_min: [18],
           weathercode: [1],
         },
       }),
@@ -19,7 +20,11 @@ describe('fetchWeather', () => {
     const result = await fetchWeather(48.8566, 2.3522, '2025-07-27', '2025-07-28');
     expect(result).toEqual({
       temperature: 25,
+      temperatureMin: 18,
+      temperatureMax: 25,
       weathercode: 1,
+      weathercodeEnd: 1,
+      averageTemp: 21.5,
       summary: 'Mainly clear',
     });
   });

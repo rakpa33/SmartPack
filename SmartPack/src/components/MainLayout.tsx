@@ -37,7 +37,9 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
         {/* Left: Trip Details */}
         <section className="md:w-1/4 w-full mb-4 md:mb-0" id="trip-details" data-testid="trip-details-section">
           <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-4 h-full text-gray-900 dark:text-gray-100 border border-gray-200 dark:border-gray-700">
-            <TripDetails />
+            <PackingListProvider>
+              <TripDetails />
+            </PackingListProvider>
           </div>
         </section>
         {/* Center: Packing Checklist */}

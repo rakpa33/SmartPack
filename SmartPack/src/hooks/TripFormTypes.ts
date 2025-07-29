@@ -8,8 +8,12 @@ export type TripFormState = {
   step: number;
   weather?: {
     temperature: number | null;
-    summary: string;
+    temperatureMin: number | null;
+    temperatureMax: number | null;
     weathercode?: number;
+    weathercodeEnd?: number;
+    averageTemp: number | null;
+    summary: string;
   };
   generatedPackingList?: {
     checklist: Array<{

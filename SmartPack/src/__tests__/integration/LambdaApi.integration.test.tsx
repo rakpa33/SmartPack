@@ -1,10 +1,11 @@
 // src/__tests__/integration/LambdaApi.integration.test.tsx
 import { describe, test, expect, vi, beforeEach } from 'vitest';
+import type { Mock } from 'vitest';
 import { generatePackingList, checkApiHealth } from '../../services/apiService';
 import type { TripFormData } from '../../types/tripForm';
 
 // Mock fetch
-global.fetch = vi.fn() as unknown as typeof fetch;
+global.fetch = vi.fn() as unknown as Mock;
 
 // Sample data
 const sampleTripData: TripFormData = {
@@ -39,7 +40,7 @@ describe('Lambda API Integration', () => {
 
   test('generatePackingList successfully calls API and returns data', async () => {
     // Configure mock fetch response
-    (fetch as unknown as jest.Mock).mockResolvedValueOnce({
+    (fetch as unknown as Mock).mockResolvedValueOnce({
       ok: true,
       json: async () => mockResponse
     });
@@ -77,7 +78,7 @@ describe('Lambda API Integration', () => {
 
   test('generatePackingList handles API errors gracefully', async () => {
     // Configure mock fetch to return an error
-    (fetch as unknown as jest.Mock).mockResolvedValueOnce({
+    (fetch as unknown as Mock).mockResolvedValueOnce({
       ok: false,
       status: 500,
       json: async () => ({ message: 'Internal server error' })
@@ -90,7 +91,7 @@ describe('Lambda API Integration', () => {
 
   test('generatePackingList handles network errors gracefully', async () => {
     // Configure mock fetch to throw a network error
-    (fetch as unknown as jest.Mock).mockRejectedValueOnce(new Error('Network error'));
+    (fetch as unknown as Mock).mockRejectedValueOnce(new Error('Network error'));
 
     // Call the API and expect it to throw
     await expect(generatePackingList(sampleTripData, sampleWeatherData))
@@ -99,7 +100,7 @@ describe('Lambda API Integration', () => {
 
   test('checkApiHealth returns true when API is available', async () => {
     // Configure mock fetch response
-    (fetch as unknown as jest.Mock).mockResolvedValueOnce({
+    (fetch as unknown as Mock).mockResolvedValueOnce({
       ok: true,
     });
 
@@ -116,7 +117,7 @@ describe('Lambda API Integration', () => {
 
   test('checkApiHealth returns false when API is unavailable', async () => {
     // Configure mock fetch to throw an error
-    (fetch as unknown as jest.Mock).mockRejectedValueOnce(new Error('Network error'));
+    (fetch as unknown as Mock).mockRejectedValueOnce(new Error('Network error'));
 
     // Call the API service
     const result = await checkApiHealth();

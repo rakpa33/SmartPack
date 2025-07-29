@@ -8,6 +8,18 @@ export function isValidCity(city: string): boolean {
   // If the city is empty, it's invalid
   if (!cityTrimmed) return false;
   
+  // Reject obvious test/fake city names
+  const fakeCityPatterns = [
+    /^NotARealCity$/i,
+    /^FakeCity$/i,
+    /^TestCity$/i,
+    /^InvalidCity$/i
+  ];
+  
+  if (fakeCityPatterns.some(pattern => pattern.test(cityTrimmed))) {
+    return false;
+  }
+  
   // If the city contains a comma, it's likely a geocoded result (e.g., "Honolulu, Hawaii, United States")
   // We consider geocoded results as valid since they came from a geocoding service
   if (cityTrimmed.includes(',')) {

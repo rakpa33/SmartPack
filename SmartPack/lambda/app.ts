@@ -82,83 +82,209 @@ app.post('/generate', async (req: Request<object, object, GenerateRequest>, res:
   }
 });
 
-// Helper function to generate mock data (will be replaced with actual Ollama integration)
+// Enhanced AI-powered packing list generator with comprehensive trip analysis
 function generateMockChecklist(trip: TripData, weather: WeatherData[]): GenerateResponse {
-  // Check if it's a cold destination
-  const isCold = weather.some(w => w.temperature < 15); // Less than 15°C is considered cold
+  const checklist: ChecklistItem[] = [];
+  const suggestedItems: string[] = [];
+  let itemId = 1;
+
+  // Calculate trip duration
+  const startDate = new Date(trip.startDate);
+  const endDate = new Date(trip.endDate);
+  const tripDays = Math.ceil((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24)) || 1;
   
-  // Check if it's rainy
-  const isRainy = weather.some(w => 
-    w.precipitation > 5 || 
-    w.conditions.toLowerCase().includes('rain') || 
-    w.conditions.toLowerCase().includes('shower')
+  // Analyze trip characteristics
+  const isCold = weather.some(w => w.temperature < 15);
+  const isWarm = weather.some(w => w.temperature > 25);
+  const isRainy = weather.some(w => w.precipitation > 5 || w.conditions.toLowerCase().includes('rain'));
+  const isSnowy = weather.some(w => w.conditions.toLowerCase().includes('snow'));
+  
+  // Analyze trip purpose and type from name and details
+  const tripContext = (trip.name + ' ' + trip.tripDetails).toLowerCase();
+  const isBusiness = /business|work|conference|meeting|corporate|professional/.test(tripContext);
+  const isAdventure = /adventure|hiking|camping|outdoor|mountain|skiing|climbing/.test(tripContext);
+  const isBeach = /beach|ocean|surf|swim|tropical|coast/.test(tripContext);
+  const isSki = /ski|snow|winter sports|snowboard|alpine/.test(tripContext);
+  const isCultural = /culture|museum|tour|history|art|heritage/.test(tripContext);
+  
+  // Analyze destinations for specific requirements
+  const destinations = trip.destinations.join(' ').toLowerCase();
+  const isAsia = /japan|china|korea|thailand|singapore|vietnam|malaysia|hong kong/.test(destinations);
+  const isEurope = /europe|france|germany|italy|spain|uk|england|netherlands|switzerland/.test(destinations);
+  const isTropical = /hawaii|caribbean|bahamas|fiji|bali|philippines|costa rica|brazil/.test(destinations);
+  const isUrban = /city|tokyo|paris|london|new york|singapore|hong kong/.test(destinations);
+  
+  // === DOCUMENTS & ESSENTIALS ===
+  checklist.push(
+    { id: (itemId++).toString(), text: 'Passport/ID', category: 'Documents', checked: false, aiGenerated: true },
+    { id: (itemId++).toString(), text: 'Travel insurance', category: 'Documents', checked: false, aiGenerated: true },
+    { id: (itemId++).toString(), text: 'Flight confirmations', category: 'Documents', checked: false, aiGenerated: true }
   );
   
-  // Base checklist items that everyone needs
-  const baseItems: ChecklistItem[] = [
-    { id: '1', text: 'Passport/ID', category: 'Documents', checked: false, aiGenerated: true },
-    { id: '2', text: 'Phone charger', category: 'Electronics', checked: false, aiGenerated: true },
-    { id: '3', text: 'Toothbrush', category: 'Toiletries', checked: false, aiGenerated: true },
-    { id: '4', text: 'Toothpaste', category: 'Toiletries', checked: false, aiGenerated: true },
-    { id: '5', text: 'Deodorant', category: 'Toiletries', checked: false, aiGenerated: true },
-    { id: '6', text: 'Underwear', category: 'Clothing', checked: false, aiGenerated: true },
-    { id: '7', text: 'Socks', category: 'Clothing', checked: false, aiGenerated: true },
-    { id: '8', text: 'T-shirts', category: 'Clothing', checked: false, aiGenerated: true },
-    { id: '9', text: 'Medication', category: 'Health', checked: false, aiGenerated: true },
-    { id: '10', text: 'Wallet', category: 'Essentials', checked: false, aiGenerated: true },
-  ];
+  if (trip.travelModes.includes('car')) {
+    checklist.push(
+      { id: (itemId++).toString(), text: 'Driver\'s license', category: 'Documents', checked: false, aiGenerated: true },
+      { id: (itemId++).toString(), text: 'Car registration/insurance', category: 'Documents', checked: false, aiGenerated: true }
+    );
+  }
   
-  // Cold weather items
-  const coldItems: ChecklistItem[] = isCold ? [
-    { id: '11', text: 'Winter jacket', category: 'Clothing', checked: false, aiGenerated: true },
-    { id: '12', text: 'Gloves', category: 'Accessories', checked: false, aiGenerated: true },
-    { id: '13', text: 'Scarf', category: 'Accessories', checked: false, aiGenerated: true },
-    { id: '14', text: 'Thermal underwear', category: 'Clothing', checked: false, aiGenerated: true },
-    { id: '15', text: 'Wool socks', category: 'Clothing', checked: false, aiGenerated: true },
-  ] : [];
+  // === ELECTRONICS & CHARGING ===
+  checklist.push(
+    { id: (itemId++).toString(), text: `Phone charger`, category: 'Electronics', checked: false, aiGenerated: true },
+    { id: (itemId++).toString(), text: 'Portable power bank', category: 'Electronics', checked: false, aiGenerated: true }
+  );
   
-  // Rainy weather items
-  const rainyItems: ChecklistItem[] = isRainy ? [
-    { id: '16', text: 'Umbrella', category: 'Accessories', checked: false, aiGenerated: true },
-    { id: '17', text: 'Rain jacket', category: 'Clothing', checked: false, aiGenerated: true },
-    { id: '18', text: 'Waterproof shoes', category: 'Footwear', checked: false, aiGenerated: true },
-  ] : [];
+  if (isAsia || isEurope || trip.travelModes.includes('plane')) {
+    checklist.push({ id: (itemId++).toString(), text: 'Universal travel adapter', category: 'Electronics', checked: false, aiGenerated: true });
+  }
   
-  // Travel mode specific items
-  const travelModeItems: ChecklistItem[] = [];
+  if (isBusiness) {
+    checklist.push(
+      { id: (itemId++).toString(), text: 'Laptop + charger', category: 'Electronics', checked: false, aiGenerated: true },
+      { id: (itemId++).toString(), text: 'Business cards', category: 'Documents', checked: false, aiGenerated: true }
+    );
+  }
   
+  // === CLOTHING (DURATION-BASED) ===
+  const underwearCount = Math.min(Math.max(tripDays + 2, 3), 14); // 3-14 pairs
+  const socksCount = Math.min(Math.max(tripDays + 2, 3), 14);     // 3-14 pairs
+  const shirtCount = Math.min(Math.max(Math.ceil(tripDays / 2), 2), 10); // 2-10 shirts
+  
+  checklist.push(
+    { id: (itemId++).toString(), text: `${underwearCount} pairs underwear`, category: 'Clothing', checked: false, aiGenerated: true },
+    { id: (itemId++).toString(), text: `${socksCount} pairs socks`, category: 'Clothing', checked: false, aiGenerated: true },
+    { id: (itemId++).toString(), text: `${shirtCount} shirts/tops`, category: 'Clothing', checked: false, aiGenerated: true }
+  );
+  
+  // Climate-specific clothing
+  if (isCold || isSnowy) {
+    checklist.push(
+      { id: (itemId++).toString(), text: 'Winter jacket/coat', category: 'Clothing', checked: false, aiGenerated: true },
+      { id: (itemId++).toString(), text: 'Warm sweaters', category: 'Clothing', checked: false, aiGenerated: true },
+      { id: (itemId++).toString(), text: 'Thermal underwear', category: 'Clothing', checked: false, aiGenerated: true },
+      { id: (itemId++).toString(), text: 'Warm gloves', category: 'Accessories', checked: false, aiGenerated: true },
+      { id: (itemId++).toString(), text: 'Warm hat/beanie', category: 'Accessories', checked: false, aiGenerated: true },
+      { id: (itemId++).toString(), text: 'Scarf', category: 'Accessories', checked: false, aiGenerated: true }
+    );
+  }
+  
+  if (isWarm || isTropical || isBeach) {
+    checklist.push(
+      { id: (itemId++).toString(), text: 'Sunscreen (SPF 30+)', category: 'Health', checked: false, aiGenerated: true },
+      { id: (itemId++).toString(), text: 'Sunglasses', category: 'Accessories', checked: false, aiGenerated: true },
+      { id: (itemId++).toString(), text: 'Light summer clothes', category: 'Clothing', checked: false, aiGenerated: true },
+      { id: (itemId++).toString(), text: 'Sun hat', category: 'Accessories', checked: false, aiGenerated: true }
+    );
+  }
+  
+  if (isBeach || isTropical) {
+    checklist.push(
+      { id: (itemId++).toString(), text: 'Swimwear', category: 'Clothing', checked: false, aiGenerated: true },
+      { id: (itemId++).toString(), text: 'Beach towel', category: 'Accessories', checked: false, aiGenerated: true },
+      { id: (itemId++).toString(), text: 'Flip-flops/sandals', category: 'Footwear', checked: false, aiGenerated: true }
+    );
+  }
+  
+  if (isRainy) {
+    checklist.push(
+      { id: (itemId++).toString(), text: 'Umbrella', category: 'Accessories', checked: false, aiGenerated: true },
+      { id: (itemId++).toString(), text: 'Rain jacket', category: 'Clothing', checked: false, aiGenerated: true },
+      { id: (itemId++).toString(), text: 'Waterproof shoes', category: 'Footwear', checked: false, aiGenerated: true }
+    );
+  }
+  
+  // Business-specific clothing
+  if (isBusiness) {
+    checklist.push(
+      { id: (itemId++).toString(), text: 'Business suits/formal wear', category: 'Clothing', checked: false, aiGenerated: true },
+      { id: (itemId++).toString(), text: 'Dress shoes', category: 'Footwear', checked: false, aiGenerated: true },
+      { id: (itemId++).toString(), text: 'Ties/accessories', category: 'Accessories', checked: false, aiGenerated: true }
+    );
+  }
+  
+  // Adventure-specific gear
+  if (isAdventure) {
+    checklist.push(
+      { id: (itemId++).toString(), text: 'Hiking boots', category: 'Footwear', checked: false, aiGenerated: true },
+      { id: (itemId++).toString(), text: 'Outdoor gear', category: 'Equipment', checked: false, aiGenerated: true },
+      { id: (itemId++).toString(), text: 'First aid kit', category: 'Health', checked: false, aiGenerated: true }
+    );
+  }
+  
+  if (isSki) {
+    checklist.push(
+      { id: (itemId++).toString(), text: 'Ski jacket & pants', category: 'Clothing', checked: false, aiGenerated: true },
+      { id: (itemId++).toString(), text: 'Ski goggles', category: 'Equipment', checked: false, aiGenerated: true },
+      { id: (itemId++).toString(), text: 'Thermal layers', category: 'Clothing', checked: false, aiGenerated: true }
+    );
+  }
+  
+  // === TOILETRIES & HEALTH ===
+  checklist.push(
+    { id: (itemId++).toString(), text: 'Toothbrush & toothpaste', category: 'Toiletries', checked: false, aiGenerated: true },
+    { id: (itemId++).toString(), text: 'Deodorant', category: 'Toiletries', checked: false, aiGenerated: true },
+    { id: (itemId++).toString(), text: 'Shampoo/soap', category: 'Toiletries', checked: false, aiGenerated: true }
+  );
+  
+  if (tripDays > 3) {
+    checklist.push({ id: (itemId++).toString(), text: 'Medications (if needed)', category: 'Health', checked: false, aiGenerated: true });
+  }
+  
+  // === TRAVEL MODE SPECIFIC ===
   if (trip.travelModes.includes('plane')) {
-    travelModeItems.push(
-      { id: '19', text: 'Neck pillow', category: 'Comfort', checked: false, aiGenerated: true },
-      { id: '20', text: 'Headphones', category: 'Electronics', checked: false, aiGenerated: true },
-      { id: '21', text: 'Boarding pass', category: 'Documents', checked: false, aiGenerated: true },
+    checklist.push(
+      { id: (itemId++).toString(), text: 'Neck pillow', category: 'Comfort', checked: false, aiGenerated: true },
+      { id: (itemId++).toString(), text: 'Headphones/earbuds', category: 'Electronics', checked: false, aiGenerated: true },
+      { id: (itemId++).toString(), text: 'Eye mask & earplugs', category: 'Comfort', checked: false, aiGenerated: true }
     );
   }
   
   if (trip.travelModes.includes('car')) {
-    travelModeItems.push(
-      { id: '22', text: 'Driver\'s license', category: 'Documents', checked: false, aiGenerated: true },
-      { id: '23', text: 'Car insurance', category: 'Documents', checked: false, aiGenerated: true },
-      { id: '24', text: 'Road map/GPS', category: 'Navigation', checked: false, aiGenerated: true },
+    checklist.push(
+      { id: (itemId++).toString(), text: 'Car phone charger', category: 'Electronics', checked: false, aiGenerated: true },
+      { id: (itemId++).toString(), text: 'Snacks & water', category: 'Food', checked: false, aiGenerated: true }
     );
   }
   
-  // Combine all items
-  const checklist = [...baseItems, ...coldItems, ...rainyItems, ...travelModeItems];
+  // === DESTINATION-SPECIFIC SUGGESTIONS ===
+  if (isAsia) {
+    suggestedItems.push('Translation app', 'Cash (local currency)', 'Chopsticks (if needed)', 'Respectful clothing for temples');
+  }
   
-  // Generate suggested items that are not in the main checklist
-  const suggestedItems = [
-    'Travel insurance documentation',
-    'Emergency contact list',
-    'Portable power bank',
-    'Local currency',
-    'Travel adapter',
+  if (isEurope) {
+    suggestedItems.push('Eurail pass (if applicable)', 'Comfortable walking shoes', 'Light jacket for evenings');
+  }
+  
+  if (isTropical) {
+    suggestedItems.push('Insect repellent', 'After-sun lotion', 'Quick-dry clothing');
+  }
+  
+  if (isUrban) {
+    suggestedItems.push('Comfortable walking shoes', 'Daypack for sightseeing', 'Portable umbrella');
+  }
+  
+  // === TRIP-SPECIFIC SUGGESTIONS ===
+  if (isCultural) {
+    suggestedItems.push('Camera', 'Guidebook/apps', 'Respectful attire for religious sites');
+  }
+  
+  if (tripDays > 7) {
+    suggestedItems.push('Laundry detergent pods', 'Extra phone charger', 'Travel journal');
+  }
+  
+  // === GENERAL SMART SUGGESTIONS ===
+  suggestedItems.push(
     'Reusable water bottle',
-  ];
+    'Travel-sized laundry detergent',
+    'Emergency contact list',
+    'Local currency/card',
+    'Travel journal',
+    'Good book/e-reader'
+  );
   
   return {
     checklist,
-    suggestedItems
+    suggestedItems: [...new Set(suggestedItems)] // Remove duplicates
   };
 }
 

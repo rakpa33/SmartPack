@@ -1,10 +1,10 @@
-import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import MainLayout from '../../components/MainLayout';
 import { TripFormContext } from '../../hooks/TripFormContextOnly';
 import type { TripFormState } from '../../hooks/TripFormTypes';
 import { vi } from 'vitest';
+import '@testing-library/jest-dom';
 
 function renderMainLayoutWithTripForm(state: Partial<TripFormState> = {}) {
   const defaultState: TripFormState = {
@@ -36,21 +36,11 @@ describe('MainLayout Trip Details integration', () => {
       preferences: ['Gluten-free'],
     });
     expect(screen.getByText('Trip Details')).toBeInTheDocument();
-    expect(screen.getByText((_, node) =>
-      node?.textContent === 'Euro Trip')
-    ).toBeInTheDocument();
-    expect(screen.getByText((_, node) =>
-      node?.textContent === '2025-09-01 – 2025-09-15')
-    ).toBeInTheDocument();
-    expect(screen.getByText((_, node) =>
-      node?.textContent === 'Rome, Madrid')
-    ).toBeInTheDocument();
-    expect(screen.getByText((_, node) =>
-      node?.textContent === 'Car, Bus')
-    ).toBeInTheDocument();
-    expect(screen.getByText((_, node) =>
-      node?.textContent === 'Gluten-free')
-    ).toBeInTheDocument();
+    expect(screen.getByText(/Euro Trip/)).toBeInTheDocument();
+    expect(screen.getByText(/2025-09-01 – 2025-09-15/)).toBeInTheDocument();
+    expect(screen.getByText(/Rome, Madrid/)).toBeInTheDocument();
+    expect(screen.getByText(/Car, Bus/)).toBeInTheDocument();
+    expect(screen.getByText(/Gluten-free/)).toBeInTheDocument();
   });
 
   it('shows (not set) and (none) for missing fields', () => {

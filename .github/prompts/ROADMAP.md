@@ -216,9 +216,70 @@
 
 ---
 
+### Step 9: Feature Refinement & Edge Case Testing
+
+**Estimated Time:** 60 minutes
+
+**Tasks:**
+
+- Review and refine feature behavior and business logic
+- Test edge cases for text input validation (city names, trip details, custom prompts)
+- Validate form submission flows with unusual inputs
+- Test error handling for network failures and API timeouts
+- Verify state persistence across browser refreshes and navigation
+- Ensure graceful degradation when backend is unavailable
+- Test Unicode and international character support in all text fields
+- Validate maximum input lengths and special character handling
+
+**Key Areas:**
+
+- Input validation and sanitization
+- Error boundary testing
+- Network resilience
+- State management edge cases
+- Cross-browser compatibility testing
+
+**Deliverables:**
+
+- Robust feature behavior under edge conditions
+- Comprehensive input validation
+- Enhanced error handling and user feedback
+
+---
+
+### Step 10: Security Hardening & Validation
+
+**Estimated Time:** 45 minutes
+
+**Tasks:**
+
+- Implement input sanitization for all user-generated content
+- Add Content Security Policy (CSP) headers
+- Validate API request/response data structures
+- Ensure no sensitive data is logged or exposed in client-side code
+- Test for XSS vulnerabilities in text inputs and suggestions
+- Validate that localStorage data cannot be manipulated to break the app
+- Review and secure any external API calls (weather, geocoding)
+- Implement rate limiting considerations for backend API calls
+
+**Key Components:**
+
+- Input validation utilities
+- API request/response validation
+- Security headers configuration
+- Error logging sanitization
+
+**Deliverables:**
+
+- Hardened application against common web vulnerabilities
+- Secure data handling throughout the application
+- Protected API endpoints and data validation
+
+---
+
 ## Phase 4: Testing, QA, & Accessibility
 
-### Step 9: Integration & E2E Testing
+### Step 11: Integration & E2E Testing
 
 **Estimated Time:** 75 minutes
 
@@ -243,7 +304,7 @@
 
 ## Phase 5: Polish & Deployment
 
-### Step 10: UI Polish & Enhancements
+### Step 12: UI Polish & Enhancements
 
 **Estimated Time:** 60 minutes
 
@@ -262,7 +323,7 @@
 
 ---
 
-### Step 11: Build & Deploy
+### Step 13: Build & Deploy
 
 **Estimated Time:** 60 minutes
 
@@ -283,7 +344,7 @@
 
 ## Phase 6: Documentation & Success Criteria
 
-### Step 12: Documentation & Handover
+### Step 14: Documentation & Handover
 
 **Estimated Time:** 30 minutes
 

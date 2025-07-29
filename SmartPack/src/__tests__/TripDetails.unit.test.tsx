@@ -2,6 +2,7 @@ import React from 'react';
 import { render } from '@testing-library/react';
 import { TripDetails } from '../components/TripDetails';
 import { TripFormContext } from '../hooks/TripFormContextOnly';
+import { PackingListProvider } from '../hooks/usePackingListContext';
 import type { TripFormState } from '../hooks/TripFormTypes';
 
 function renderWithTripForm(state: Partial<TripFormState> = {}) {
@@ -16,7 +17,9 @@ function renderWithTripForm(state: Partial<TripFormState> = {}) {
   };
   return render(
     <TripFormContext.Provider value={{ state: { ...defaultState, ...state }, dispatch: () => { } }}>
-      <TripDetails />
+      <PackingListProvider>
+        <TripDetails />
+      </PackingListProvider>
     </TripFormContext.Provider>
   );
 }

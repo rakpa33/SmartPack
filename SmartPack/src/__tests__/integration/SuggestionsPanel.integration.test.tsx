@@ -3,25 +3,27 @@ import '@testing-library/jest-dom';
 import { MemoryRouter } from 'react-router-dom';
 import App from '../../App';
 import { generatePackingList } from '../../services/apiService';
+import { vi } from 'vitest';
+import type { MockedFunction, Mock } from 'vitest';
 
 // Mock the API service
-jest.mock('../../services/apiService', () => ({
-  generatePackingList: jest.fn(),
-  checkApiHealth: jest.fn().mockResolvedValue(true)
+vi.mock('../../services/apiService', () => ({
+  generatePackingList: vi.fn(),
+  checkApiHealth: vi.fn().mockResolvedValue(true)
 }));
 
-const mockGeneratePackingList = generatePackingList as jest.MockedFunction<typeof generatePackingList>;
+const mockGeneratePackingList = generatePackingList as MockedFunction<typeof generatePackingList>;
 
 // Mock fetch for weather API
-global.fetch = jest.fn();
+global.fetch = vi.fn() as unknown as Mock;
 
 describe('SuggestionsPanel Integration', () => {
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     localStorage.clear();
 
     // Mock weather API response
-    const mockFetch = global.fetch as unknown as jest.MockedFunction<typeof fetch>;
+    const mockFetch = global.fetch as unknown as Mock;
     mockFetch.mockResolvedValue({
       ok: true,
       json: async () => ({

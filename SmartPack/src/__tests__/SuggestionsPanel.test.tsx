@@ -53,7 +53,8 @@ describe('SuggestionsPanel', () => {
     render(<SuggestionsPanel />);
 
     expect(screen.getByText('Complete your trip details to get AI-powered packing suggestions.')).toBeInTheDocument();
-    expect(screen.getByText('🤖')).toBeInTheDocument();
+    // Instead of checking for emoji, check for the AI-related text
+    expect(screen.getByText('AI will analyze your destinations, weather, and travel modes to suggest items you might need.')).toBeInTheDocument();
   });
 
   it('shows refinement form when trip is complete', () => {
@@ -68,6 +69,9 @@ describe('SuggestionsPanel', () => {
         step: 2,
         weather: {
           temperature: 25,
+          temperatureMin: 18,
+          temperatureMax: 32,
+          averageTemp: 25,
           summary: 'Sunny',
           weathercode: 1
         },
@@ -121,6 +125,9 @@ describe('SuggestionsPanel', () => {
         step: 2,
         weather: {
           temperature: 25,
+          temperatureMin: 18,
+          temperatureMax: 32,
+          averageTemp: 25,
           summary: 'Sunny',
           weathercode: 1
         },
@@ -217,6 +224,9 @@ describe('SuggestionsPanel', () => {
         step: 2,
         weather: {
           temperature: 25,
+          temperatureMin: 18,
+          temperatureMax: 32,
+          averageTemp: 25,
           summary: 'Sunny',
           weathercode: 1
         },

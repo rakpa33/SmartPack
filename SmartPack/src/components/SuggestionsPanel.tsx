@@ -3,6 +3,7 @@ import { useTripForm } from '../hooks/useTripForm';
 import { usePackingList } from '../hooks/usePackingList';
 import { generatePackingList, type WeatherData } from '../services/apiService';
 import type { TripFormData } from '../types';
+import { ArrowPathIcon, PlusIcon, XMarkIcon, CpuChipIcon } from '@heroicons/react/24/solid';
 
 interface SuggestionItem {
   id: string;
@@ -98,6 +99,56 @@ export const SuggestionsPanel: React.FC = () => {
     setSuggestions(prev => prev.filter(s => s.id !== suggestion.id));
   };
 
+  const handleRemoveSuggestion = (suggestionId: string) => {
+    setSuggestions(prev => prev.filter(s => s.id !== suggestionId));
+  };
+
+  const handleRefreshSuggestions = async () => {
+    if (!state.tripName || state.destinations.length === 0) {
+      setError('Please complete your trip details first.');
+      return;
+    }
+
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      const tripData: TripFormData = {
+        name: state.tripName,
+        startDate: state.startDate,
+        endDate: state.endDate,
+        destinations: state.destinations,
+        travelModes: state.travelModes,
+        tripDetails: 'Refresh suggestions based on current trip and checklist details'
+      };
+
+      const weatherData: WeatherData[] = state.weather ? [{
+        location: state.destinations[0] || 'Unknown',
+        temperature: state.weather.temperature || 20,
+        conditions: state.weather.summary || 'Clear',
+        precipitation: 0
+      }] : [];
+
+      const response = await generatePackingList(tripData, weatherData);
+
+      if (response.suggestedItems) {
+        const newSuggestions: SuggestionItem[] = response.suggestedItems.map((item: string, index: number) => ({
+          id: `refresh-${Date.now()}-${index}`,
+          text: item,
+          category: 'general'
+        }));
+
+        // Replace all suggestions with fresh ones
+        setSuggestions(newSuggestions);
+      }
+    } catch (err) {
+      setError('Failed to refresh suggestions. Please try again.');
+      console.error('Error refreshing suggestions:', err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const hasTrip = state.step >= 2 && state.tripName && state.destinations.length > 0;
 
   return (
@@ -111,7 +162,9 @@ export const SuggestionsPanel: React.FC = () => {
           <p className="text-gray-500 dark:text-gray-400 mb-2">
             Complete your trip details to get AI-powered packing suggestions.
           </p>
-          <div className="text-4xl mb-4">🤖</div>
+          <div className="flex justify-center mb-4">
+            <CpuChipIcon className="h-16 w-16 text-gray-400 dark:text-gray-500" />
+          </div>
           <p className="text-sm text-gray-400 dark:text-gray-500">
             AI will analyze your destinations, weather, and travel modes to suggest items you might need.
           </p>
@@ -157,10 +210,23 @@ export const SuggestionsPanel: React.FC = () => {
           </div>
 
           {/* Suggestions List */}
-          <div>
-            <h3 className="font-semibold mb-3 text-gray-900 dark:text-gray-100">
-              Suggested Items ({suggestions.length})
-            </h3>
+          <div data-testid="ai-suggestions-section">
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="font-semibold text-gray-900 dark:text-gray-100">
+                Suggested Items ({suggestions.length})
+              </h3>
+              {suggestions.length > 0 && (
+                <button
+                  onClick={handleRefreshSuggestions}
+                  disabled={isLoading}
+                  className="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                  title="Refresh suggestions"
+                  aria-label="Refresh suggestions"
+                >
+                  <ArrowPathIcon className={`h-4 w-4 ${isLoading ? 'animate-spin' : ''}`} />
+                </button>
+              )}
+            </div>
             {suggestions.length === 0 ? (
               <div className="text-center py-6">
                 <p className="text-gray-500 dark:text-gray-400">
@@ -187,13 +253,24 @@ export const SuggestionsPanel: React.FC = () => {
                         </span>
                       </div>
                     </div>
-                    <button
-                      onClick={() => handleAddSuggestion(suggestion)}
-                      className="ml-3 bg-green-600 hover:bg-green-700 text-white text-sm font-medium py-1 px-3 rounded-md transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
-                      aria-label={`Add ${suggestion.text} to packing list`}
-                    >
-                      Add
-                    </button>
+                    <div className="flex items-center gap-2 ml-3">
+                      <button
+                        onClick={() => handleRemoveSuggestion(suggestion.id)}
+                        className="text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-200 text-sm font-medium py-1 px-2 rounded-md transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
+                        aria-label={`Remove ${suggestion.text} suggestion`}
+                        title="Remove suggestion"
+                      >
+                        <XMarkIcon className="h-4 w-4" />
+                      </button>
+                      <button
+                        onClick={() => handleAddSuggestion(suggestion)}
+                        className="bg-green-600 hover:bg-green-700 text-white text-sm font-medium py-1 px-3 rounded-md transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 flex items-center gap-1"
+                        aria-label={`Add ${suggestion.text} to packing list`}
+                      >
+                        <PlusIcon className="h-4 w-4" />
+                        Add
+                      </button>
+                    </div>
                   </div>
                 ))}
               </div>
@@ -201,9 +278,14 @@ export const SuggestionsPanel: React.FC = () => {
           </div>
 
           {/* Usage Tip */}
-          <div className="text-xs text-gray-500 dark:text-gray-400 bg-gray-50 dark:bg-gray-700 p-3 rounded-lg">
-            💡 <strong>Tip:</strong> Be specific with your refinement prompts.
-            Mention activities, weather concerns, or special needs for better suggestions.
+          <div className="text-xs text-gray-500 dark:text-gray-400 bg-gray-50 dark:bg-gray-700 p-3 rounded-lg flex items-start gap-2">
+            <svg className="h-4 w-4 text-yellow-500 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+              <path fillRule="evenodd" d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" clipRule="evenodd" />
+            </svg>
+            <span>
+              <strong>Tip:</strong> Be specific with your refinement prompts.
+              Mention activities, weather concerns, or special needs for better suggestions.
+            </span>
           </div>
         </div>
       )}

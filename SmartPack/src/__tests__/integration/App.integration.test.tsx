@@ -13,7 +13,7 @@ import App from '../../App';
 import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import '@testing-library/jest-dom';
-import { jest } from '@jest/globals';
+import { vi } from 'vitest';
 
 async function fillOutTripForm() {
   try {
@@ -67,7 +67,7 @@ async function fillOutTripForm() {
     // Check for any form errors after submission
     const errors = screen.queryAllByRole('alert');
     if (errors.length > 0) {
-      console.error('Validation errors after submission:', errors.map(e => e.textContent));
+      console.error('Validation errors after submission:', errors.map((e: HTMLElement) => e.textContent));
     } else {
       console.log('No validation errors found after submission');
     }
@@ -105,7 +105,7 @@ async function fillOutTripForm() {
 
     // Mock any browser APIs that might be causing issues
     // This helps with handling things like window.location navigation in tests
-    const mockConsoleError = jest.spyOn(console, 'error');
+    const mockConsoleError = vi.spyOn(console, 'error');
     mockConsoleError.mockImplementation((message) => {
       // Filter out specific React errors that happen during testing but aren't relevant
       if (message && message.toString().includes('Warning: ReactDOM.render')) {
@@ -141,7 +141,7 @@ async function fillOutTripForm() {
       },
       {
         timeout: 5000,
-        onTimeout: (error) => {
+        onTimeout: (error: Error) => {
           console.error('Timed out waiting for form to disappear:', error);
           console.log('Current DOM:', document.body.innerHTML);
           return error;

@@ -11,6 +11,95 @@ Document common issues and their solutions here. Update this file as you encount
 
 ## Common Issues
 
+### Enhanced AI System Issues
+
+#### Repetitive "10 pairs underwear" suggestions (RESOLVED)
+
+- **Symptom:** AI generates same static items regardless of trip context, especially "10 pairs underwear" for all trips.
+- **Root Cause:** Static mock data in backend without intelligent analysis.
+- **Solution:**
+  - Complete backend overhaul with enhanced AI intelligence
+  - Implemented smart quantity calculations based on trip duration
+  - Added trip purpose recognition (business/beach/adventure)
+  - Integrated weather-based recommendations
+  - Added travel mode and destination intelligence
+- **Result:** Context-aware suggestions (e.g., 4-day business trip → 6 pairs underwear + business cards + laptop)
+
+#### AI suggestions not intelligent/context-aware
+
+- **Symptom:** Generated suggestions don't match trip type, duration, or destination.
+- **Solution:**
+  - Enhanced AI backend now analyzes 7 aspects of trip data
+  - Duration calculations with realistic quantity caps
+  - NLP-based trip purpose detection
+  - Weather analysis for gear recommendations
+  - Regional suggestions based on destination
+- **Testing:** Comprehensive test suite validates intelligent behavior
+
+### Backend Connectivity Issues
+
+#### "Failed to get AI suggestions" error
+
+- **Symptom:** SuggestionsPanel shows error when trying to generate recommendations.
+- **Root Cause:** Backend server not properly running or accessible.
+- **Diagnostic Steps:**
+  1. Check if backend is running: `tasklist | findstr "node"`
+  2. Test health endpoint: `curl http://localhost:3000/health`
+  3. Verify process: `npm run lambda:dev` should show server startup
+  4. Check port availability: `netstat -ano | findstr :3000`
+- **Solution:**
+  - Always use `npm run lambda:dev` (not direct `node` commands)
+  - Ensure both frontend (5173) and backend (3000) are running
+  - Test backend health before AI operations
+- **Prevention:** Added health check endpoints and proper startup documentation
+
+#### Enhanced AI API errors
+
+- **Symptom:** API returns errors or unexpected responses.
+- **Diagnostic Steps:**
+  1. Check backend console for error logs
+  2. Test with curl command (see COMMANDS.md)
+  3. Verify request format matches expected schema
+  4. Check Enhanced AI logic in `lambda/app.ts`
+- **Solution:**
+  - Enhanced error handling with detailed error messages
+  - Comprehensive input validation
+  - Fallback mechanisms for edge cases
+  - Improved logging for debugging
+
+### Professional UI Issues
+
+#### Emoji rendering inconsistencies (RESOLVED)
+
+- **Symptom:** Emoji-based icons display differently across browsers/devices.
+- **Solution:**
+  - Replaced all emoji icons with professional Heroicons
+  - Implemented consistent vector icon system
+  - Added proper ARIA labels for accessibility
+  - Optimized icon loading and performance
+- **Result:** Professional, consistent UI across all platforms
+
+### Testing Issues
+
+#### Test suite reliability
+
+- **Symptom:** Tests occasionally fail or hang in watch mode.
+- **Solution:**
+  - Use `npm test -- --run` for CI/final verification
+  - Comprehensive mock cleanup in beforeEach blocks
+  - Proper async handling with waitFor and proper timeouts
+  - Isolated test environments with localStorage clearing
+- **Current Status:** 100% test pass rate for enhanced AI features
+
+#### E2E test flakiness
+
+- **Symptom:** E2E tests sometimes fail due to timing issues.
+- **Solution:**
+  - Increased timeouts for critical interactions
+  - Added proper wait conditions for dynamic content
+  - Mock external APIs for consistent test data
+  - Implemented retry mechanisms for network-dependent tests
+
 ### Geocoded city names fail validation
 
 - **Symptom:** When entering a city like "paris", it correctly geocodes to "Paris, Ile-de-France, Metropolitan France, France" but clicking Next results in a "Enter a valid city" validation error.

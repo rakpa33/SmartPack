@@ -10,7 +10,7 @@
     "preview": "vite preview",
     "test": "vitest",
     "test:unit": "cd SmartPack && vitest --include src/__tests__/*.test.tsx src/__tests__/*.unit.test.ts src/__tests__/*.test.ts src/__tests__/*.unit.test.tsx",
-    "test:int": "vitest --include src/__tests__/integration/**/*.test.ts",
+    "test:int": "vitest --include src/__tests__/integration/**/*.test.ts src/__tests__/integration/**/*.test.tsx",
     "test:e2e": "playwright test",
     "lambda:dev": "node lambda/server.js",
     "lambda:build": "esbuild lambda/app.ts --bundle --platform=node --target=node20 --outfile=lambda/dist/app.js",
@@ -19,6 +19,7 @@
   },
   "dependencies": {
     "@headlessui/react": "^2.2.6",
+    "@heroicons/react": "^2.0.18",
     "@types/cors": "^2.8.19",
     "cors": "^2.8.5",
     "express": "^5.1.0",
