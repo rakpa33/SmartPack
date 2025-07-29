@@ -51,6 +51,16 @@ Keep this file up-to-date with all frequently used command line prompts and scri
     -d '{"customPrompt":"What to pack for photography?","trip":{"name":"Test","startDate":"2024-01-15","endDate":"2024-01-18","destinations":["Tokyo"],"travelModes":["walking"],"tripDetails":"test"},"weather":[{"location":"Tokyo","temperature":15,"conditions":"clear","precipitation":0}]}'
   ```
 
+### Category Optimization Testing
+
+- **Test category naming fix**: `node test-category-fix.js`
+- **Test enhanced categories**: `node test-enhanced-categories.js`
+- **Validate concise categories**: Categories should be like "Photography", "Winter", "Business" (not verbose phrases)
+- **Category testing scenarios**:
+  - Business trip: Should generate "Business", "Documents", "Electronics"
+  - Photography trip: Should generate "Photography", "Electronics", "Winter" (if cold)
+  - Beach vacation: Should generate "Beach", "Swimming", "Sun Protection"
+
 ## Testing
 
 ### Test Execution

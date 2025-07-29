@@ -93,6 +93,29 @@ This document provides a high-level overview of the system architecture, major c
 - **Europe destinations**: Comfortable walking shoes, light evening jacket, regional suggestions
 - **Tropical destinations**: Insect repellent, after-sun lotion, beach gear, sun protection
 
+### Flexible Category System
+
+- **Dynamic Categories**: AI generates contextual categories based on trip type and needs
+- **Concise Naming**: Categories like "Photography", "Winter", "Business" instead of verbose descriptions
+- **Context-Aware**: Categories adapt to specific trip characteristics (e.g., "Electronics", "Documents", "Health")
+- **User-Friendly**: Clean, intuitive category names that enhance UI organization
+
+## Frontend AI Integration
+
+### Visual AI Indicators
+
+- **Ollama Branding**: Professional AI badges with gradient styling and animations
+- **Status Tracking**: Real-time indicators showing AI vs fallback data usage
+- **Response Types**: Clear visual distinction between AI-generated and mock data
+- **Transparency**: Fallback reasons displayed when AI is unavailable
+
+### Enhanced SuggestionsPanel
+
+- **AI Status Display**: Shows Ollama connection status and processing state
+- **Interactive Features**: AI-powered refinement with custom prompt support
+- **Visual Feedback**: Animated indicators during AI processing
+- **Error Handling**: Graceful degradation with clear error messaging
+
 ## Data Flow
 
 ### Enhanced AI Workflow

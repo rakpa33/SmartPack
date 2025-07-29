@@ -78,6 +78,13 @@ SmartPack is a smart packing assistant that helps you prepare for your trips by 
 - All core functionality works even without AI
 - Clear indicators when running in fallback mode
 
+### 🎨 AI-Enhanced Interface
+
+- **Visual AI Indicators**: Animated Ollama badges showing AI status
+- **Real-time Feedback**: Status indicators for AI vs fallback data
+- **Transparent Processing**: Clear visibility into AI generation state
+- **Professional Design**: Gradient styling and smooth animations
+
 4. Start the Lambda backend (in a separate terminal)
    ```
    npm run lambda:dev

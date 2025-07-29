@@ -98,6 +98,52 @@ Document common issues and their solutions here. Update this file as you encount
 
 #### Enhanced AI API errors
 
+#### Verbose/literal category naming by Ollama AI (RESOLVED)
+
+- **Symptom:** AI generates verbose category names like "Activity Specific: Photography Gear" instead of concise "Photography"
+- **Root Cause:** AI interpreting prompt examples too literally, creating descriptive phrases instead of simple category names
+- **Diagnostic Steps:**
+  1. Test category generation: `node test-category-fix.js`
+  2. Check server logs for AI prompt structure
+  3. Verify prompt includes explicit negative examples
+  4. Test with different trip scenarios (business, photography, beach)
+- **Solution:**
+  - **Enhanced Prompt Engineering:** Added explicit examples of desired format
+  - **Negative Examples:** Specified what NOT to generate ("Photography Gear" → "Photography")
+  - **Clear Instructions:** "Use category names like 'Photography' not 'Photography Gear'"
+  - **Format Specification:** Explicit JSON structure with concise category examples
+- **Testing:** Created comprehensive test scripts to validate category quality
+- **Result:** Clean, user-friendly categories like "Photography", "Winter", "Business", "Documents"
+
+#### AI taking too long to respond
+
+- **Symptom:** Frontend shows loading state indefinitely when requesting AI suggestions
+- **Diagnostic Steps:**
+  1. Check Ollama resource usage: Monitor CPU/RAM during AI processing
+  2. Test model directly: `ollama run llama3.1:8b "quick test"`
+  3. Check prompt complexity and response length requirements
+  4. Monitor server logs for processing time
+- **Solutions:**
+  - **Optimize prompts:** Reduce complexity, limit response length
+  - **Model settings:** Adjust temperature and num_predict parameters
+  - **Timeout handling:** Add frontend timeout with graceful fallback
+  - **Resource allocation:** Ensure sufficient RAM for llama3.1:8b model
+
+#### Frontend AI indicators not showing correctly
+
+- **Symptom:** Ollama badges or AI status indicators not displaying properly
+- **Diagnostic Steps:**
+  1. Check browser console for component errors
+  2. Verify aiGenerated flag in API responses
+  3. Test visual indicators with both AI and fallback data
+  4. Check CSS/Tailwind classes for badge styling
+- **Solutions:**
+
+  - **Component validation:** Ensure proper prop passing for AI status
+  - **Conditional rendering:** Check logic for showing/hiding AI indicators
+  - **State management:** Verify aiGenerated tracking throughout data flow
+  - **Visual testing:** Test with real AI responses and mock fallbacks
+
 - **Symptom:** API returns errors or unexpected responses.
 - **Diagnostic Steps:**
   1. Check backend console for error logs
