@@ -19,8 +19,8 @@ SmartPack is a mobile-first, single-user travel packing app built with:
   - AWS Lambda functions using Express, deployed via Serverless Framework
   - `/generate` endpoint receives trip + weather data, connects to Ollama for AI packing suggestions
 - **Documentation:**
-  - Technical docs in `copilotdocs/` directory
-  - Progress tracking in `copilotdocs/CHECKLIST.md` and `copilotdocs/DEVLOG.md`
+  - Technical docs in `docs/` directory with organized subdirectories
+  - Progress tracking in `docs/development/CHECKLIST.md` and `docs/development/DEVLOG.md`
 
 ## Project Conventions
 
@@ -29,15 +29,36 @@ SmartPack is a mobile-first, single-user travel packing app built with:
 - **State:** Use React context or custom hooks for shared state
 - **Persistence:** Use localStorage for all user data—no cloud sync or authentication
 - **Documentation Reference:** When implementing features or solving problems, always reference current official documentation for frameworks, libraries, and tools if there's any uncertainty about syntax, best practices, or API changes
+
+## File Organization Standards
+
+- **Import Paths:** Always use path aliases over relative imports:
+  - `@components/` for `src/components/`
+  - `@hooks/` for `src/hooks/`
+  - `@utils/` for `src/utils/`
+  - `@test-utils/` for `src/test-utils/`
+  - `@pages/` for `src/pages/`
+  - `@types/` for `src/types/`
+  - `@assets/` for `src/assets/`
+- **Configuration:** Single `vite.config.ts` handles both Vite and Vitest configuration
+- **Testing Utilities:** Centralized in `src/test-utils/` with proper re-exports
+- **Documentation:** Organized in `docs/` with subdirectories for development, testing, prompts, and API docs
+- **Component Structure:** Organize by domain/feature, not by technical type
+
+## Code Quality Standards
+
 - **Testing:**
   - Write unit tests using Vitest and React Testing Library in `src/__tests__/`
   - Write E2E tests using Playwright in `playwright/`
   - Include accessibility checks with axe-core and Playwright assertions
+  - Use centralized test utilities from `@test-utils/`
 - **Code Quality:**
   - Use TypeScript strict mode
   - Follow React functional component patterns
   - Use modern ES6+ syntax
   - Prefer arrow functions for callbacks
+  - Use path aliases instead of relative imports
+  - Follow file organization standards in `docs/development/FILE_ORGANIZATION.md`
 - **AI Integration:**
   - All AI suggestions flow through the `/generate` Lambda endpoint
   - Weather data is fetched client-side and sent to backend for AI context

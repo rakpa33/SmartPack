@@ -1,12 +1,8 @@
-import { renderWithProviders } from '../../../tests/testing-utils';
-import { screen, waitFor } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
-import { vi, beforeAll } from 'vitest';
-import { axe } from 'jest-axe';
-import App from '../../App';
+import { renderWithProviders, screen, waitFor, userEvent, vi, beforeAll, axe } from '@test-utils';
+import App from '@/App';
 
 // Mock both the underlying utilities and the custom hook
-vi.mock('../../utils/weather', () => ({
+vi.mock('@utils/weather', () => ({
   fetchWeather: vi.fn().mockResolvedValue({
     temperature: 25,
     weathercode: 1,
@@ -14,7 +10,7 @@ vi.mock('../../utils/weather', () => ({
   })
 }));
 
-vi.mock('../../utils/geocode', () => ({
+vi.mock('@utils/geocode', () => ({
   geocodeCity: vi.fn().mockResolvedValue({
     lat: 48.8566,
     lon: 2.3522,
