@@ -1,3 +1,15 @@
+<!--
+This file provides comprehensive testing infrastructure documentation for SmartPack.
+Keep this comment at the top; do not overwrite or remove it when updating the document.
+
+DOCUMENT PURPOSE:
+- Complete testing framework documentation and configuration
+- Test analysis methodology and systematic debugging patterns
+- Performance optimization results and best practices
+- Centralized test utilities and mock patterns
+- Troubleshooting guide for common test failures
+-->
+
 # SmartPack Testing Guide
 
 ## 📋 **Complete Testing Infrastructure - 2024/2025**
@@ -274,6 +286,6 @@ vi.mock('@components/WeatherDisplay', () => ({
 
 ---
 
-**Last Updated**: January 2025  
+**Last Updated**: July 2025  
 **Testing Framework Version**: Vitest 3.2.4, Playwright 1.54.1  
 **Coverage Target**: 80% minimum across all code paths

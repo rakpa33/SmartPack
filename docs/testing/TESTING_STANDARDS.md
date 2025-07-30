@@ -1,3 +1,15 @@
+<!--
+This file defines testing standards and conventions for SmartPack development.
+Keep this comment at the top; do not overwrite or remove it when updating the document.
+
+DOCUMENT PURPOSE:
+- Establish 2024/2025 industry-standard testing practices
+- Define testing philosophy and core principles
+- Provide reference patterns and anti-patterns
+- Ensure consistency across testing implementations
+- Document framework-specific best practices
+-->
+
 # SmartPack Testing Standards (2024/2025)
 
 ## Overview

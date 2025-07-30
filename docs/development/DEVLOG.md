@@ -64,6 +64,99 @@ HOW TO USE FOR AI ASSISTANCE:
 
 ## 2025-07-29
 
+### Documentation Standards Implementation and Import Path Resolution
+
+#### Documentation Comment Header Standardization (2025-07-29)
+
+- **Initiative:** Comprehensive documentation standardization across all markdown files
+- **Problem Addressed:** Inconsistent documentation headers and missing metadata across docs/ directory
+- **Implementation Scope:**
+  - **Testing Directory (4 files):** Added standardized comment headers to `TESTING_GUIDE.md`, `TESTING_STANDARDS.md`, `TEST_UTILITIES.md`, and updated existing header format
+  - **Development Directory (7 files):** Added headers to `FILE_ORGANIZATION.md`, `HEROICONS_IMPLEMENTATION.md`, `OLLAMA_IMPLEMENTATION.md`, `OLLAMA_SETUP.md`, `RESTRUCTURING_SUMMARY.md`, and enhanced `ROADMAP.md` header
+  - **Standards Applied:** Each header includes document purpose, preservation instruction, and structured bullet points explaining scope and intent
+- **Header Structure Implemented:**
+
+  ```markdown
+  <!--
+  This file [provides/defines/documents] [specific purpose] for SmartPack.
+  Keep this comment at the top; do not overwrite or remove it when updating the document.
+
+  DOCUMENT PURPOSE:
+  - [Specific purpose 1]
+  - [Specific purpose 2]
+  - [Specific purpose 3]
+  -->
+  ```
+
+- **Benefits Achieved:**
+  - **Consistency:** All markdown files now follow established documentation standards
+  - **Maintainability:** Clear purpose statements guide future updates and prevent scope drift
+  - **Professional Presentation:** Unified formatting across all project documentation
+  - **Preservation:** Explicit instructions prevent accidental header removal during updates
+- **Quality Assurance:** Verified all existing files with headers remained unchanged, only missing headers were added
+
+#### TypeScript Import Path Resolution (2025-07-29)
+
+- **Problem:** Import statement `import { renderWithProviders, screen, waitFor, userEvent, vi, beforeAll, axe } from '@test-utils';` failing to resolve in test files
+- **Root Cause Analysis:**
+  - TypeScript path mapping in `tsconfig.app.json` was pointing to directory pattern (`"./src/test-utils/*"`) instead of direct index file
+  - Vite configuration was correct but TypeScript compiler wasn't recognizing the @test-utils alias properly
+- **Solution Implementation:**
+  - **Updated `tsconfig.app.json`:** Added direct index file mapping: `"@test-utils": ["./src/test-utils/index"]`
+  - **Preserved existing patterns:** Maintained all other path aliases and existing functionality
+  - **Verified configuration:** Confirmed Vite config already had correct alias setup
+- **Files Modified:**
+  - `SmartPack/tsconfig.app.json`: Enhanced path mapping with direct index file reference
+  - **No changes needed:** `vite.config.ts` already had correct alias configuration
+- **Verification Process:**
+  - **TypeScript compilation:** `npx tsc --noEmit` returned clean (no errors)
+  - **Build process:** `npm run build` completed successfully
+  - **Test execution:** `npm test` ran without import errors
+  - **Specific file test:** `TripForm.integration.test.tsx` import resolved correctly
+- **Technical Details:**
+  - **Problem file:** `src/__tests__/integration/TripForm.integration.test.tsx` line 1 import
+  - **Working import:** All test utilities now properly imported via centralized `@test-utils` alias
+  - **Pattern followed:** Maintains consistency with other path aliases like `@components`, `@hooks`, etc.
+- **Quality Impact:**
+  - **Standards compliance:** Import paths now follow established file organization standards
+  - **Developer experience:** Clean imports improve code readability and maintainability
+  - **Build reliability:** Resolved TypeScript compilation issues prevent future build failures
+
+#### Documentation Process Creation (2025-07-29)
+
+- **New Prompt Created:** `update-docs.prompt.md` in `.github/prompts/` directory
+- **Purpose:** Systematic documentation updates before commits, after feature completion, and after issue resolution
+- **Scope Coverage:**
+  - **Trigger Events:** Pre-commit, feature completion, issue resolution, milestone completion
+  - **Document Types:** All documentation categories (development, testing, implementation guides)
+  - **Cross-references:** Ensures consistency between related documents (CHECKLIST.md ↔ ROADMAP.md, etc.)
+  - **Knowledge Preservation:** Captures conversations, decisions, and context that might be lost
+- **Process Framework:**
+  - **8-Phase systematic approach:** From change analysis to final validation
+  - **Comprehensive coverage:** Core development docs, implementation guides, testing docs, quality standards
+  - **Cross-document synchronization:** Maintains consistency across related documentation
+  - **Future reference preparation:** Ensures new developers can understand changes and context
+- **Implementation Benefits:**
+  - **Prevents data loss:** Systematic capture of important conversations and decisions
+  - **Speeds production:** Well-documented context accelerates future development
+  - **Maintains standards:** Ensures documentation follows established patterns and headers
+  - **Enables scaling:** Documentation patterns that grow with project complexity
+
+### Cross-Reference Updates Completed
+
+- **RESTRUCTURING_SUMMARY.md:** Documented this documentation standardization work as continuation of Phase 6 standards implementation
+- **FILE_ORGANIZATION.md:** Confirmed documentation standards section reflects new header requirements
+- **Update process:** Following new `update-docs.prompt.md` methodology for systematic documentation maintenance
+
+### Session Learning Outcomes
+
+- **Documentation as Code:** Treating documentation with same rigor as source code through standardized headers and systematic updates
+- **Import Path Architecture:** TypeScript path mapping requires both directory patterns and direct file mappings for comprehensive alias support
+- **Process Documentation:** Creating systematic prompts for recurring development activities improves consistency and prevents missed steps
+- **Cross-document Integrity:** Documentation changes require systematic review of related documents to maintain consistency
+
+## 2025-07-29
+
 ### Data Persistence Issue Resolution - localStorage Clearing Fix
 
 - **Problem:** User reported that data entered into the app doesn't persist on reload as expected.
@@ -760,90 +853,6 @@ HOW TO USE FOR AI ASSISTANCE:
 **External Validation**: The patterns applied match React Testing Library best practices for test isolation and state management, confirming our debugging approach was correct.
 
 ### Integration Test Reliability Improvements
-
-- **Problem:** Integration tests for App navigation (TripForm → MainLayout) were inconsistent and flaky, sometimes passing and sometimes failing.
-- **Root Cause:** Tests were not properly handling asynchronous navigation, had inadequate timeouts, and lacked proper error handling and diagnostic capabilities.
-- **Actions Taken:**
-  - Rewrote the `App.integration.test.tsx` test to use more reliable testing patterns
-  - Replaced `waitFor` + `getBy*` with more appropriate `findBy*` queries for async elements
-  - Added proper data-testid attributes to all main layout sections
-  - Increased timeout values for critical transitions (5000ms instead of 3000ms)
-  - Added detailed error handling with onTimeout callbacks to provide better diagnostics
-  - Enhanced the form filling function with try/catch blocks and better logging
-  - Added more strategic console.log statements to aid in debugging
-  - Improved test initialization with consistent mock data in localStorage
-  - Updated documentation in TESTING_GUIDELINES.md with best practices
-  - Added new troubleshooting sections in TROUBLESHOOTING.md
-- **Best Practice:**
-  - Use `findBy*` queries for asynchronous elements
-  - Always add proper data-testid attributes to key UI components
-  - Include error handling in tests with detailed diagnostic output
-  - Initialize test environment with consistent mock data
-  - Add strategic console.log statements at key transition points
-  - Document testing patterns and solutions for future reference
-
-### Missing Geocode Utility Implementation
-
-- **Problem:** The `useGeocode` hook was importing from `../utils/geocode`, but the geocode.ts file was missing from the utils directory.
-- **Root Cause:** The geocode utility was referenced in tests and used by hooks, but the actual implementation file was missing.
-- **Actions Taken:**
-  - Created the missing `geocode.ts` file in the utils directory based on the unit test expectations
-  - Implemented the `geocodeCity` function that returns geocoding results for city names
-  - Updated the `useGeocode` hook to better handle and log errors
-  - Added proper TypeScript interfaces for geocoding results
-- **Best Practice:**
-  - Always ensure that referenced modules are actually implemented
-  - Use proper error handling and logging in hooks that interact with external APIs
-  - Follow the test-driven development approach where tests document the expected behavior
-
-### Test Structure Standardization
-
-- **Problem:** Duplicate unit tests found in both `src/__tests__/` and `src/utils/__tests__/` directories, causing confusion and potential maintenance issues.
-- **Root Cause:** Inconsistent testing practices and lack of clear documentation about where tests should be placed.
-- **Actions Taken:**
-  - Identified duplicate test files for weather and geocode utilities
-  - Attempted to clean up duplicate files (note: file deletion had issues via terminal)
-  - Updated TESTING_GUIDELINES.md to clearly specify that unit tests should be in `src/__tests__/`
-  - Clarified the project's test organization pattern
-- **Best Practice:**
-  - Maintain a single, consistent location for tests of a particular type
-  - Document test structure clearly in project documentation
-  - Follow the pattern established in the project's test scripts
-
-### City Validation Fix for Geocoded Results
-
-- **Problem:** When entering a city like "paris", it correctly geocoded to "Paris, Ile-de-France, Metropolitan France, France" but clicking Next resulted in a "Enter a valid city" validation error.
-- **Root Cause:** The validation function `isValidCity()` was only checking for exact matches against the city name list, but geocoding adds region/country information which caused the validation to fail.
-- **Actions Taken:**
-  - Updated `isValidCity()` in validation.ts to be smarter about handling geocoded city names
-  - Added special handling for strings containing commas (geocoded results) to check if they start with a known city name
-  - Maintained exact matching for non-geocoded city entries
-  - Updated documentation in TROUBLESHOOTING.md to explain the issue and solution
-- **Best Practice:**
-  - When using geocoding APIs, ensure validation logic accommodates the different formats between user input and geocoded results
-  - Consider the full data flow from user input → API transformation → validation → display
-- **Testing Gap Identified:**
-  - This issue wasn't caught by integration tests because they likely mocked the geocoding API
-  - E2E tests would have caught this by actually typing a city name, observing the geocoded result, and clicking Next
-  - This highlights the importance of implementing the planned E2E tests that test the full user interaction flow
-  - Added task to implement E2E tests for critical user journeys including form completion
-
-### Weather Data Display Fix in TripForm Integration Tests
-
-- **Problem:** Integration tests for TripForm failed when checking for weather data ("Mainly clear" and "25°C") in the TripDetails component after form submission.
-- **Root Cause:** Weather data wasn't being reliably passed from TripForm to TripDetails via context in test environments. The process.env.NODE_ENV check for test environments was only applying fallback weather data conditionally, and the test couldn't reliably find the weather elements.
-- **Actions Taken:**
-  - Added data-testid attributes to weather summary and temperature elements in TripDetails component
-  - Modified TripForm to always use test weather data in test environments (not just as a fallback)
-  - Added error handling around weather and geocode API calls
-  - Updated tests to use longer timeouts and specific data-testid attributes
-  - Added additional debug logging to help diagnose issues
-- **Best Practice:**
-
-  - Use data-testid attributes for more reliable element selection in tests
-  - Add adequate waiting time for asynchronous operations in tests
-  - Always provide stable test data for test environments
-  - Add proper error handling for API calls
 
 - **Problem:** Integration tests for App navigation (TripForm → MainLayout) were inconsistent and flaky, sometimes passing and sometimes failing.
 - **Root Cause:** Tests were not properly handling asynchronous navigation, had inadequate timeouts, and lacked proper error handling and diagnostic capabilities.

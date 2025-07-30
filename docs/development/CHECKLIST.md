@@ -412,3 +412,31 @@ FORMATTING RULES:
   - _Migration priority: High-impact reliability issues → Naming violations → Style consistency_
 
 **Acceptance Criteria:** ✅ Modern testing standards documented and AI-accessible, legacy patterns identified for migration
+
+### Step 9.6: Documentation Standards Implementation (NEW)
+
+- [x] **Documentation Header Standardization Completed**
+
+  - Added standardized comment headers to all markdown files missing them
+  - Testing directory: TESTING_GUIDE.md, TESTING_STANDARDS.md, TEST_UTILITIES.md updated
+  - Development directory: FILE_ORGANIZATION.md, HEROICONS_IMPLEMENTATION.md, OLLAMA_IMPLEMENTATION.md, OLLAMA_SETUP.md, RESTRUCTURING_SUMMARY.md updated
+  - Enhanced ROADMAP.md header to meet established standards
+  - All headers include document purpose, preservation instructions, and structured purpose statements
+  - _See individual files for standardized headers following established format_
+
+- [x] **Import Path Resolution Fixed**
+
+  - Resolved TypeScript path mapping issue for @test-utils alias
+  - Updated tsconfig.app.json with direct index file mapping: "@test-utils": ["./src/test-utils/index"]
+  - Verified TypeScript compilation, build process, and test execution all working
+  - TripForm.integration.test.tsx import statement now resolves correctly
+  - _See DEVLOG.md (2025-07-29) for technical implementation details_
+
+- [x] **Documentation Process Systematization**
+  - Created update-docs.prompt.md for systematic documentation updates
+  - 8-phase process covering change analysis through final validation
+  - Supports pre-commit, feature completion, and issue resolution triggers
+  - Ensures cross-document consistency and knowledge preservation
+  - _See .github/prompts/update-docs.prompt.md for complete methodology_
+
+**Acceptance Criteria:** ✅ All documentation follows established standards with proper headers, import paths resolved, systematic update process in place

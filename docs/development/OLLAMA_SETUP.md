@@ -1,3 +1,14 @@
+<!--
+This file provides setup and configuration guidance for Ollama AI integration in SmartPack.
+Keep this comment at the top; do not overwrite or remove it when updating the document.
+
+DOCUMENT PURPOSE:
+- Step-by-step Ollama installation and setup instructions
+- Local development environment configuration
+- Model installation and testing procedures
+- Backend integration and API configuration
+-->
+
 # SmartPack - Ollama AI Integration Setup
 
 ## Overview

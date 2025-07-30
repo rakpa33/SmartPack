@@ -1,3 +1,14 @@
+<!--
+This file provides implementation guidance for Heroicons integration in SmartPack.
+Keep this comment at the top; do not overwrite or remove it when updating the document.
+
+DOCUMENT PURPOSE:
+- Step-by-step Heroicons implementation instructions
+- Installation and setup procedures
+- Code examples and usage patterns
+- UI consistency and professional design implementation
+-->
+
 # Heroicons Implementation Guide
 
 ## 🎯 Overview

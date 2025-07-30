@@ -341,6 +341,48 @@ Document common issues and their solutions here. Update this file as you encount
      This resolved the error in some cases, even if minimatch was not directly required in code.
 - **Reference:** See [strapi/strapi#23906](https://github.com/strapi/strapi/pull/23906) for upstream fix status.
 
+### TypeScript: Import Path Alias Not Resolving (@test-utils)
+
+- **Symptom:** TypeScript error: `Cannot find module '@test-utils' or its corresponding type declarations` in test files.
+- **Root Cause:** TypeScript path mapping in `tsconfig.app.json` pointing to directory pattern instead of direct index file.
+- **Diagnostic Steps:**
+  1. Check TypeScript compilation: `npx tsc --noEmit`
+  2. Verify import statement: `import { renderWithProviders } from '@test-utils';`
+  3. Check `tsconfig.app.json` paths configuration
+  4. Verify `src/test-utils/index.ts` exists and exports required functions
+- **Solution:**
+  1. Update `tsconfig.app.json` compilerOptions.paths to include direct index mapping:
+     ```json
+     {
+       "compilerOptions": {
+         "paths": {
+           "@test-utils": ["./src/test-utils/index"],
+           "@test-utils/*": ["./src/test-utils/*"]
+         }
+       }
+     }
+     ```
+  2. Verify Vite config has matching alias (usually already correct):
+     ```typescript
+     resolve: {
+       alias: {
+         '@test-utils': path.resolve(__dirname, './src/test-utils')
+       }
+     }
+     ```
+  3. Test the fix:
+     ```bash
+     npx tsc --noEmit  # Should return clean
+     npm run build     # Should complete successfully
+     npm test         # Should resolve imports correctly
+     ```
+- **Prevention:**
+  - Always include both directory pattern and direct index mapping for path aliases
+  - Test TypeScript compilation after adding new path aliases
+  - Verify both tsconfig.app.json and vite.config.ts have matching configurations
+- **Status:** RESOLVED (2025-07-29)
+- **Reference:** See DEVLOG.md (2025-07-29) for detailed implementation context
+
 ### Integration Test Flakiness: Form, Context, and LocalStorage
 
 - **Symptom:** Integration tests for TripForm or MainLayout fail to advance steps, or UI does not update as expected after clicking Next.

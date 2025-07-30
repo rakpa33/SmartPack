@@ -1,3 +1,15 @@
+<!--
+This file defines file organization standards and conventions for SmartPack development.
+Keep this comment at the top; do not overwrite or remove it when updating the document.
+
+DOCUMENT PURPOSE:
+- Establish project directory structure and organization
+- Define import path aliases and naming conventions
+- Document component and file organization patterns
+- Ensure consistency across development team
+- Provide reference for new developers
+-->
+
 # SmartPack File Organization Standards
 
 ## 📁 Directory Structure
@@ -178,5 +190,5 @@ Add to `.vscode/settings.json` for better TypeScript path support:
 
 ---
 
-**Last Updated**: January 2025  
+**Last Updated**: July 2025  
 **Applies To**: SmartPack v2024/2025

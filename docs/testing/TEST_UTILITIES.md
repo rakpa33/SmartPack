@@ -1,3 +1,14 @@
+<!--
+This file provides quick reference for SmartPack test utilities and helper functions.
+Keep this comment at the top; do not overwrite or remove it when updating the document.
+
+DOCUMENT PURPOSE:
+- Quick start guide for test utilities
+- Centralized test helper function reference
+- Mock patterns and common testing scenarios
+- Integration with @test-utils path alias
+-->
+
 # SmartPack Test Utilities
 
 ## Quick Start

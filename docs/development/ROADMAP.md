@@ -1,4 +1,13 @@
-<!-- Project roadmap, phases, deliverables
+<!--
+This file defines the development roadmap, phases, and deliverables for SmartPack.
+Keep this comment at the top; do not overwrite or remove it when updating the document.
+
+DOCUMENT PURPOSE:
+- Establish project phases and development milestones
+- Define feature deliverables and implementation priorities
+- Document technology stack decisions and architectural goals
+- Provide timeline and progress tracking for stakeholders
+- Serve as reference for development planning and resource allocation
 -->
 
 # SmartPack – Roadmap
