@@ -67,9 +67,43 @@ Systematically diagnose, resolve, and prevent application issues using root caus
 - Test fixes across different scenarios: mobile/desktop, different data states, edge cases
 - Validate that localStorage data integrity is maintained
 - Ensure accessibility and responsive design standards are preserved
-- Run existing test suites to ensure no regressions are introduced
+- **Follow Testing Protocol**: Reference `.github/prompts/testing-protocol.prompt.md` for systematic test execution
+- **Validate Incrementally**: Test changes step-by-step rather than batch testing
 
 ## 6. Comprehensive Test Coverage Enhancement
+
+### **Test Execution Best Practices**
+
+Before running any tests, follow the established protocol:
+
+1. **Pre-Test Checklist:**
+
+   - Check for hanging Node processes: `tasklist | find "node.exe"`
+   - Kill if needed: `taskkill /F /IM node.exe`
+   - Verify build: `npm run build`
+   - Check lint: `npm run lint`
+
+2. **Targeted Testing Strategy:**
+
+   ```bash
+   # For component changes
+   npm test -- --run ComponentName.test.tsx
+
+   # For API/service changes
+   npm test -- --run src/__tests__/services/
+
+   # For state management changes
+   npm test -- --run src/__tests__/useTripForm.test.tsx
+   ```
+
+3. **Test Monitoring Protocol:**
+   - Unit tests should complete <5 seconds
+   - Integration tests should complete <30 seconds
+   - Watch for "queued" status lasting >30 seconds (indicates hanging)
+   - Always read full error messages and stack traces
+   - Categorize failures: NEW (must fix), PRE-EXISTING (document), ENVIRONMENTAL (fix setup)
+
+### **Test Coverage Enhancement**
 
 - **Unit Tests (Vitest + React Testing Library):**
 
@@ -83,12 +117,27 @@ Systematically diagnose, resolve, and prevent application issues using root caus
   - Create tests for component interactions and data flow that were problematic
   - Test API integrations and localStorage persistence patterns
   - Validate cross-component communication and state sharing
+  - **WARNING**: Integration tests may hang - use timeouts and monitor completion
 
 - **End-to-End Tests (Playwright):**
   - Add E2E tests that reproduce the original user workflow that caused the issue
   - Test complete user journeys to ensure the issue doesn't reoccur
   - Include accessibility validation with axe-core for UI-related fixes
   - Test across different devices and browsers for comprehensive coverage
+
+### **Error Analysis Protocol**
+
+When tests fail:
+
+1. **Stop and Analyze** - Never proceed with hanging or failing tests without investigation
+2. **Classify Errors:**
+   - NEW: Related to recent changes (MUST FIX)
+   - PRE-EXISTING: Document in TROUBLESHOOTING.md
+   - ENVIRONMENTAL: Fix test setup
+3. **Common Patterns:**
+   - API expectation mismatches (case sensitivity, missing fields)
+   - Component evolution (renamed functions, updated UI text)
+   - Timeout/hanging issues (unresolved promises, infinite loops)
 
 ## 7. Prevention Strategy and Quality Assurance
 

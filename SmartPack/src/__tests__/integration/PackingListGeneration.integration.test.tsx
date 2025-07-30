@@ -62,8 +62,11 @@ describe('Packing List Generation Integration', () => {
     expect(mockGeneratePackingList).toHaveBeenCalledWith(
       expect.objectContaining({
         name: 'Winter Vacation',
+        startDate: '2025-12-20',
+        endDate: '2025-12-27',
         destinations: ['Aspen, Colorado'],
-        travelModes: ['plane']
+        travelModes: ['Plane'],
+        tripDetails: expect.any(String)
       }),
       expect.arrayContaining([
         expect.objectContaining({

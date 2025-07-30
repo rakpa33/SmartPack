@@ -60,6 +60,75 @@ Document common issues and their solutions here. Update this file as you encount
 
 ## Common Issues
 
+### Testing & Quality Assurance Issues
+
+#### Test Execution Hanging or Not Completing
+
+- **Symptom:** Tests start but never complete, terminal shows "queued" or stops responding, or npm test hangs indefinitely
+- **Root Cause:** Integration tests may have environment setup issues, infinite loops, or unresolved promises
+- **Diagnostic Steps:**
+  1. Check if Node.js processes are hanging: `tasklist | find "node.exe"`
+  2. Monitor test output for specific patterns: "queued", stalled durations, or missing completion messages
+  3. Verify test timeout settings in vitest.config.ts or individual test files
+  4. Check for unresolved async operations or missing `await` statements
+- **Solution:**
+  1. **Immediate:** Kill hanging processes: `taskkill /F /IM node.exe`
+  2. **Targeted Testing:** Run specific test files instead of full suite: `npm test -- --run specific-file.test.tsx`
+  3. **Timeout Controls:** Add explicit timeouts: `npm test -- --run --reporter=verbose --timeout=30000`
+  4. **Unit vs Integration:** Prefer unit tests for quick validation: `npm test -- --run src/__tests__/unit`
+- **Prevention:**
+  - Always monitor test execution for completion
+  - Use timeouts for integration tests: `{ timeout: 10000 }` in test config
+  - Kill hanging processes before starting new tests
+  - Prefer unit tests for rapid feedback during development
+- **Status:** ONGOING - Integration tests still have environmental issues as of 2025-07-29
+
+#### Ignoring Test Errors and Output
+
+- **Symptom:** AI assistant or developer continues without addressing test failures, skips error analysis, or proceeds despite hanging tests
+- **Root Cause:** Inadequate error monitoring protocols and rush to complete tasks without proper validation
+- **Diagnostic Steps:**
+  1. Always read complete test output including error messages and stack traces
+  2. Check for specific failure patterns: API expectation mismatches, timing issues, environmental problems
+  3. Distinguish between new failures (from recent changes) and pre-existing issues
+  4. Verify error counts: "X failed | Y passed" patterns
+- **Solution:**
+  1. **Stop and Analyze:** Never proceed with hanging or failing tests without investigation
+  2. **Error Categorization:** Classify errors as: new (needs fixing), pre-existing (document), or environmental (isolate)
+  3. **Focused Testing:** Test specific components related to recent changes
+  4. **Proper Reporting:** Document both successes and failures with clear context
+- **Prevention:**
+  - Always wait for test completion before proceeding
+  - Read full error messages and stack traces
+  - Use `--reporter=verbose` for detailed output
+  - Document known failing tests separately from new issues
+  - Test changes incrementally rather than batch testing
+- **Status:** RESOLVED - Added comprehensive testing protocols 2025-07-29
+
+#### API Call Expectation Mismatches in Tests
+
+- **Symptom:** Tests fail with "expected spy to be called with arguments" showing object structure differences
+- **Root Cause:** Test expectations don't match actual API implementation, often due to:
+  - Different field names or casing (e.g., "plane" vs "Plane")
+  - Missing or extra fields in API calls
+  - Changed data structures between frontend and backend
+- **Diagnostic Steps:**
+  1. Compare expected vs received objects in test output
+  2. Check actual API service implementation in `src/services/apiService.ts`
+  3. Verify frontend form data structure matches backend expectations
+  4. Review API documentation in `docs/api/API.md`
+- **Solution:**
+  1. **Update Test Expectations:** Match actual implementation rather than changing code
+  2. **Field Mapping:** Ensure frontend data matches backend API schema
+  3. **Documentation Sync:** Keep API docs aligned with actual implementation
+  4. **Example Fix:** Change `travelModes: ['plane']` to `travelModes: ['Plane']` in test expectations
+- **Prevention:**
+  - Keep test expectations aligned with actual API implementation
+  - Use `expect.objectContaining()` for flexible matching
+  - Include all required fields in test expectations
+  - Regular API documentation review and updates
+- **Status:** RESOLVED - Fixed PackingListGeneration test expectations 2025-07-29
+
 ### Ollama AI Integration Issues
 
 #### npm install errors with ollama and React dependencies (RESOLVED)

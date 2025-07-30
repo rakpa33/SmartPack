@@ -13,16 +13,79 @@ Systematically update all relevant documentation to capture recent changes, lear
 - Identify new patterns, architectural decisions, or significant learnings from recent work
 - Assess cross-document relationships that may need synchronization
 
-## 2. Core Development Documentation Updates
+## 2. Systematic Context Capture from Recent Sessions
+
+### **Conversation Analysis and Context Extraction**
+
+Before updating individual documents, systematically extract and categorize important context from recent development sessions:
+
+#### **Technical Problem-Solution Patterns**
+
+- Identify specific technical problems encountered and their proven solutions
+- Document systematic debugging approaches that successfully resolved issues
+- Record error patterns and their categorization (NEW/PRE-EXISTING/ENVIRONMENTAL)
+- Capture diagnostic techniques and validation procedures that worked
+
+#### **Development Methodology Insights**
+
+- Extract systematic approaches to testing, validation, and quality assurance
+- Document AI assistance patterns that proved effective vs problematic approaches
+- Record workflow improvements and process optimizations discovered
+- Capture time-saving techniques and efficiency improvements
+
+#### **Architecture and Implementation Evolution**
+
+- Identify architectural decisions made during conversations and their rationale
+- Document component design patterns and integration approaches discovered
+- Record state management strategies and data flow solutions implemented
+- Capture performance optimization techniques and their measured results
+
+#### **Tool Usage and Configuration Insights**
+
+- Extract framework-specific configurations and optimization techniques
+- Document testing tool usage patterns and debugging approaches
+- Record development environment insights and setup optimizations
+- Capture CLI command patterns and automation opportunities
+
+### **Context Preservation Checklist**
+
+For each significant conversation topic, ensure the following context is captured:
+
+- **What was the problem/challenge?** (Clear problem statement)
+- **What approaches were tried?** (Including failed attempts and why they didn't work)
+- **What was the final solution?** (Detailed implementation with code examples where relevant)
+- **Why was this solution chosen?** (Decision rationale and trade-offs considered)
+- **What was learned?** (Insights for future similar situations)
+- **How to prevent/detect this in future?** (Prevention strategies and early warning signs)
+
+## 3. Core Development Documentation Updates
 
 ### **DEVLOG.md Updates**
 
-- Document chronological development events with technical context and rationale
-- Capture major feature implementations with code changes and architectural decisions
-- Record troubleshooting sessions with root cause analysis and resolution strategies
-- Note performance improvements, optimization techniques, and measurement results
-- Document testing strategy evolution, coverage improvements, and quality enhancements
-- Include significant conversations and decision-making processes to preserve context
+- **Chronological Context:** Document development events with complete technical context and conversation rationale
+- **Feature Implementation:** Capture not just what was implemented, but why decisions were made and what alternatives were considered
+- **Troubleshooting Sessions:** Record complete problem-solution cycles with root cause analysis and prevention strategies
+- **Performance Work:** Document optimization techniques, measurement results, and the methodology used to achieve improvements
+- **Testing Evolution:** Include testing strategy changes, coverage improvements, and reliability enhancement approaches
+- **Conversation Insights:** Preserve significant technical discussions, AI assistance patterns, and development methodology discoveries
+- **Context Continuity:** Ensure entries provide enough context for future developers to understand decision evolution
+
+### **TROUBLESHOOTING.md Updates**
+
+- **Systematic Problem Documentation:** Add new issues with complete symptom → diagnosis → solution → prevention workflow
+- **AI Assistance Issues:** Document AI-specific problems (test hanging, error ignoring, incomplete validation) with proven solutions
+- **Development Environment Issues:** Record setup problems, configuration challenges, and dependency management solutions
+- **Testing and Quality Issues:** Include test execution problems, error categorization techniques, and validation procedures
+- **Integration Challenges:** Document API integration issues, external service problems, and connectivity solutions
+- **Cross-Reference Solutions:** Link solutions to relevant COMMANDS.md commands and DEVLOG.md implementation context
+
+### **TESTING_GUIDE.md Updates**
+
+- **Protocol Evolution:** Update testing protocols based on lessons learned from recent sessions
+- **Error Analysis Improvements:** Enhance error categorization and systematic analysis methodologies
+- **Tool Usage Insights:** Document testing tool optimizations and configuration improvements discovered
+- **Quality Assurance Patterns:** Include new validation procedures and quality gate implementations
+- **AI Testing Assistance:** Document AI assistance patterns for testing that proved effective or problematic
 
 ### **ARCHITECTURE.md Updates**
 
@@ -102,18 +165,78 @@ Systematically update all relevant documentation to capture recent changes, lear
 
 ### **Conversation and Learning Documentation**
 
-- Capture significant technical discussions and decision-making rationale
-- Document alternative approaches considered and reasons for current choices
-- Record performance insights, optimization discoveries, and measurement results
-- Preserve debugging insights and problem-solving methodologies learned
-- Note user experience improvements and design decision evolution
+- **Technical Discussions:** Capture significant technical discussions, decision-making rationale, and alternative approaches considered
+- **Problem-Solving Sessions:** Document debugging processes, root cause analysis, and solution discovery methods
+- **Architecture Decisions:** Record why specific patterns were chosen, trade-offs considered, and future implications
+- **Performance Insights:** Document optimization discoveries, measurement results, and performance improvement strategies
+- **User Experience Evolution:** Note UX improvements, design decisions, and usability findings
+- **Integration Learnings:** Capture API integration insights, external service patterns, and connectivity solutions
+
+### **Critical Context Preservation (MANDATORY)**
+
+#### **AI Assistant Context**
+
+- Document AI assistance patterns that worked well (prompt engineering, debugging approaches, systematic methodologies)
+- Record common AI assistance mistakes and how to avoid them (test hanging, error ignoring, incomplete analysis)
+- Preserve systematic approaches developed (testing protocols, error categorization, validation procedures)
+
+#### **Development Workflow Context**
+
+- Document development environment nuances, setup gotchas, and configuration discoveries
+- Record testing patterns that work/don't work in SmartPack's specific architecture
+- Preserve troubleshooting methodologies and diagnostic procedures that proved effective
+
+#### **Technical Implementation Context**
+
+- Document React context patterns, localStorage strategies, and state management approaches specific to SmartPack
+- Record TypeScript configuration insights, path alias solutions, and compilation optimizations
+- Preserve API integration patterns, error handling strategies, and fallback mechanisms
+
+#### **Quality Assurance Context**
+
+- Document test execution patterns, hanging test solutions, and reliable testing approaches
+- Record error categorization methods (NEW/PRE-EXISTING/ENVIRONMENTAL) and resolution strategies
+- Preserve validation procedures and quality gate implementations
+
+### **Historical Context and Evolution Tracking**
+
+#### **Decision Evolution Documentation**
+
+- Record how architectural decisions evolved through conversations and implementation
+- Document what was tried before current solutions and why changes were made
+- Preserve context about temporary solutions vs permanent architectural choices
+
+#### **Problem Pattern Recognition**
+
+- Document recurring problem patterns and their systematic solutions
+- Record common failure modes and proven resolution approaches
+- Preserve diagnostic techniques that successfully identified root causes
+
+#### **Tool and Framework Evolution**
+
+- Document how tool usage evolved (testing frameworks, development tools, AI assistance patterns)
+- Record framework version decisions and compatibility insights
+- Preserve configuration optimizations and performance improvements discovered
 
 ### **Future Reference Preparation**
 
-- Ensure new developers can understand recent changes through documentation
-- Document context that might be lost over time (conversations, temporary decisions)
-- Create clear breadcrumbs for future development and maintenance
-- Establish documentation patterns that scale with project growth
+#### **New Developer Onboarding Context**
+
+- Ensure new developers understand not just what to do, but why decisions were made
+- Document the evolution from initial implementation to current mature patterns
+- Preserve context about what approaches were tried and abandoned (with reasons)
+
+#### **Conversation Continuity**
+
+- Create comprehensive context so new chat sessions can pick up where previous ones left off
+- Document the current state of all major components and their implementation rationale
+- Preserve ongoing challenges, known limitations, and planned improvements
+
+#### **Maintenance and Extension Context**
+
+- Document extension points and how to safely modify existing functionality
+- Record testing strategies for validating changes to core components
+- Preserve architectural constraints and design principles that should guide future changes
 
 ## 7. Documentation Quality and Completeness Review
 

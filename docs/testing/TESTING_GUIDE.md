@@ -61,6 +61,85 @@ test: {
 - Global mock configurations (IntersectionObserver, ResizeObserver, matchMedia)
 - localStorage/sessionStorage mocking
 
+## 🔍 **Test Execution Best Practices**
+
+### **Proper Test Monitoring Protocol**
+
+#### **1. Before Running Tests**
+
+- **Environment Check:** Verify no hanging Node.js processes: `tasklist | find "node.exe"`
+- **Clean State:** Clear terminal and ensure fresh test environment
+- **Scope Decision:** Choose appropriate test scope (unit vs integration vs full suite)
+
+#### **2. During Test Execution**
+
+- **Monitor Output:** Watch for completion patterns, error messages, and hanging indicators
+- **Timeout Awareness:** Integration tests should complete within 30 seconds, unit tests within 5 seconds
+- **Hanging Detection:** If tests show "queued" for >30 seconds, consider stopping and investigating
+
+#### **3. After Test Completion**
+
+- **Read Full Output:** Always analyze complete error messages and stack traces
+- **Categorize Results:** Distinguish between new failures, pre-existing issues, and environmental problems
+- **Document Findings:** Record both successes and failures with proper context
+
+### **Test Command Strategy**
+
+#### **Quick Validation (Recommended for Development)**
+
+```bash
+# Unit tests only - Fast feedback loop
+npm test -- --run src/__tests__/unit
+
+# Specific component tests - Targeted validation
+npm test -- --run ComponentName.test.tsx
+
+# Build verification - Ensure no compilation errors
+npm run build
+```
+
+#### **Comprehensive Testing (Use Carefully)**
+
+```bash
+# Full test suite with timeout and verbose output
+npm test -- --run --reporter=verbose --timeout=30000
+
+# Integration tests with hanging protection
+timeout 60 npm test -- --run src/__tests__/integration
+```
+
+#### **Test Hanging Recovery**
+
+```bash
+# Windows: Kill hanging Node processes
+taskkill /F /IM node.exe
+
+# Cross-platform: Check and clean processes
+npx fkill node
+```
+
+### **Error Analysis Protocol**
+
+#### **Step 1: Immediate Error Classification**
+
+- **New Failures:** Related to recent code changes - MUST FIX
+- **Pre-existing:** Document and isolate from current work
+- **Environmental:** Test setup or configuration issues
+
+#### **Step 2: API Expectation Mismatches**
+
+Common patterns to check:
+
+- **Case Sensitivity:** `"plane"` vs `"Plane"` in travel modes
+- **Missing Fields:** Ensure all required API fields are in test expectations
+- **Data Structure Changes:** Frontend form data vs backend API schema
+
+#### **Step 3: Component Evolution Issues**
+
+- **Function Naming:** Component methods may have evolved (e.g., `generatePackingList` → `generateAISuggestions`)
+- **UI Text Changes:** Button labels and loading states may have updated
+- **State Management:** React context patterns may have changed
+
 ## 🎯 **Test Analysis Methodology**
 
 ### **8-Phase Systematic Analysis**

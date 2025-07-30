@@ -105,7 +105,73 @@ Keep this file up-to-date with all frequently used command line prompts and scri
 
 ## Testing
 
-### Test Execution
+### Test Execution Best Practices
+
+#### **Safe Testing Protocol**
+
+- **Check for hanging processes first**: `tasklist | find "node.exe"` (Windows) or `ps aux | grep node` (macOS/Linux)
+- **Kill hanging processes if needed**: `taskkill /F /IM node.exe` (Windows) or `pkill node` (macOS/Linux)
+- **Start with build verification**: `npm run build` (ensures no compilation errors)
+
+#### **Recommended Testing Commands**
+
+**Quick Development Testing (Preferred):**
+
+```bash
+# Unit tests only - Fast feedback
+npm test -- --run src/__tests__/unit
+
+# Specific component test
+npm test -- --run ComponentName.test.tsx
+
+# Build check (no hanging risk)
+npm run build
+
+# ESLint check (no hanging risk)
+npm run lint
+```
+
+**Targeted Integration Testing:**
+
+```bash
+# Single integration test with timeout
+npm test -- --run --timeout=30000 src/__tests__/integration/specific-test.tsx
+
+# Integration tests with verbose output and timeout
+npm test -- --run --reporter=verbose --timeout=30000 src/__tests__/integration
+```
+
+**Full Test Suite (Use with Caution):**
+
+```bash
+# Full suite with timeout protection
+npm test -- --run --reporter=verbose --timeout=30000
+
+# With coverage (longer execution time)
+npm test -- --run --coverage --timeout=30000
+```
+
+#### **Test Monitoring Protocol**
+
+1. **Watch for Completion**: Tests should show clear completion status ("X passed | Y failed")
+2. **Timeout Limits**: Unit tests <5 seconds, Integration tests <30 seconds
+3. **Hanging Indicators**: "queued" status lasting >30 seconds indicates a problem
+4. **Error Analysis**: Always read full error messages and stack traces before proceeding
+
+#### **Test Debugging Commands**
+
+```bash
+# Verbose output for debugging
+npm test -- --run --reporter=verbose ComponentName.test.tsx
+
+# Debug specific test with detailed output
+npm test -- --run --reporter=verbose --timeout=10000 failing-test.tsx
+
+# Check test file syntax before running
+npx tsc --noEmit src/__tests__/specific-test.tsx
+```
+
+### Enhanced AI Testing
 
 - **Run all tests**: `npm test` or `npx vitest run`
 - **Run with coverage**: `npm test -- --coverage`
