@@ -1,13 +1,11 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { vi, describe, it, expect, beforeEach } from 'vitest';
-import { axe, toHaveNoViolations } from 'jest-axe';
+import { axe } from 'jest-axe';
 import { SuggestionsPanel } from '../components/SuggestionsPanel';
 import { useTripForm } from '../hooks/useTripForm';
 import { usePackingList } from '../hooks/usePackingList';
 import * as apiService from '../services/apiService';
-
-expect.extend(toHaveNoViolations);
 
 // Mock the hooks
 vi.mock('../hooks/useTripForm');
@@ -17,6 +15,7 @@ vi.mock('../services/apiService');
 const mockUseTripForm = vi.mocked(useTripForm);
 const mockUsePackingList = vi.mocked(usePackingList);
 const mockGeneratePackingList = vi.mocked(apiService.generatePackingList);
+const mockGenerateAISuggestions = vi.mocked(apiService.generateAISuggestions);
 
 describe('SuggestionsPanel', () => {
   const mockAddItem = vi.fn();
@@ -100,7 +99,7 @@ describe('SuggestionsPanel', () => {
 
     expect(screen.getByText('Refine Suggestions')).toBeInTheDocument();
     expect(screen.getByLabelText('What specific items or activities should we consider?')).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'Get More Suggestions' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Get AI Suggestions' })).toBeInTheDocument();
   });
 
   it('displays initial suggestions from trip form state', () => {
@@ -156,24 +155,33 @@ describe('SuggestionsPanel', () => {
       checklist: [],
       suggestedItems: ['Business suit', 'Laptop charger']
     };
-    mockGeneratePackingList.mockResolvedValue(mockApiResponse);
+    // Create a delayed promise to test loading state
+    let resolvePromise: (value: typeof mockApiResponse) => void;
+    const delayedPromise = new Promise<typeof mockApiResponse>((resolve) => {
+      resolvePromise = resolve;
+    });
+    mockGenerateAISuggestions.mockReturnValue(delayedPromise);
 
     const { user } = renderSuggestionsPanel();
 
     const textArea = screen.getByLabelText('What specific items or activities should we consider?');
-    const submitButton = screen.getByRole('button', { name: 'Get More Suggestions' });
+    const submitButton = screen.getByRole('button', { name: 'Get AI Suggestions' });
 
     await user.type(textArea, 'business meetings');
     await user.click(submitButton);
 
-    expect(screen.getByText('Getting Suggestions...')).toBeInTheDocument();
+    // Check that button is disabled during loading
+    expect(submitButton).toBeDisabled();
+
+    // Now resolve the promise
+    resolvePromise!(mockApiResponse);
 
     await waitFor(() => {
-      expect(mockGeneratePackingList).toHaveBeenCalledWith(
+      expect(mockGenerateAISuggestions).toHaveBeenCalledWith(
+        'business meetings',
         expect.objectContaining({
           name: 'Paris Trip',
           destinations: ['Paris, France'],
-          tripDetails: 'business meetings'
         }),
         expect.arrayContaining([
           expect.objectContaining({
@@ -256,7 +264,7 @@ describe('SuggestionsPanel', () => {
     const { user } = renderSuggestionsPanel();
 
     const textArea = screen.getByLabelText('What specific items or activities should we consider?');
-    const submitButton = screen.getByRole('button', { name: 'Get More Suggestions' });
+    const submitButton = screen.getByRole('button', { name: 'Get AI Suggestions' });
 
     await user.type(textArea, 'business meetings');
     await user.click(submitButton);
@@ -309,7 +317,7 @@ describe('SuggestionsPanel', () => {
 
     const { user } = renderSuggestionsPanel();
 
-    const submitButton = screen.getByRole('button', { name: 'Get More Suggestions' });
+    const submitButton = screen.getByRole('button', { name: 'Get AI Suggestions' });
     expect(submitButton).toBeDisabled();
 
     const textArea = screen.getByLabelText('What specific items or activities should we consider?');

@@ -42,48 +42,8 @@ import { renderWithProviders } from '../../tests/testing-utils';
 import '@testing-library/jest-dom';
 import MainLayout from '../components/MainLayout';
 import { screen, waitFor } from '@testing-library/react';
- * 
- * PURPOSE: Tests the main application layout and packing list management functionality
-  * 
- * SCOPE - This file should contain:
- * ✅ Layout component rendering and structure
-  * ✅ Packing checklist display and interaction
-    * ✅ Trip details presentation
-      * ✅ Suggestions panel functionality
-        * ✅ Item checking / unchecking behavior
-          * ✅ State persistence in localStorage
-            * ✅ Empty state handling
-              * 
- * SCOPE - This file should NOT contain:
- * ❌ AI generation logic testing(belongs in enhancedAI.integration.test.tsx)
-  * ❌ Form submission testing(belongs in TripForm.test.tsx)
-    * ❌ Navigation testing(belongs in integration tests)
-      * ❌ Cross - browser testing(belongs in playwright /)
-        * 
- * DEPENDENCIES:
- * - MainLayout component(primary test target)
-  * - Mock trip data for testing different scenarios
-    * - localStorage for state persistence testing
-      * - renderWithProviders for context
-        * 
- * MAINTENANCE:
- * - Add tests when new sections are added to layout
-  * - Update when checklist functionality changes
-    * - Modify when trip display logic changes
-      * - Review when localStorage schema changes
-        * 
- * TESTING PATTERNS:
- * - Uses mock data for consistent testing
-  * - Tests component isolation without external services
-    * - Validates accessibility and user interactions
-      * - Focuses on UI state management
-        */
-
-import { screen, waitFor } from '@testing-library/react';
 import { TripFormProvider } from '../hooks/TripFormContext';
-import { axe, toHaveNoViolations } from 'jest-axe';
-
-expect.extend(toHaveNoViolations);
+import { axe } from 'jest-axe';
 
 describe('MainLayout', () => {
   beforeEach(() => {

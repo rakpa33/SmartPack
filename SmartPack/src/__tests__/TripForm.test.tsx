@@ -46,9 +46,7 @@ import { TripFormProvider } from '../hooks/TripFormContext';
 import { TripForm } from '../components/TripForm';
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { axe, toHaveNoViolations } from 'jest-axe';
-
-expect.extend(toHaveNoViolations);
+import { axe } from 'jest-axe';
 
 describe('TripForm', () => {
   function renderTripForm() {

@@ -2,10 +2,8 @@ import { renderWithProviders } from '../../../tests/testing-utils';
 import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { vi, beforeAll } from 'vitest';
-import { axe, toHaveNoViolations } from 'jest-axe';
+import { axe } from 'jest-axe';
 import App from '../../App';
-
-expect.extend(toHaveNoViolations);
 
 // Mock both the underlying utilities and the custom hook
 vi.mock('../../utils/weather', () => ({

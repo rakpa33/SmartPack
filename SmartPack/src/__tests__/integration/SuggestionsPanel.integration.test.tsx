@@ -3,17 +3,19 @@ import userEvent from '@testing-library/user-event';
 import '@testing-library/jest-dom';
 import { MemoryRouter } from 'react-router-dom';
 import App from '../../App';
-import { generatePackingList } from '../../services/apiService';
+import { generatePackingList, generateAISuggestions } from '../../services/apiService';
 import { vi } from 'vitest';
 import type { MockedFunction, Mock } from 'vitest';
 
 // Mock the API service
 vi.mock('../../services/apiService', () => ({
   generatePackingList: vi.fn(),
+  generateAISuggestions: vi.fn(),
   checkApiHealth: vi.fn().mockResolvedValue(true)
 }));
 
 const mockGeneratePackingList = generatePackingList as MockedFunction<typeof generatePackingList>;
+const mockGenerateAISuggestions = generateAISuggestions as MockedFunction<typeof generateAISuggestions>;
 
 // Mock fetch for weather API
 global.fetch = vi.fn() as unknown as Mock;
@@ -99,7 +101,7 @@ describe('SuggestionsPanel Integration', () => {
       checklist: [],
       suggestedItems: ['Business suit', 'Laptop']
     };
-    mockGeneratePackingList.mockResolvedValueOnce(refinementResponse);
+    mockGenerateAISuggestions.mockResolvedValueOnce(refinementResponse);
 
     render(
       <MemoryRouter initialEntries={['/']}>
@@ -118,7 +120,7 @@ describe('SuggestionsPanel Integration', () => {
     const user = userEvent.setup();
     const promptInput = screen.getByLabelText('What specific items or activities should we consider?');
     await user.type(promptInput, 'business meetings');
-    await user.click(screen.getByRole('button', { name: 'Get More Suggestions' }));
+    await user.click(screen.getByRole('button', { name: 'Get AI Suggestions' }));
 
     // Wait for new suggestions
     await waitFor(() => {
@@ -162,7 +164,7 @@ describe('SuggestionsPanel Integration', () => {
     mockGeneratePackingList.mockResolvedValueOnce(initialResponse);
 
     // Mock error for refinement
-    mockGeneratePackingList.mockRejectedValueOnce(new Error('API Error'));
+    mockGenerateAISuggestions.mockRejectedValueOnce(new Error('API Error'));
 
     render(
       <MemoryRouter initialEntries={['/']}>
@@ -181,7 +183,7 @@ describe('SuggestionsPanel Integration', () => {
     const user2 = userEvent.setup();
     const promptInput = screen.getByLabelText('What specific items or activities should we consider?');
     await user2.type(promptInput, 'business meetings');
-    await user2.click(screen.getByRole('button', { name: 'Get More Suggestions' }));
+    await user2.click(screen.getByRole('button', { name: 'Get AI Suggestions' }));
 
     // Should show error message
     await waitFor(() => {

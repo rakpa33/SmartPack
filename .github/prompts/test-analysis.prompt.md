@@ -4,14 +4,34 @@
 
 Systematically analyze test files for modern compliance, identify issues, and modernize testing patterns using SmartPack's 2024/2025 testing standards and architecture expertise.
 
-## 1. Test File Analysis and Context Gathering
+## 1. IDE Static Analysis and Pre-Execution Validation
+
+- **IDE Error Detection (Before Running Tests):**
+  - Use `get_errors` tool to identify TypeScript/ESLint/static analysis errors in test files
+  - Check for compilation errors, type mismatches, and import issues
+  - Identify timeout configuration problems and test setup issues
+  - Detect jest-axe type compatibility issues with Vitest/Testing Library
+  - Validate mock imports and service dependencies
+  - Check for missing test utilities or configuration problems
+- **Static Analysis Categorization:**
+  - **Type Errors:** Generic type mismatches, assertion type conflicts, mock type issues
+  - **Import Errors:** Missing dependencies, incorrect paths, circular dependencies
+  - **Configuration Errors:** Test timeout settings, environment setup, framework conflicts
+  - **Tool Compatibility:** jest-axe with Vitest, Testing Library version conflicts
+- **Pre-Execution Fixes:**
+  - Resolve critical IDE errors that prevent test execution
+  - Fix type compatibility issues with expect.extend() and jest-axe
+  - Address timeout configuration and test framework setup
+  - Ensure proper mock typing and import resolution
+
+## 2. Test File Analysis and Context Gathering
 
 - **Test File Assessment:**
   - Analyze test file structure, organization, and location within project hierarchy
   - Review test file documentation headers against established standards
   - Identify test types: unit, integration, E2E, accessibility, performance
   - Document current testing patterns: fireEvent vs userEvent, screen API usage, mocking strategies
-- **Test Execution Status:**
+- **Test Execution Status (After IDE Issues Resolved):**
   - Run tests and document pass/fail status with detailed error messages
   - Identify failing tests vs passing tests that may be outdated
   - Analyze test performance and execution time patterns
@@ -35,8 +55,9 @@ Systematically analyze test files for modern compliance, identify issues, and mo
   - Review against `TESTING_STANDARDS.md` for modern patterns
   - Check `TESTING_CONFIGURATION.md` for proper file organization
   - Validate testing patterns: userEvent over fireEvent, screen API usage, behavioral describe blocks
-  - Assess accessibility testing integration with jest-axe
+  - Assess accessibility testing integration with jest-axe and type compatibility
   - Verify mobile-first responsive testing patterns
+  - Check Vitest-specific configurations and jest-axe type extensions
 
 - **File Organization Standards:**
   - Validate test file location: `src/__tests__/`, `playwright/`, proper subdirectories
@@ -56,6 +77,8 @@ Systematically analyze test files for modern compliance, identify issues, and mo
   - Check for getByTestId overuse (prefer accessible queries)
   - Find missing accessibility testing (jest-axe integration)
   - Detect improper mocking patterns or external dependency issues
+  - **IDE-Specific Issues:** jest-axe type conflicts with Vitest, timeout configuration problems
+  - **Integration Test Issues:** Form interaction hangs, navigation failures, element finding problems
 - **Documentation Standards:**
   - Validate test file headers with PURPOSE, SCOPE, DEPENDENCIES, MAINTENANCE, TESTING PATTERNS
   - Check for clear test descriptions and behavioral organization
@@ -137,11 +160,12 @@ Systematically analyze test files for modern compliance, identify issues, and mo
   - Ensure understanding of SmartPack-specific requirements
   - Review implementation plan and change impact
 - **Implementation Approach:**
-  - Apply critical fixes first (failing tests, security issues)
-  - Modernize testing patterns systematically
-  - Add missing documentation headers and organization
-  - Generate missing tests for coverage gaps
-  - Validate changes with comprehensive test execution
+  - **Phase 1:** Apply critical IDE fixes first (type errors, import issues, configuration)
+  - **Phase 2:** Apply critical test fixes (failing tests, security issues)
+  - **Phase 3:** Modernize testing patterns systematically
+  - **Phase 4:** Add missing documentation headers and organization
+  - **Phase 5:** Generate missing tests for coverage gaps
+  - **Phase 6:** Validate changes with comprehensive test execution
 - **Post-Implementation Verification:**
   - Run complete test suite to ensure no regressions
   - Validate test execution performance and reliability
@@ -170,7 +194,11 @@ Systematically analyze test files for modern compliance, identify issues, and mo
 
 ## Analysis Checklist
 
-- [ ] Test execution status documented (pass/fail with details)
+- [ ] **IDE Static Analysis completed (Before test execution)**
+- [ ] TypeScript/ESLint errors in test files identified and categorized
+- [ ] jest-axe type compatibility issues documented
+- [ ] Integration test timeout and configuration problems assessed
+- [ ] Test execution status documented (pass/fail with details) - only after IDE issues resolved
 - [ ] 2024/2025 testing standards compliance assessed
 - [ ] SmartPack architecture alignment validated
 - [ ] Anti-patterns and modernization opportunities identified
@@ -183,7 +211,11 @@ Systematically analyze test files for modern compliance, identify issues, and mo
 
 ## Implementation Checklist
 
-- [ ] Critical failing tests fixed or updated
+- [ ] **IDE static analysis errors resolved first**
+- [ ] TypeScript type compatibility issues fixed (jest-axe, expect.extend)
+- [ ] Integration test timeout and configuration issues addressed
+- [ ] Import and dependency resolution problems corrected
+- [ ] Critical failing tests fixed or updated (after IDE issues resolved)
 - [ ] Anti-patterns modernized (fireEvent → userEvent, etc.)
 - [ ] Documentation headers added/updated per standards
 - [ ] File organization corrected per established structure
@@ -211,5 +243,29 @@ Request analysis of entire test infrastructure with focus on standards complianc
 - Any specific behavioral questions or concerns
 - Coverage reports if available
 - Recent code changes that might affect tests
+- **IDE Error Status:** Include any TypeScript/ESLint errors visible in IDE before running tests
+
+## Common IDE Issues and Solutions
+
+**jest-axe Type Compatibility:**
+
+```typescript
+// Problem: expect.extend(toHaveNoViolations) type mismatch
+// Solution: Proper type extension or import adjustment
+```
+
+**Integration Test Timeouts:**
+
+```typescript
+// Problem: "Test timed out in 5000ms" on setupApp() calls
+// Solution: Investigate form interactions, navigation, element finding
+```
+
+**Mock Type Mismatches:**
+
+```typescript
+// Problem: vi.mocked() type conflicts
+// Solution: Proper mock typing with correct return types
+```
 
 The prompt will analyze, provide detailed recommendations, and wait for confirmation before implementing any changes to ensure alignment with project goals and architectural decisions.

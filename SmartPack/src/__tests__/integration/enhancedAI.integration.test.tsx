@@ -80,8 +80,15 @@ describe('Enhanced AI Integration Tests', () => {
     vi.clearAllMocks();
   });
 
-  const setupApp = () => {
-    return renderWithProviders(<App />, { initialEntries: ['/'] });
+  const setupApp = async () => {
+    const result = renderWithProviders(<App />, { initialEntries: ['/'] });
+
+    // Wait for the initial form to load
+    await waitFor(() => {
+      expect(screen.getByLabelText(/trip name/i)).toBeInTheDocument();
+    }, { timeout: 5000 });
+
+    return result;
   };
 
   const fillBasicTripForm = async (user: ReturnType<typeof userEvent.setup>, tripType: 'business' | 'beach' | 'adventure' = 'business') => {
@@ -140,7 +147,7 @@ describe('Enhanced AI Integration Tests', () => {
 
       mockGeneratePackingList.mockResolvedValueOnce(mockBusinessResponse);
 
-      setupApp();
+      await setupApp();
       await fillBasicTripForm(user, 'business');
 
       // Wait for navigation to main layout
@@ -148,8 +155,14 @@ describe('Enhanced AI Integration Tests', () => {
         expect(screen.getByText(/trip details/i)).toBeInTheDocument();
       }, { timeout: 5000 });
 
-      // Generate packing list
-      const generateButton = screen.getByRole('button', { name: /generate smart packing list/i });
+      // Wait for AI suggestions button to be enabled and click it
+      await waitFor(() => {
+        const generateButton = screen.getByRole('button', { name: /get ai suggestions/i });
+        expect(generateButton).not.toBeDisabled();
+        return generateButton;
+      }, { timeout: 10000 });
+
+      const generateButton = screen.getByRole('button', { name: /get ai suggestions/i });
       await user.click(generateButton);
 
       // Verify business-specific intelligent recommendations
@@ -202,7 +215,7 @@ describe('Enhanced AI Integration Tests', () => {
 
       mockGeneratePackingList.mockResolvedValueOnce(mockBeachResponse);
 
-      setupApp();
+      await setupApp();
       await fillBasicTripForm(user, 'beach');
 
       // Wait for navigation to main layout
@@ -210,8 +223,13 @@ describe('Enhanced AI Integration Tests', () => {
         expect(screen.getByText(/trip details/i)).toBeInTheDocument();
       }, { timeout: 5000 });
 
-      // Generate packing list
-      const generateButton = screen.getByRole('button', { name: /generate smart packing list/i });
+      // Wait for AI suggestions button to be enabled and click it
+      await waitFor(() => {
+        const generateButton = screen.getByRole('button', { name: /get ai suggestions/i });
+        expect(generateButton).not.toBeDisabled();
+      }, { timeout: 10000 });
+
+      const generateButton = screen.getByRole('button', { name: /get ai suggestions/i });
       await user.click(generateButton);
 
       // Verify beach-specific intelligent recommendations
@@ -260,7 +278,7 @@ describe('Enhanced AI Integration Tests', () => {
 
       mockGeneratePackingList.mockResolvedValueOnce(mockAdventureResponse);
 
-      setupApp();
+      await setupApp();
       await fillBasicTripForm(user, 'adventure');
 
       // Wait for navigation to main layout
@@ -268,8 +286,13 @@ describe('Enhanced AI Integration Tests', () => {
         expect(screen.getByText(/trip details/i)).toBeInTheDocument();
       }, { timeout: 5000 });
 
-      // Generate packing list
-      const generateButton = screen.getByRole('button', { name: /generate smart packing list/i });
+      // Wait for AI suggestions button to be enabled and click it
+      await waitFor(() => {
+        const generateButton = screen.getByRole('button', { name: /get ai suggestions/i });
+        expect(generateButton).not.toBeDisabled();
+      }, { timeout: 10000 });
+
+      const generateButton = screen.getByRole('button', { name: /get ai suggestions/i });
       await user.click(generateButton);
 
       // Verify adventure-specific intelligent recommendations
@@ -311,7 +334,7 @@ describe('Enhanced AI Integration Tests', () => {
 
       mockGeneratePackingList.mockResolvedValueOnce(mockShortTripResponse);
 
-      setupApp();
+      await setupApp();
 
       // Fill short trip form
       await user.type(screen.getByLabelText(/trip name/i), 'Weekend Getaway');
@@ -326,7 +349,13 @@ describe('Enhanced AI Integration Tests', () => {
         expect(screen.getByText(/trip details/i)).toBeInTheDocument();
       }, { timeout: 5000 });
 
-      const generateButton = screen.getByRole('button', { name: /generate smart packing list/i });
+      // Wait for AI suggestions button to be enabled and click it
+      await waitFor(() => {
+        const generateButton = screen.getByRole('button', { name: /get ai suggestions/i });
+        expect(generateButton).not.toBeDisabled();
+      }, { timeout: 10000 });
+
+      const generateButton = screen.getByRole('button', { name: /get ai suggestions/i });
       await user.click(generateButton);
 
       // Verify shorter trip gets fewer items
@@ -344,7 +373,7 @@ describe('Enhanced AI Integration Tests', () => {
       // Mock API error
       mockGeneratePackingList.mockRejectedValueOnce(new Error('Service temporarily unavailable'));
 
-      setupApp();
+      await setupApp();
       await fillBasicTripForm(user, 'business');
 
       // Wait for navigation to main layout
@@ -352,8 +381,14 @@ describe('Enhanced AI Integration Tests', () => {
         expect(screen.getByText(/trip details/i)).toBeInTheDocument();
       }, { timeout: 5000 });
 
+      // Wait for AI suggestions button to be enabled and click it
+      await waitFor(() => {
+        const generateButton = screen.getByRole('button', { name: /get ai suggestions/i });
+        expect(generateButton).not.toBeDisabled();
+      }, { timeout: 10000 });
+
       // Try to generate packing list
-      const generateButton = screen.getByRole('button', { name: /generate smart packing list/i });
+      const generateButton = screen.getByRole('button', { name: /get ai suggestions/i });
       await user.click(generateButton);
 
       // Verify error handling

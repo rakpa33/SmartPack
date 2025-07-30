@@ -8,6 +8,11 @@ export interface ItemWithQuantity {
 }
 
 export function addQuantityToItem(baseItem: string, tripLengthDays: number = 7): string {
+  // Special handling for already numbered items - check this FIRST
+  if (/\d+/.test(baseItem)) {
+    return baseItem; // Already has a quantity, preserve it
+  }
+
   const item = baseItem.toLowerCase();
   
   // Define items that should have quantities based on trip length
@@ -46,11 +51,6 @@ export function addQuantityToItem(baseItem: string, tripLengthDays: number = 7):
     if (item.includes(pattern)) {
       return rule(tripLengthDays);
     }
-  }
-
-  // Special handling for already numbered items
-  if (/\d+/.test(baseItem)) {
-    return baseItem; // Already has a quantity
   }
 
   // Default: return the item as-is

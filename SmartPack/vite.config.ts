@@ -1,4 +1,4 @@
-import { defineConfig } from 'vite'
+import { defineConfig } from 'vitest/config'
 import react from '@vitejs/plugin-react'
 
 // https://vite.dev/config/
@@ -42,11 +42,6 @@ export default defineConfig({
       },
     },
     
-    // Watch mode optimizations
-    watch: {
-      ignore: ['node_modules/**', 'dist/**', 'playwright/**'],
-    },
-    
     // Test file patterns
     include: ['src/**/*.{test,spec}.{js,ts,jsx,tsx}'],
     exclude: ['node_modules', 'dist', 'playwright'],
@@ -57,7 +52,7 @@ export default defineConfig({
     teardownTimeout: 5000,
     
     // Reporter configuration
-    reporter: process.env.CI ? ['junit', 'github-actions'] : ['verbose'],
+    reporters: process.env.CI ? ['junit', 'github-actions'] : ['verbose'],
     outputFile: {
       junit: './test-results/junit.xml',
     },
