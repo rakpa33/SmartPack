@@ -24,6 +24,7 @@
       "@utils/*": ["./src/utils/*"],
       "@pages/*": ["./src/pages/*"],
       "@types/*": ["./src/types/*"],
+      "@test-utils": ["./src/test-utils/index"],
       "@test-utils/*": ["./src/test-utils/*"],
       "@assets/*": ["./src/assets/*"]
     },
