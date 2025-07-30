@@ -107,6 +107,27 @@ Keep this file up-to-date with all frequently used command line prompts and scri
 
 ### Test Execution Best Practices
 
+#### **Jest-Axe Accessibility Testing Pattern (Updated 2025-07-29)**
+
+**Problem:** Jest-axe `expect.extend({ toHaveNoViolations })` causes type conflicts with Vitest
+
+**Solution:** Use inline accessibility validation:
+
+```typescript
+import { axe } from 'jest-axe';
+
+// Use this pattern instead of expect.extend()
+const expectNoA11yViolations = async (container: HTMLElement) => {
+  const results = await axe(container);
+  expect(results.violations).toEqual([]);
+};
+
+// In tests:
+await expectNoA11yViolations(document.body);
+```
+
+**Status:** Applied to all component tests for TypeScript compatibility
+
 #### **Safe Testing Protocol**
 
 - **Check for hanging processes first**: `tasklist | find "node.exe"` (Windows) or `ps aux | grep node` (macOS/Linux)

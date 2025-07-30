@@ -44,6 +44,13 @@ import MainLayout from '../components/MainLayout';
 import { screen, waitFor } from '@testing-library/react';
 import { TripFormProvider } from '../hooks/TripFormContext';
 import { axe } from 'jest-axe';
+import { expect } from 'vitest';
+
+// For Vitest compatibility with jest-axe, we need to define the matcher inline
+const expectNoA11yViolations = async (container: HTMLElement) => {
+  const results = await axe(container);
+  expect(results.violations).toEqual([]);
+};
 
 describe('MainLayout', () => {
   beforeEach(() => {
@@ -115,8 +122,7 @@ describe('MainLayout', () => {
           </MainLayout>
         </TripFormProvider>
       );
-      const results = await axe(container);
-      expect(results).toHaveNoViolations();
+      await expectNoA11yViolations(container);
     });
   });
 });

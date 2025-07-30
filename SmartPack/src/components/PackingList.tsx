@@ -75,9 +75,11 @@ export const PackingList: React.FC = () => {
     }
   }, [state.generatedPackingList, loadAiGeneratedItems]);
 
-  // Show all available categories, not just ones with items
-  // This provides better UX and helps users understand available categories
-  const displayCategories = categories;
+  // Show only categories that have items (filter out empty categories)
+  // This provides cleaner UX by hiding empty category sections
+  const displayCategories = categories.filter(cat =>
+    items.some(item => item.category === cat.id)
+  );
 
   return (
     <>

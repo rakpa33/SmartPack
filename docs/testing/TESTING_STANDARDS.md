@@ -75,10 +75,14 @@ src/
 // ComponentName.test.tsx
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { axe, toHaveNoViolations } from 'jest-axe';
+import { axe } from 'jest-axe';
 import { ComponentName } from './ComponentName';
 
-expect.extend(toHaveNoViolations);
+// Vitest-compatible accessibility helper
+const expectNoA11yViolations = async (container: HTMLElement) => {
+  const results = await axe(container);
+  expect(results.violations).toEqual([]);
+};
 
 describe('ComponentName', () => {
   // Setup helpers
@@ -98,9 +102,8 @@ describe('ComponentName', () => {
     });
 
     it('should be accessible', async () => {
-      const { container } = render(<ComponentName />);
-      const results = await axe(container);
-      expect(results).toHaveNoViolations();
+      render(<ComponentName />);
+      await expectNoA11yViolations(document.body);
     });
   });
 
@@ -246,20 +249,25 @@ export function renderWithProviders(
 
 ## ♿ **Accessibility Testing Standards**
 
-### ✅ **Integrated Accessibility Tests**
+### ✅ **Integrated Accessibility Tests (Updated 2025-07-29)**
 
 ```tsx
-import { axe, toHaveNoViolations } from 'jest-axe';
+import { axe } from 'jest-axe';
 
-expect.extend(toHaveNoViolations);
+// Vitest-compatible accessibility pattern
+const expectNoA11yViolations = async (container: HTMLElement) => {
+  const results = await axe(container);
+  expect(results.violations).toEqual([]);
+};
 
 // Include in every component test
 it('should be accessible', async () => {
-  const { container } = render(<Component />);
-  const results = await axe(container);
-  expect(results).toHaveNoViolations();
+  render(<Component />);
+  await expectNoA11yViolations(document.body);
 });
 ```
+
+**Note:** This pattern resolves TypeScript compatibility issues with Vitest while maintaining full jest-axe functionality.
 
 ### **Accessibility Test Requirements**
 

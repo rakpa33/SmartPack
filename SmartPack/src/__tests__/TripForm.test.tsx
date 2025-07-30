@@ -1,11 +1,7 @@
 /**
  * TripForm Component Unit Tests
  * 
-import { toHaveNoViolations } from 'jest-axe';
-import { expect } from 'vitest';
-
-// Extend expect with accessibility matchers
-expect.extend({ toHaveNoViolations });PURPOSE: Tests the core trip form component functionality, validation, and user interactions
+ * PURPOSE: Tests the core trip form component functionality, validation, and user interactions
  * 
  * SCOPE - This file should contain:
  * ✅ Form field rendering and accessibility
@@ -47,6 +43,14 @@ import { TripForm } from '../components/TripForm';
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { axe } from 'jest-axe';
+import { expect } from 'vitest';
+
+// For Vitest compatibility with jest-axe, we need to define the matcher inline
+// instead of using expect.extend due to type incompatibilities
+const expectNoA11yViolations = async (container: HTMLElement) => {
+  const results = await axe(container);
+  expect(results.violations).toEqual([]);
+};
 
 describe('TripForm', () => {
   function renderTripForm() {
@@ -81,8 +85,7 @@ describe('TripForm', () => {
           <TripForm />
         </TripFormProvider>
       );
-      const results = await axe(container);
-      expect(results).toHaveNoViolations();
+      await expectNoA11yViolations(container);
     });
   });
 

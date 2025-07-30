@@ -666,4 +666,109 @@ Document common issues and their solutions here. Update this file as you encount
 - **Current Known Issue:** SuggestionsPanel tests may hang in watch mode but pass in run mode
 - **Impact:** Does not affect functionality - all tests pass when run individually
 
+### Empty Categories Being Displayed (RESOLVED - 2025-07-29)
+
+- **Symptom:** Packing list shows empty category headers even when no items exist in those categories, creating visual clutter.
+- **User Impact:** Poor UX with unnecessary visual elements that don't provide value.
+- **Root Cause:** Previous fix for data persistence changed category display logic to show all default categories instead of filtering for active categories.
+- **Investigation Steps:**
+  1. Check `src/components/PackingList.tsx` for `displayCategories` logic
+  2. Verify if filtering is applied to show only categories with items
+  3. Review DEVLOG entries for recent changes to category display behavior
+- **Solution:**
+
+  ```tsx
+  // Replace this pattern:
+  const displayCategories = categories;
+
+  // With this pattern:
+  const displayCategories = categories.filter((cat) =>
+    items.some((item) => item.category === cat.id)
+  );
+  ```
+
+- **Files Modified:** `src/components/PackingList.tsx`
+- **Testing:** Added `src/__tests__/PackingList.empty-categories.test.tsx` for regression prevention
+- **Prevention:** Unit tests now verify empty categories are properly hidden
+- **Cross-Reference:** See DEVLOG.md (2025-07-29) for implementation details
+
 ## Add more issues as you encounter them!
+
+## Testing Framework Issues
+
+### Jest-Axe Type Compatibility with Vitest - RESOLVED (2025-07-29)
+
+- **Symptom:** TypeScript compilation errors when using jest-axe with Vitest, specifically `expect.extend({ toHaveNoViolations })` causing MatcherFunction vs RawMatcherFn type conflicts
+- **Root Cause:** Jest-axe type definitions designed for Jest expect.extend() API are incompatible with Vitest's expect extensions system
+- **Diagnostic Steps:**
+  1. Run `npm test` - observe TypeScript compilation errors in multiple test files
+  2. Check for `expect.extend({ toHaveNoViolations })` patterns in test files
+  3. Verify error messages mention MatcherFunction type conflicts
+  4. Confirm issue affects accessibility tests across multiple components
+- **Solution:** Replace expect.extend() pattern with inline accessibility validation function:
+
+  ```typescript
+  // Replace this pattern:
+  expect.extend({ toHaveNoViolations });
+  await expect(container).toHaveNoViolations();
+
+  // With this Vitest-compatible pattern:
+  const expectNoA11yViolations = async (container: HTMLElement) => {
+    const results = await axe(container);
+    expect(results.violations).toEqual([]);
+  };
+  await expectNoA11yViolations(container);
+  ```
+
+- **Files Affected:** TripForm.test.tsx, TripDetails.test.tsx, SuggestionsPanel.test.tsx, MainLayout.test.tsx, integration/TripForm.integration.test.tsx
+- **Prevention:** Use inline accessibility validation pattern for all new tests; avoid jest-axe expect.extend() in Vitest environment
+- **Status:** RESOLVED - All accessibility tests now pass with proper TypeScript compatibility
+- **Cross-References:** See DEVLOG.md for implementation details, TEST_UTILITIES.md for reusable pattern
+
+### Test Execution Hanging - Node Process Management
+
+- **Symptom:** Tests hang indefinitely without completion, especially integration tests, requiring forced termination
+- **Root Cause:** Multiple Node.js processes from previous test runs continue running in background, creating resource conflicts and port binding issues
+- **Diagnostic Steps:**
+  1. Check for hanging Node processes: `tasklist | find "node.exe"` (Windows) or `ps aux | grep node` (Unix)
+  2. Look for multiple Node processes consuming resources
+  3. Verify ports are not in use: `netstat -ano | find "3000"` or similar for app ports
+- **Solution:**
+  1. **Pre-test cleanup:** `taskkill /F /IM node.exe` (Windows) or `pkill node` (Unix)
+  2. **Systematic testing:** Run individual test files instead of full suite initially
+  3. **Monitor execution:** Set timeouts and watch for completion indicators
+- **Prevention:**
+  - Always clean up Node processes before testing sessions
+  - Use targeted testing approach for debugging
+  - Implement proper test isolation and cleanup
+- **Status:** RESOLVED - Systematic protocol prevents hanging test issues
+- **Cross-References:** See COMMANDS.md for process management commands
+
+### Empty Categories Display Issue - RESOLVED (2025-07-29)
+
+- **Symptom:** Empty category headers showing in packing list UI even when no items exist in those categories
+- **Root Cause:** Category filtering logic changed during localStorage persistence fix, now showing all default categories instead of filtering for active ones
+- **Diagnostic Steps:**
+  1. Open app with no items in packing list
+  2. Observe empty category headers (Clothing, Health & Safety, etc.) displayed
+  3. Check PackingList.tsx displayCategories logic
+  4. Verify that `const displayCategories = categories;` shows all categories
+- **Solution:** Update category filtering logic in `src/components/PackingList.tsx`:
+
+  ```typescript
+  // Replace:
+  const displayCategories = categories;
+
+  // With:
+  const displayCategories = categories.filter((cat) =>
+    items.some((item) => item.category === cat.id)
+  );
+  ```
+
+- **Prevention:**
+  - Test UI with empty state during development
+  - Consider empty state UX in all list components
+  - Add test coverage for empty state scenarios
+- **Status:** RESOLVED - Empty categories are now properly hidden
+- **Verification:** Created `PackingList.empty-categories.test.tsx` with comprehensive test coverage
+- **Cross-References:** See DEVLOG.md for implementation details and rationale

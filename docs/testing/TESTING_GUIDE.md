@@ -63,6 +63,39 @@ test: {
 
 ## 🔍 **Test Execution Best Practices**
 
+### **Jest-Axe Accessibility Testing with Vitest Compatibility**
+
+#### **Problem and Solution**
+
+**Issue:** Jest-axe's `expect.extend({ toHaveNoViolations })` causes type conflicts with Vitest's expect extensions system.
+
+**Vitest-Compatible Pattern:**
+
+```typescript
+import { axe } from 'jest-axe';
+
+// Use this pattern instead of expect.extend()
+const expectNoA11yViolations = async (container: HTMLElement) => {
+  const results = await axe(container);
+  expect(results.violations).toEqual([]);
+};
+
+// In your tests:
+test('should be accessible', async () => {
+  render(<Component />);
+  await expectNoA11yViolations(document.body);
+});
+```
+
+**Benefits:**
+
+- ✅ Full TypeScript compatibility with Vitest
+- ✅ Same accessibility validation as jest-axe
+- ✅ Clear error messages showing specific violations
+- ✅ Works with all existing axe configuration options
+
+**Implementation Status:** Applied to all component tests (TripForm, TripDetails, SuggestionsPanel, MainLayout, integration tests)
+
 ### **Proper Test Monitoring Protocol**
 
 #### **1. Before Running Tests**

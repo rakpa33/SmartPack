@@ -70,6 +70,30 @@ For each significant conversation topic, ensure the following context is capture
 - **Conversation Insights:** Preserve significant technical discussions, AI assistance patterns, and development methodology discoveries
 - **Context Continuity:** Ensure entries provide enough context for future developers to understand decision evolution
 
+### **DEVLOG.md Updates - CRITICAL PLACEMENT RULE**
+
+⚠️ **MANDATORY DEVLOG.md PLACEMENT PROTOCOL:**
+
+- **ALWAYS insert new entries at the TOP of the document** (immediately after the comment header)
+- **NEVER append to bottom** - this violates reverse chronological order and document standards
+- **Check existing date order** before adding new entries to maintain proper chronological sequence
+- **Use insert_edit_into_file with placement immediately after comment header**
+
+**DEVLOG.md Quality Check - REQUIRED:**
+
+- ✅ New entry added at TOP (after header comment, before existing entries)
+- ✅ Date order is reverse chronological (newest first)
+- ✅ Entry follows standard structure (Problem → Root Cause → Solution → Prevention)
+- ✅ Cross-references included (TROUBLESHOOTING.md, CHECKLIST.md, etc.)
+- ✅ Technical context preserved with sufficient detail for future maintenance
+
+**Common DEVLOG.md Mistakes to Avoid:**
+
+- ❌ Adding entries at the bottom (breaks chronological order)
+- ❌ Not reading document header for placement rules
+- ❌ Assuming chronological organization is like a typical log file
+- ❌ Missing cross-references to related documentation
+
 ### **TROUBLESHOOTING.md Updates**
 
 - **Systematic Problem Documentation:** Add new issues with complete symptom → diagnosis → solution → prevention workflow
@@ -255,6 +279,22 @@ For each significant conversation topic, ensure the following context is capture
 - Ensure document purposes remain aligned with current content
 
 ## 8. Final Validation and Preparation for Commit
+
+### **AI Assistant Documentation Protocol Reminder**
+
+**BEFORE EDITING ANY DOCUMENTATION FILES:**
+
+1. **Read Document Headers:** Always check the comment header for specific placement rules and organization principles
+2. **Identify Current Structure:** Understand existing organization (chronological order, categorization, etc.)
+3. **Follow Established Patterns:** Maintain consistency with existing document structure and formatting
+4. **Validate Cross-References:** Ensure all internal links and references remain accurate after changes
+
+**DEVLOG.md SPECIFIC REMINDER:**
+
+- ⚠️ **CRITICAL:** New entries ALWAYS go at the TOP (after header comment)
+- ⚠️ **NEVER append to bottom** - this violates reverse chronological order
+- ⚠️ **Check date order** before and after making changes
+- ⚠️ **Read the comment header** for placement rules before editing
 
 ### **Documentation Completeness Check**
 

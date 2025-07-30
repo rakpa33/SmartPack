@@ -30,6 +30,35 @@ await user.click(screen.getByRole('button', { name: /submit/i }));
 
 ## 🔧 **Available Utilities**
 
+### Accessibility Testing with Jest-Axe
+
+**Vitest-Compatible Pattern** (Resolved 2025-07-29):
+
+```tsx
+import { axe } from 'jest-axe';
+
+// Use this pattern instead of expect.extend({ toHaveNoViolations })
+const expectNoA11yViolations = async (container: HTMLElement) => {
+  const results = await axe(container);
+  expect(results.violations).toEqual([]);
+};
+
+// In your tests:
+test('should be accessible', async () => {
+  renderWithProviders(<Component />);
+  await expectNoA11yViolations(document.body);
+});
+```
+
+**Why This Pattern:**
+
+- ✅ Full TypeScript compatibility with Vitest
+- ✅ Same accessibility validation as jest-axe
+- ✅ Clear error messages showing specific violations
+- ✅ Avoids MatcherFunction vs RawMatcherFn type conflicts
+
+**Implementation Status:** Applied to all component tests (TripForm, TripDetails, SuggestionsPanel, MainLayout, integration tests)
+
 ### `renderWithProviders(ui, options)`
 
 Renders components with all necessary providers (TripForm, PackingList, Router).

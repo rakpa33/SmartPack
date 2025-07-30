@@ -38,10 +38,17 @@
 
 import { render, screen } from '@testing-library/react';
 import { axe } from 'jest-axe';
+import { expect } from 'vitest';
 import { TripDetails } from '../components/TripDetails';
 import { TripFormContext } from '../hooks/TripFormContextOnly';
 import { PackingListProvider } from '../hooks/usePackingListContext';
 import type { TripFormState } from '../hooks/TripFormTypes';
+
+// For Vitest compatibility with jest-axe, we need to define the matcher inline
+const expectNoA11yViolations = async (container: HTMLElement) => {
+  const results = await axe(container);
+  expect(results.violations).toEqual([]);
+};
 
 function renderTripDetails(state: Partial<TripFormState> = {}) {
   const defaultState: TripFormState = {
@@ -80,8 +87,7 @@ describe('TripDetails', () => {
 
     it('should be accessible', async () => {
       const { container } = renderTripDetails();
-      const results = await axe(container);
-      expect(results).toHaveNoViolations();
+      await expectNoA11yViolations(container);
     });
 
     it('should display trip data when provided', () => {

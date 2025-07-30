@@ -16,9 +16,13 @@ When creating, modifying, or reviewing tests in the SmartPack project, always fo
 ```tsx
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { axe, toHaveNoViolations } from 'jest-axe';
+import { axe } from 'jest-axe';
 
-expect.extend(toHaveNoViolations);
+// Vitest-compatible accessibility helper
+const expectNoA11yViolations = async (container: HTMLElement) => {
+  const results = await axe(container);
+  expect(results.violations).toEqual([]);
+};
 ```
 
 ## Test Structure Template

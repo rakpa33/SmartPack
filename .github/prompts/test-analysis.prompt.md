@@ -247,11 +247,15 @@ Request analysis of entire test infrastructure with focus on standards complianc
 
 ## Common IDE Issues and Solutions
 
-**jest-axe Type Compatibility:**
+**jest-axe Type Compatibility (RESOLVED 2025-07-29):**
 
 ```typescript
-// Problem: expect.extend(toHaveNoViolations) type mismatch
-// Solution: Proper type extension or import adjustment
+// Problem: expect.extend(toHaveNoViolations) type mismatch with Vitest
+// Solution: Use inline accessibility validation
+const expectNoA11yViolations = async (container: HTMLElement) => {
+  const results = await axe(container);
+  expect(results.violations).toEqual([]);
+};
 ```
 
 **Integration Test Timeouts:**

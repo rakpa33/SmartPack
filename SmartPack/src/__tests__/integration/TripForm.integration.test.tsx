@@ -1,5 +1,11 @@
-import { renderWithProviders, screen, waitFor, userEvent, vi, beforeAll, axe } from '@test-utils';
+import { renderWithProviders, screen, waitFor, userEvent, vi, beforeAll, axe, expect } from '@test-utils';
 import App from '@/App';
+
+// For Vitest compatibility with jest-axe, we need to define the matcher inline
+const expectNoA11yViolations = async (container: HTMLElement) => {
+  const results = await axe(container);
+  expect(results.violations).toEqual([]);
+};
 
 // Mock both the underlying utilities and the custom hook
 vi.mock('@utils/weather', () => ({
@@ -43,8 +49,7 @@ describe('TripForm integration (weather & geocode)', () => {
       <App />,
       { initialEntries: ["/"] }
     );
-    const results = await axe(container);
-    expect(results).toHaveNoViolations();
+    await expectNoA11yViolations(container);
   });
 
   it('validates and updates destination, fetches weather on submit', async () => {

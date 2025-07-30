@@ -7,6 +7,12 @@ import { useTripForm } from '../hooks/useTripForm';
 import { usePackingList } from '../hooks/usePackingList';
 import * as apiService from '../services/apiService';
 
+// For Vitest compatibility with jest-axe, we need to define the matcher inline
+const expectNoA11yViolations = async (container: HTMLElement) => {
+  const results = await axe(container);
+  expect(results.violations).toEqual([]);
+};
+
 // Mock the hooks
 vi.mock('../hooks/useTripForm');
 vi.mock('../hooks/usePackingList');
@@ -68,8 +74,7 @@ describe('SuggestionsPanel', () => {
 
   it('should be accessible', async () => {
     const { container } = render(<SuggestionsPanel />);
-    const results = await axe(container);
-    expect(results).toHaveNoViolations();
+    await expectNoA11yViolations(container);
   });
 
   it('shows refinement form when trip is complete', () => {
