@@ -64,13 +64,14 @@ SmartPack is a mobile-first, single-user travel packing application that provide
 
 The following quality requirements are aligned with industry standards and define testable scenarios with clear success metrics:
 
-| ID          | Quality Attribute                  | Proposed Requirement                                                                                                                                                          | Industry Reference                   |
-| ----------- | ---------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------ |
-| **A11Y-1**  | Accessibility                      | Meet **WCAG 2.1 AA** for color-contrast, keyboard nav, alt-text, ARIA roles, focus order, error messages. Automated axe-core scan must report 0 critical issues in CI.        | W3C WCAG 2.1 standard                |
-| **PERF-1**  | Performance                        | Largest Contentful Paint (LCP) ≤ **2.5s** at 75th-percentile on home-Wi-Fi (Cable/3G in WebPageTest).                                                                         | Google Web Vitals threshold          |
-| **REL-1**   | Reliability / Graceful Degradation | If `/generate` fails (network or Ollama) → show cached list within 1s and banner "AI offline". Local data persists across refresh/tab close via `localStorage`.               | Industry standard for SPA resilience |
-| **SEC-1**   | Privacy & Security                 | No third-party analytics. All trip data stored only in `localStorage`. Add Content-Security-Policy: `default-src 'self'`. Follow OWASP guidance for safe client-storage.      | OWASP HTML5 Security Cheat Sheet     |
-| **MAINT-1** | Maintainability & Code Quality     | Codebase must:<br>• ≥ 80% line & branch coverage (Vitest)<br>• Pass ESLint + Prettier in CI<br>• Have clear comments per Copilot rules<br>• Merged PRs auto-deploy within 1h. | Industry best practices for CI/CD    |
+| ID          | Quality Attribute                  | Proposed Requirement                                                                                                                                                                | Industry Reference                    |
+| ----------- | ---------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------- |
+| **A11Y-1**  | Accessibility                      | Meet **WCAG 2.1 AA** for color-contrast, keyboard nav, alt-text, ARIA roles, focus order, error messages. Automated axe-core scan must report 0 critical issues in CI.              | W3C WCAG 2.1 standard                 |
+| **UX-1**    | User Experience Consistency        | All components follow **SmartPack Design System** with mobile-first responsive design, 44px touch targets, consistent validation patterns, and real-time feedback (750ms debounce). | Apple HIG, Material Design principles |
+| **PERF-1**  | Performance                        | Largest Contentful Paint (LCP) ≤ **2.5s** at 75th-percentile on home-Wi-Fi (Cable/3G in WebPageTest).                                                                               | Google Web Vitals threshold           |
+| **REL-1**   | Reliability / Graceful Degradation | If `/generate` fails (network or Ollama) → show cached list within 1s and banner "AI offline". Local data persists across refresh/tab close via `localStorage`.                     | Industry standard for SPA resilience  |
+| **SEC-1**   | Privacy & Security                 | No third-party analytics. All trip data stored only in `localStorage`. Add Content-Security-Policy: `default-src 'self'`. Follow OWASP guidance for safe client-storage.            | OWASP HTML5 Security Cheat Sheet      |
+| **MAINT-1** | Maintainability & Code Quality     | Codebase must:<br>• ≥ 80% line & branch coverage (Vitest)<br>• Pass ESLint + Prettier in CI<br>• Have clear comments per Copilot rules<br>• Merged PRs auto-deploy within 1h.       | Industry best practices for CI/CD     |
 
 ### 1.3 Maintainability & Code Quality Implementation
 
@@ -240,6 +241,47 @@ sequenceDiagram
 2. Weather API request fails
 3. Frontend shows generic weather placeholder
 4. AI still generates suggestions without weather context
+
+## 6.3 UX/UI Design System Architecture
+
+**Design System Implementation (Established 2025-01-27):**
+
+SmartPack implements a comprehensive design system ensuring consistent user experience across all components:
+
+**Design Tokens:**
+
+- **Color System**: State-based colors (green success, red error, blue primary, amber warning)
+- **Typography Scale**: Consistent hierarchy (text-sm font-medium for labels, text-xs for help)
+- **Spacing System**: Progressive enhancement (space-y-6 md:space-y-8)
+- **Touch Targets**: 44px minimum for mobile accessibility compliance
+
+**Component Patterns:**
+
+- **Real-Time Validation**: 750ms debounced feedback with loading states
+- **Mobile-First Responsive**: Single-column mobile, progressive desktop enhancement
+- **Accessibility-First**: WCAG 2.1 AA compliance with proper ARIA attributes
+- **Success States**: Visual feedback with green borders and CheckCircleIcon
+
+**Implementation Architecture:**
+
+```
+Design System Architecture
+├── UX_UI_DESIGN_SYSTEM.md     (Implementation patterns)
+├── UX_UI_ASSESSMENT_GUIDE.md  (Quality assurance)
+├── TripDetails.tsx             (Reference implementation)
+└── Cross-Component Consistency
+    ├── Form validation patterns
+    ├── Button hierarchy standards
+    ├── Loading state animations
+    └── Error messaging patterns
+```
+
+**Quality Gates:**
+
+- Component assessment using UX_UI_ASSESSMENT_GUIDE.md
+- Mobile-first responsive validation
+- Accessibility testing with axe-core
+- Touch target compliance verification
 
 ## 7. Deployment View
 

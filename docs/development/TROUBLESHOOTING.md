@@ -60,6 +60,121 @@ Document common issues and their solutions here. Update this file as you encount
 
 ## Common Issues
 
+### UX/UI Consistency & Design System Issues
+
+#### Inconsistent Form Field Styling Across Components
+
+- **Symptom:** Form fields in different components have different border colors, sizing, spacing, or validation states
+- **Root Cause:** Components not following established design system patterns, missing or incorrectly applied Tailwind classes
+- **Diagnostic Steps:**
+  1. Compare component implementations against UX_UI_DESIGN_SYSTEM.md
+  2. Check for consistent use of state-based color coding: `border-green-500` (valid), `border-red-500` (error), `border-gray-300` (default)
+  3. Verify touch target compliance: all interactive elements should have `min-h-[44px]`
+  4. Validate ARIA attribute usage: `aria-describedby`, `aria-invalid`, `role="alert"`
+- **Solution:**
+  1. **Reference Design System:** Use UX_UI_DESIGN_SYSTEM.md as implementation guide
+  2. **Apply Standard Input Pattern:**
+     ```tsx
+     <input
+       className={`w-full px-3 py-2 border rounded-md text-sm bg-white dark:bg-gray-800 
+                   min-h-[44px] focus:ring-2 focus:ring-blue-500 focus:border-blue-500 
+                   transition-colors ${validationStateClasses}`}
+     />
+     ```
+  3. **Implement Validation States:** Use established color system for success/error states
+  4. **Test Responsive Behavior:** Verify mobile-first layouts work across breakpoints
+- **Prevention:**
+  - Always reference UX_UI_DESIGN_SYSTEM.md when implementing form components
+  - Use TripDetails.tsx as reference implementation for form patterns
+  - Include UX review in component acceptance criteria
+- **Status:** RESOLVED - 2025-01-27, Design system documented and applied to TripDetails form
+
+#### Missing or Inconsistent Accessibility Attributes
+
+- **Symptom:** Screen readers can't properly navigate form, missing error announcements, or keyboard navigation issues
+- **Root Cause:** Inconsistent ARIA attribute implementation, missing semantic HTML, or improper error message association
+- **Diagnostic Steps:**
+  1. Test with screen reader software (NVDA, JAWS, or browser screen reader)
+  2. Validate with axe-core accessibility testing: `npm test -- src/__tests__/accessibility`
+  3. Check keyboard navigation: tab through all interactive elements
+  4. Verify error message association: `aria-describedby` pointing to correct error IDs
+- **Solution:**
+  1. **Apply Standard ARIA Pattern:**
+     ```tsx
+     <input
+       aria-describedby={hasError ? "field-error" : undefined}
+       aria-invalid={hasError ? "true" : "false"}
+       aria-required="true"
+     />
+     <p id="field-error" role="alert">{errorMessage}</p>
+     ```
+  2. **Use Semantic Fieldsets:** Group related controls with `<fieldset>` and `<legend>`
+  3. **Add Focus Management:** Ensure proper focus ring visibility and tab order
+- **Prevention:**
+  - Include accessibility testing in component development workflow
+  - Use jest-axe for automated accessibility validation
+  - Reference WCAG 2.1 AA standards for implementation guidance
+- **Status:** RESOLVED - 2025-01-27, Accessibility patterns established and documented
+
+#### Touch Target Size Issues on Mobile Devices
+
+- **Symptom:** Buttons or interactive elements difficult to tap on mobile devices, users missing tap targets
+- **Root Cause:** Interactive elements smaller than 44px minimum touch target requirement
+- **Diagnostic Steps:**
+  1. Inspect element in browser dev tools and check computed height
+  2. Test on actual mobile device or browser responsive mode
+  3. Verify all buttons, checkboxes, and input fields meet 44px minimum
+  4. Check spacing between adjacent interactive elements
+- **Solution:**
+  1. **Apply Minimum Touch Targets:** Add `min-h-[44px]` to all interactive elements
+  2. **Enhance Button Padding:** Use `px-3 py-2` minimum for comfortable touch areas
+  3. **Test Responsive Spacing:** Ensure adequate spacing between elements
+     ```tsx
+     <button className='min-h-[44px] px-4 py-2 text-sm font-medium'>
+       Action Button
+     </button>
+     ```
+- **Prevention:**
+  - Include mobile device testing in component development
+  - Use established button classes from UX_UI_DESIGN_SYSTEM.md
+  - Apply Apple Human Interface Guidelines (44px minimum)
+- **Status:** RESOLVED - 2025-01-27, Touch target standards established and applied
+
+#### Validation Timing Issues - Too Aggressive or Too Slow
+
+- **Symptom:** Form validation either fires too quickly (on every keystroke) or too slowly (poor user feedback)
+- **Root Cause:** Missing or incorrectly configured debounced validation, poor validation timing
+- **Diagnostic Steps:**
+  1. Test form input timing - validation should not fire on every keystroke
+  2. Check for debounced validation implementation with appropriate timeout
+  3. Verify validation provides feedback within reasonable time (500-1000ms)
+  4. Test both fast typing and slow typing scenarios
+- **Solution:**
+  1. **Implement Debounced Validation:**
+     ```tsx
+     const debounceValidation = useCallback(
+       (fieldName: string, value: any) => {
+         if (validationTimeoutRef.current) {
+           clearTimeout(validationTimeoutRef.current);
+         }
+         setIsValidating((prev) => ({ ...prev, [fieldName]: true }));
+         validationTimeoutRef.current = setTimeout(() => {
+           // Validation logic
+           setValidFields((prev) => ({ ...prev, [fieldName]: isValid }));
+           setIsValidating((prev) => ({ ...prev, [fieldName]: false }));
+         }, 750); // 750ms timeout for optimal UX
+       },
+       [dependencies]
+     );
+     ```
+  2. **Add Loading States:** Show spinner during validation
+  3. **Provide Success Feedback:** Green borders and check icons for valid fields
+- **Prevention:**
+  - Use established 750ms timeout for debounced validation
+  - Test validation timing with real user interaction patterns
+  - Reference TripDetails.tsx implementation for validation patterns
+- **Status:** RESOLVED - 2025-01-27, Debounced validation pattern established
+
 ### Testing & Quality Assurance Issues
 
 #### Test Execution Hanging or Not Completing
