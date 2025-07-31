@@ -120,8 +120,39 @@ export function ColumnLayoutProvider({
 
     try {
       const stored = localStorage.getItem(STORAGE_KEYS.visibility);
-      const parsed = stored ? JSON.parse(stored) : {};
-      return { ...DEFAULT_VISIBILITY, ...parsed, ...initialVisibility };
+      const tripFormData = localStorage.getItem('tripForm');
+
+      // Check if this is a first-time user (no meaningful trip data)
+      let isFirstTimeUser = false;
+      if (tripFormData) {
+        try {
+          const parsedData = JSON.parse(tripFormData);
+          // Same logic as TripDetails component for consistency
+          isFirstTimeUser = !parsedData.tripName &&
+            (!parsedData.destinations || parsedData.destinations.length === 1) &&
+            (!parsedData.destinations || !parsedData.destinations[0]) &&
+            (!parsedData.travelModes || parsedData.travelModes.length === 0);
+        } catch {
+          isFirstTimeUser = true; // If data is corrupted, treat as first-time user
+        }
+      } else {
+        isFirstTimeUser = true; // No data at all = first-time user
+      }
+
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        return { ...DEFAULT_VISIBILITY, ...parsed, ...initialVisibility };
+      } else if (isFirstTimeUser) {
+        // For first-time users, show only Trip Details column initially
+        return {
+          tripDetails: true,
+          packingChecklist: false,
+          suggestions: false,
+          ...initialVisibility
+        };
+      } else {
+        return { ...DEFAULT_VISIBILITY, ...initialVisibility };
+      }
     } catch {
       return { ...DEFAULT_VISIBILITY, ...initialVisibility };
     }
@@ -230,6 +261,13 @@ export function ColumnLayoutProvider({
     const availableWidth = window.innerWidth - 32;
     const dragHandleSpace = Math.max(0, visibleColumns.length - 1) * DRAG_HANDLE_WIDTH;
     const usableWidth = availableWidth - dragHandleSpace;
+
+    // If only one column is visible, give it the full usable width
+    if (visibleColumns.length === 1) {
+      const responsiveWidths: ColumnWidths = { ...columnWidths };
+      responsiveWidths[visibleColumns[0]] = usableWidth;
+      return responsiveWidths;
+    }
 
     const totalMinWidth = visibleColumns.length * MIN_COLUMN_WIDTH;
 

@@ -9,7 +9,7 @@ const initialState: TripFormState = {
   destinations: [''],
   travelModes: [],
   preferences: [],
-  step: 0,
+  step: 2, // Start directly in MainLayout for first-time users
 };
 
 function reducer(state: TripFormState, action: TripFormAction): TripFormState {
@@ -50,7 +50,7 @@ function reducer(state: TripFormState, action: TripFormAction): TripFormState {
     case 'PREV_STEP':
       return { ...state, step: Math.max(0, state.step - 1) };
     case 'RESET_FORM':
-      return initialState;
+      return { ...initialState, step: 2 }; // Reset to first-time user state
     default:
       return state;
   }
@@ -81,7 +81,8 @@ export const TripFormProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       }
       return parsedState;
     }
-    return init;
+    // For first-time users (no saved data), start at step 2 with MainLayout
+    return { ...init, step: 2 };
   });
 
   useEffect(() => {

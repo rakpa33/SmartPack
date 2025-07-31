@@ -1,10 +1,9 @@
-import AppHeader from './components/AppHeader';
+import AppHeader from './AppHeader';
 import MainLayout from './components/MainLayout';
 import { Dialog } from '@headlessui/react';
 import { useState } from 'react';
 import './App.css';
 import { TripFormProvider } from './hooks/TripFormContext';
-import { TripForm } from './components/TripForm';
 import { Routes, Route } from 'react-router-dom';
 
 function App() {
@@ -15,11 +14,7 @@ function App() {
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors">
         <AppHeader />
         <Routes>
-          <Route path="/" element={
-            <div className="flex items-center justify-center min-h-[80vh]">
-              <TripForm />
-            </div>
-          } />
+          <Route path="/" element={<MainLayout />} />
           <Route path="/MainLayout" element={
             <MainLayout>
               {/* ...existing MainLayout children... */}

@@ -390,6 +390,18 @@ FORMATTING RULES:
 
 **Final Acceptance:** All success criteria milestones achieved, SmartPack ready for production use
 
+- [ ] **Homepage Form Removal & Initial Editing Mode (NEW - 2025-07-30)**
+  - Remove TripForm from homepage, start directly in MainLayout with Trip Details editing
+  - Show only Trip Details column initially until data validated
+  - Simplified button structure: "Update Full List" only, hide "Update Suggestions"/"Cancel"
+  - Remove redundant "Save" button, implement auto-save functionality
+  - Add "New Trip" reset button in header to clear localStorage and restart
+  - Update routing and initial state logic for first-time user experience
+
+**Status:** 🔄 In Planning - Implementation plan approved, ready for development
+
+---
+
 ## ✨ Enhanced Implementation - Testing Standards & Quality Assurance
 
 ### Step 9.5: Testing Standards Modernization (NEW)

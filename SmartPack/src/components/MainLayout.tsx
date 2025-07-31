@@ -1,15 +1,15 @@
 import React from 'react';
 import { PackingListProvider } from '../hooks/usePackingListContext';
 import { ColumnLayoutProvider, useColumnLayout } from '../hooks/useColumnLayout';
+import { useTripForm } from '../hooks/useTripForm';
 import { PackingList } from './PackingList';
 import { TripDetails } from './TripDetails';
 import SuggestionsPanel from './SuggestionsPanel';
 import BottomNavigation from './BottomNavigation';
 import DragHandle from './DragHandle';
-import { useTripForm } from '../hooks/useTripForm';
 
 interface MainLayoutProps {
-  children: React.ReactNode;
+  children?: React.ReactNode;
 }
 
 /**
@@ -23,8 +23,15 @@ const MainLayoutContent: React.FC<MainLayoutProps> = React.memo(({ children }) =
     deviceType,
     getTransitionStyles
   } = useColumnLayout();
-  // Get the TripForm context state to check step
+
   const { state } = useTripForm();
+  const { tripName, destinations, travelModes } = state;
+
+  // Check if this is a first-time user (same logic as TripDetails)
+  const isFirstTimeUser = !tripName &&
+    destinations.length === 1 &&
+    !destinations[0] &&
+    travelModes.length === 0;
 
   // Give the context a moment to load from localStorage
   const [isLoading, setIsLoading] = React.useState(true);
@@ -54,19 +61,7 @@ const MainLayoutContent: React.FC<MainLayoutProps> = React.memo(({ children }) =
     );
   }
 
-  // Ensure the step is 2 (completed form) - this fixes the visibility issues in tests
-  // If state.step < 2, we're still in the form, so don't show MainLayout content
-  if (!state || state.step < 2) {
-    console.log('MainLayout: Form incomplete, step is', state?.step);
-    return (
-      <div className="flex flex-col min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors">
-        <div className="flex-1 flex items-center justify-center">
-          <p className="text-lg">Please complete your trip form first</p>
-        </div>
-        {children}
-      </div>
-    );
-  }
+  // Now that we start at step 2 for first-time users, always show MainLayout
 
   return (
     <div className="flex flex-col min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors">
@@ -161,7 +156,7 @@ const MainLayoutContent: React.FC<MainLayoutProps> = React.memo(({ children }) =
       </main>
 
       {/* Bottom Navigation - Mobile Only */}
-      <BottomNavigation />
+      {!isFirstTimeUser && <BottomNavigation />}
 
       {children}
     </div>

@@ -36,7 +36,7 @@
  */
 
 import { renderWithProviders } from '../../tests/testing-utils';
-import AppHeader from '../components/AppHeader';
+import AppHeader from '../AppHeader';
 import { screen } from '@testing-library/react';
 
 describe('AppHeader', () => {

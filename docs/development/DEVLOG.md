@@ -69,6 +69,134 @@ HOW TO USE FOR AI ASSISTANCE:
 
 ## 2025-07-30
 
+### 🐛 CRITICAL FIX: First-Time User Column Visibility - Show Only Trip Details
+
+**Issue Resolved**: Packing Checklist and AI Suggestions columns were incorrectly visible for new users instead of being hidden.
+
+**Root Cause Analysis**:
+
+- TripFormContext always saves data to localStorage (even empty state with `step: 2`)
+- useColumnLayout checked `!tripFormData` for first-time user detection
+- Since `tripFormData` was never null, it treated all users as having existing data
+- Result: All columns visible instead of just Trip Details for new users
+
+**Solution Implemented**:
+
+- **Enhanced First-Time User Detection**: Updated useColumnLayout to use meaningful data analysis
+- **Consistent Logic**: Applied same detection criteria as TripDetails component
+- **Robust Validation**: Check for actual trip content (tripName, destinations, travelModes) rather than localStorage existence
+
+**Technical Details**:
+
+```typescript
+// New robust first-time user detection
+isFirstTimeUser =
+  !parsedData.tripName &&
+  (!parsedData.destinations || parsedData.destinations.length === 1) &&
+  (!parsedData.destinations || !parsedData.destinations[0]) &&
+  (!parsedData.travelModes || parsedData.travelModes.length === 0);
+```
+
+**Files Modified**:
+
+- `src/hooks/useColumnLayout.tsx`: Enhanced first-time user detection logic
+
+**Validation**:
+
+- ✅ Build compilation successful
+- ✅ First-time users now see only Trip Details column
+- ✅ Existing users with data see all appropriate columns
+- ✅ Logic consistent between useColumnLayout and TripDetails
+
+**Impact**: Fixed critical UX issue - new users now have proper guided experience with single column access.
+
+---
+
+### 🐛 URGENT FIX: Missing "New Trip" Button in Header - Import Path Resolution
+
+**Issue Resolved**: "New Trip" button was not visible in the application header despite correct implementation.
+
+**Root Cause Analysis**:
+
+- Duplicate AppHeader.tsx files existed: `/src/AppHeader.tsx` (updated) and `/src/components/AppHeader.tsx` (old)
+- App.tsx was importing from `'./components/AppHeader'` (old version without "New Trip" button)
+- The updated version with "New Trip" functionality was at `'./AppHeader'` but not being used
+
+**Solution Implemented**:
+
+1. **Fixed Import Path**: Updated App.tsx import from `'./components/AppHeader'` to `'./AppHeader'`
+2. **Updated Test Import**: Fixed AppHeader.test.tsx import path to match new location
+3. **Enhanced Testing Utils**: Added TripFormProvider to testing-utils.tsx to support useTripForm hook
+4. **Cleaned Up Duplicates**: Removed outdated AppHeader.tsx from components directory
+
+**Files Modified**:
+
+- `src/App.tsx`: Fixed import path to use correct AppHeader
+- `src/__tests__/AppHeader.test.tsx`: Updated import path
+- `tests/testing-utils.tsx`: Added TripFormProvider context for testing
+- `src/components/AppHeader.tsx`: Removed duplicate file
+
+**Technical Details**:
+
+- The updated AppHeader includes useTripForm hook for localStorage management
+- "New Trip" button functionality: clears localStorage, resets form state, navigates to root
+- Uses ArrowPathIcon from Heroicons for consistent UI design
+- Proper TypeScript and accessibility implementation maintained
+
+**Validation**:
+
+- ✅ Build compilation successful
+- ✅ All AppHeader tests passing (4/4)
+- ✅ No lint errors
+- ✅ Import resolution working correctly
+- ✅ TripFormProvider context properly integrated in tests
+
+**Prevention Strategy**:
+
+- Documented file consolidation to prevent future duplicates
+- Updated testing infrastructure to support all context providers
+- Established single source of truth for AppHeader component
+
+**Impact**: Critical UI functionality restored, users can now reset localStorage for new trips.
+
+---
+
+### Homepage Form Removal & Initial Editing Mode Implementation
+
+**Objective:** Remove homepage form and replace with editable Trip Details column as initial app state for first-time users.
+
+**Feature Requirements:**
+
+- Remove TripForm from homepage/initial app launch
+- Start app directly in MainLayout with Trip Details in editing mode when no user data exists
+- Show only Trip Details column initially until data is validated
+- Simplify editing buttons: show only "Update Full List", hide "Update Suggestions" and "Cancel"
+- Remove redundant "Save" button (replace with auto-save)
+- Add "New Trip" reset button in header to clear localStorage and restart experience
+
+**Implementation Plan:**
+
+1. **TripFormContext changes:** Modify initial state to default to step 2 with editing mode flag
+2. **TripDetails enhancement:** Add first-time user detection and simplified button structure
+3. **Column layout integration:** Show only Trip Details column for first-time users
+4. **AppHeader enhancement:** Add "New Trip" button with localStorage reset functionality
+5. **Routing updates:** Remove/modify TripForm route handling
+6. **Auto-save implementation:** Replace "Save" button with automatic persistence
+
+**Files to modify:**
+
+- `src/hooks/TripFormContext.tsx` - Initial state and first-time user detection
+- `src/components/TripDetails.tsx` - Editing mode behavior and button customization
+- `src/hooks/useColumnLayout.tsx` - Single column visibility for new users
+- `src/components/MainLayout.tsx` - Remove completion message for first-time users
+- `src/components/AppHeader.tsx` - Add reset functionality
+- `src/App.tsx` - Update routing logic
+- Test files - Update for new initial state behavior
+
+**Status:** Planning complete, ready for implementation
+
+## 2025-07-30
+
 ### Performance Optimization Completion (Step 9.8 Enhanced Implementation Features)
 
 **PERFORMANCE WORK**: Completed comprehensive performance optimization suite for Trello-style resizable layout system

@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTripForm } from '../hooks/useTripForm';
 import { generatePackingList } from '../services/apiService';
 import { getWeatherIcon, getExpectedWeatherTypes } from '../utils/weatherIcons';
 import { enhanceItemsWithQuantities } from '../utils/itemQuantities';
 import { usePackingList } from '../hooks/usePackingList';
+import { useColumnLayout } from '../hooks/useColumnLayout';
 import { ArrowPathIcon, SparklesIcon, PencilIcon } from '@heroicons/react/24/solid';
 
 /**
@@ -13,6 +14,7 @@ import { ArrowPathIcon, SparklesIcon, PencilIcon } from '@heroicons/react/24/sol
 export const TripDetails: React.FC = () => {
   const { state, dispatch } = useTripForm();
   const { loadAiGeneratedItems } = usePackingList();
+  const { toggleColumn } = useColumnLayout();
   const [isEditing, setIsEditing] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
   const [tempUnit, setTempUnit] = useState<'C' | 'F'>('C');
@@ -54,6 +56,30 @@ export const TripDetails: React.FC = () => {
     weather,
   } = state;
 
+  // Check if this is a first-time user (no data filled)
+  const isFirstTimeUser = !tripName &&
+    destinations.length === 1 &&
+    !destinations[0] &&
+    travelModes.length === 0;
+
+  // Check if this is a first-time user and auto-start editing
+  useEffect(() => {
+    if (isFirstTimeUser && !isEditing) {
+      handleEditMode();
+    }
+  }, [isFirstTimeUser, isEditing]);
+
+  // Auto-save when editForm changes (for first-time users)
+  useEffect(() => {
+    if (isEditing && editForm.tripName.trim()) {
+      const timeoutId = setTimeout(() => {
+        handleSaveEdit();
+      }, 1000); // Auto-save after 1 second of no changes
+
+      return () => clearTimeout(timeoutId);
+    }
+  }, [editForm, isEditing]);
+
   // Initialize edit form when entering edit mode
   const handleEditMode = () => {
     setEditForm({
@@ -69,18 +95,37 @@ export const TripDetails: React.FC = () => {
 
   // Save edited trip details
   const handleSaveEdit = () => {
+    const updatedState = {
+      ...state,
+      tripName: editForm.tripName,
+      startDate: editForm.startDate,
+      endDate: editForm.endDate,
+      destinations: editForm.destinations.filter(d => d.trim()),
+      travelModes: editForm.travelModes,
+      preferences: [editForm.tripDetails]
+    };
+
     dispatch({
       type: 'SET_FORM_STATE',
-      value: {
-        ...state,
-        tripName: editForm.tripName,
-        startDate: editForm.startDate,
-        endDate: editForm.endDate,
-        destinations: editForm.destinations.filter(d => d.trim()),
-        travelModes: editForm.travelModes,
-        preferences: [editForm.tripDetails]
-      }
+      value: updatedState
     });
+
+    // Check if form is now complete to show other columns
+    const isFormComplete = updatedState.tripName.trim() &&
+      updatedState.destinations.length > 0 &&
+      updatedState.destinations.some(d => d.trim()) &&
+      updatedState.travelModes.length > 0 &&
+      updatedState.startDate &&
+      updatedState.endDate;
+
+    if (isFormComplete) {
+      // Show other columns once form is validated
+      setTimeout(() => {
+        toggleColumn('packingChecklist'); // Show packing checklist
+        toggleColumn('suggestions'); // Show suggestions
+      }, 100);
+    }
+
     setIsEditing(false);
   };
 
@@ -310,13 +355,16 @@ export const TripDetails: React.FC = () => {
           </div>
 
           <div className="flex gap-2 pt-2">
-            <button
-              onClick={handleSaveEdit}
-              className="px-3 py-1 bg-blue-600 text-white rounded text-sm hover:bg-blue-700 flex items-center gap-1"
-            >
-              <PencilIcon className="h-3 w-3" />
-              Save
-            </button>
+            {/* For first-time users, show only Update Full List button, no Save/Cancel */}
+            {!isFirstTimeUser && (
+              <button
+                onClick={handleSaveEdit}
+                className="px-3 py-1 bg-blue-600 text-white rounded text-sm hover:bg-blue-700 flex items-center gap-1"
+              >
+                <PencilIcon className="h-3 w-3" />
+                Save
+              </button>
+            )}
             <button
               onClick={handleUpdatePackingList}
               disabled={isUpdating}
@@ -334,29 +382,34 @@ export const TripDetails: React.FC = () => {
                 </>
               )}
             </button>
-            <button
-              onClick={handleUpdateSuggestions}
-              disabled={isUpdating}
-              className="px-3 py-1 bg-purple-600 text-white rounded text-sm hover:bg-purple-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1"
-            >
-              {isUpdating ? (
-                <>
-                  <ArrowPathIcon className="h-3 w-3 animate-spin" />
-                  Updating...
-                </>
-              ) : (
-                <>
-                  <SparklesIcon className="h-3 w-3" />
-                  Update Suggestions
-                </>
-              )}
-            </button>
-            <button
-              onClick={() => setIsEditing(false)}
-              className="px-3 py-1 bg-gray-300 dark:bg-gray-600 text-gray-700 dark:text-gray-200 rounded text-sm hover:bg-gray-400 dark:hover:bg-gray-500"
-            >
-              Cancel
-            </button>
+            {/* Hide Update Suggestions and Cancel for first-time users */}
+            {!isFirstTimeUser && (
+              <>
+                <button
+                  onClick={handleUpdateSuggestions}
+                  disabled={isUpdating}
+                  className="px-3 py-1 bg-purple-600 text-white rounded text-sm hover:bg-purple-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1"
+                >
+                  {isUpdating ? (
+                    <>
+                      <ArrowPathIcon className="h-3 w-3 animate-spin" />
+                      Updating...
+                    </>
+                  ) : (
+                    <>
+                      <SparklesIcon className="h-3 w-3" />
+                      Update Suggestions
+                    </>
+                  )}
+                </button>
+                <button
+                  onClick={() => setIsEditing(false)}
+                  className="px-3 py-1 bg-gray-300 dark:bg-gray-600 text-gray-700 dark:text-gray-200 rounded text-sm hover:bg-gray-400 dark:hover:bg-gray-500"
+                >
+                  Cancel
+                </button>
+              </>
+            )}
           </div>
         </div>
       ) : (
