@@ -1,103 +1,70 @@
-# Update Documentation Template
+# Update Documentation
 
 **Update Documentation: <TRIGGER_EVENT>**
 
-Systematically update all relevant documentation to capture recent changes, learnings, and conversations before committing code or completing development milestones.
+Systematically update SmartPack documentation following established standards.
 
-## 1. Change Analysis and Documentation Scope Assessment
+## 1. Change Analysis
 
-- Identify the trigger event: pre-commit, feature completion, issue resolution, or milestone completion
-- Analyze recent code changes, conversations, and development activities since last documentation update
-- Determine which documents need updates based on the scope of changes
-- Review git diff and recent file modifications to understand implementation details
-- Identify new patterns, architectural decisions, or significant learnings from recent work
-- Assess cross-document relationships that may need synchronization
+- Identify trigger: pre-commit, feature completion, issue resolution, milestone
+- Review recent changes: git diff, conversations, implementation decisions
+- Determine affected documents based on scope of changes
+- Extract key learnings and technical patterns from recent work
 
-## 2. Systematic Context Capture from Recent Sessions
+## 2. Context Capture Checklist
 
-### **Conversation Analysis and Context Extraction**
+For each significant change, document:
 
-Before updating individual documents, systematically extract and categorize important context from recent development sessions:
+- **Problem:** Clear issue statement
+- **Solution:** Implementation with code examples
+- **Rationale:** Why this approach was chosen
+- **Prevention:** How to avoid/detect similar issues
 
-#### **Technical Problem-Solution Patterns**
+## 3. Documentation Updates
 
-- Identify specific technical problems encountered and their proven solutions
-- Document systematic debugging approaches that successfully resolved issues
-- Record error patterns and their categorization (NEW/PRE-EXISTING/ENVIRONMENTAL)
-- Capture diagnostic techniques and validation procedures that worked
+### DEVLOG.md
 
-#### **Development Methodology Insights**
+⚠️ **CRITICAL:** Add entries at TOP (after header), never append to bottom
 
-- Extract systematic approaches to testing, validation, and quality assurance
-- Document AI assistance patterns that proved effective vs problematic approaches
-- Record workflow improvements and process optimizations discovered
-- Capture time-saving techniques and efficiency improvements
+- Document implementation with technical context (files, functions, code)
+- Include root cause analysis and prevention measures
+- Cross-reference TROUBLESHOOTING.md and CHECKLIST.md
+- Preserve sufficient detail for future maintenance
 
-#### **Architecture and Implementation Evolution**
+### TROUBLESHOOTING.md
 
-- Identify architectural decisions made during conversations and their rationale
-- Document component design patterns and integration approaches discovered
-- Record state management strategies and data flow solutions implemented
-- Capture performance optimization techniques and their measured results
+- Add new issues: Symptom → Root Cause → Solution → Prevention
+- Update status of resolved issues with dates
+- Document AI assistance patterns and common pitfalls
+- Include diagnostic commands and verification steps
 
-#### **Tool Usage and Configuration Insights**
+### CHECKLIST.md
 
-- Extract framework-specific configurations and optimization techniques
-- Document testing tool usage patterns and debugging approaches
-- Record development environment insights and setup optimizations
-- Capture CLI command patterns and automation opportunities
+- Update completion status (mark [x] only when ALL sub-items complete)
+- Add enhanced implementation beyond original scope
+- Maintain mirror structure with ROADMAP.md
+- Document acceptance criteria achievements
 
-### **Context Preservation Checklist**
+### ARCHITECTURE.md
 
-For each significant conversation topic, ensure the following context is captured:
+- Update ADRs for significant technical decisions
+- Modify building block view for component changes
+- Align quality requirements with implementation
+- Update cross-references to detailed docs
 
-- **What was the problem/challenge?** (Clear problem statement)
-- **What approaches were tried?** (Including failed attempts and why they didn't work)
-- **What was the final solution?** (Detailed implementation with code examples where relevant)
-- **Why was this solution chosen?** (Decision rationale and trade-offs considered)
-- **What was learned?** (Insights for future similar situations)
-- **How to prevent/detect this in future?** (Prevention strategies and early warning signs)
+## 4. Quality Validation
 
-## 3. Core Development Documentation Updates
+- **Cross-Reference Check:** Verify links between related documents
+- **Technical Accuracy:** Test commands and code examples
+- **Consistency:** Align terminology across all docs
+- **Completeness:** Ensure sufficient context for AI assistance
 
-### **DEVLOG.md Updates**
+## 5. Documentation Standards Compliance
 
-- **Chronological Context:** Document development events with complete technical context and conversation rationale
-- **Feature Implementation:** Capture not just what was implemented, but why decisions were made and what alternatives were considered
-- **Troubleshooting Sessions:** Record complete problem-solution cycles with root cause analysis and prevention strategies
-- **Performance Work:** Document optimization techniques, measurement results, and the methodology used to achieve improvements
-- **Testing Evolution:** Include testing strategy changes, coverage improvements, and reliability enhancement approaches
-- **Conversation Insights:** Preserve significant technical discussions, AI assistance patterns, and development methodology discoveries
-- **Context Continuity:** Ensure entries provide enough context for future developers to understand decision evolution
-
-### **DEVLOG.md Updates - CRITICAL PLACEMENT RULE**
-
-⚠️ **MANDATORY DEVLOG.md PLACEMENT PROTOCOL:**
-
-- **ALWAYS insert new entries at the TOP of the document** (immediately after the comment header)
-- **NEVER append to bottom** - this violates reverse chronological order and document standards
-- **Check existing date order** before adding new entries to maintain proper chronological sequence
-- **Use insert_edit_into_file with placement immediately after comment header**
-
-**DEVLOG.md Quality Check - REQUIRED:**
-
-- ✅ New entry added at TOP (after header comment, before existing entries)
-- ✅ Date order is reverse chronological (newest first)
-- ✅ Entry follows standard structure (Problem → Root Cause → Solution → Prevention)
-- ✅ Cross-references included (TROUBLESHOOTING.md, CHECKLIST.md, etc.)
-- ✅ Technical context preserved with sufficient detail for future maintenance
-
-**Common DEVLOG.md Mistakes to Avoid:**
-
-- ❌ Adding entries at the bottom (breaks chronological order)
-- ❌ Not reading document header for placement rules
-- ❌ Assuming chronological organization is like a typical log file
-- ❌ Missing cross-references to related documentation
-
-### **TROUBLESHOOTING.md Updates**
-
-- **Systematic Problem Documentation:** Add new issues with complete symptom → diagnosis → solution → prevention workflow
-- **AI Assistance Issues:** Document AI-specific problems (test hanging, error ignoring, incomplete validation) with proven solutions
+- Follow document header standards and update guidelines
+- Maintain reverse chronological order in DEVLOG.md
+- Use established error categorization in TROUBLESHOOTING.md
+- Reference smartpack-documentation.instructions.md for detailed standards
 - **Development Environment Issues:** Record setup problems, configuration challenges, and dependency management solutions
 - **Testing and Quality Issues:** Include test execution problems, error categorization techniques, and validation procedures
 - **Integration Challenges:** Document API integration issues, external service problems, and connectivity solutions
@@ -135,188 +102,25 @@ For each significant conversation topic, ensure the following context is capture
 
 - Update `OLLAMA_IMPLEMENTATION.md` and `OLLAMA_SETUP.md` for AI-related changes
 - Revise `HEROICONS_IMPLEMENTATION.md` for UI component updates
-- Update `FILE_ORGANIZATION.md` for structural or standards changes
-- Modify other implementation guides based on recent feature work
 
-### **TROUBLESHOOTING.md Updates**
+## 6. Additional Documentation Updates
 
-- Document new issues encountered with symptoms, root causes, and verified solutions
-- Update resolution strategies based on successful debugging sessions
-- Add prevention strategies for recurring problems identified
-- Cross-reference solutions with COMMANDS.md and DEVLOG.md entries
-- Update debugging procedures and diagnostic techniques learned
+### Architecture & API
 
-### **COMMANDS.md Updates**
+- Update ARCHITECTURE.md ADRs for decisions
+- Modify API.md for endpoint changes
+- Update FILE_ORGANIZATION.md for new patterns
 
-- Add new scripts, CLI operations, or development workflow commands discovered
-- Update existing command documentation based on recent usage and improvements
-- Document new testing, deployment, or debugging command patterns
-- Include AI/Ollama integration commands learned during development
+### Testing & Commands
 
-## 4. Testing and Quality Documentation Updates
+- Update TESTING_GUIDE.md with new patterns
+- Add new commands to COMMANDS.md
+- Document test coverage improvements
 
-### **Testing Documentation Updates**
+## 7. Completion Checklist
 
-- Update `TESTING_GUIDE.md` with new test patterns, utilities, or methodologies learned
-- Revise `TESTING_STANDARDS.md` if new best practices were discovered or implemented
-- Update `TEST_UTILITIES.md` with new helper functions or testing patterns
-- Document test coverage improvements and performance optimization results
-
-### **Quality and Standards Updates**
-
-- Update `SECURITY.md` if security-related changes or learnings occurred
-- Revise standards documents based on new conventions adopted
-- Update environment and deployment documentation for configuration changes
-
-## 5. Cross-Reference Synchronization and Consistency Checks
-
-### **Document Cross-References**
-
-- Ensure CHECKLIST.md progress aligns with ROADMAP.md phases and milestones
-- Cross-reference DEVLOG.md entries with corresponding ARCHITECTURE.md updates
-- Align TROUBLESHOOTING.md solutions with COMMANDS.md reference commands
-- Verify implementation guides reference current ARCHITECTURE.md patterns
-- Update ONBOARDING.md if new setup procedures or workflow changes occurred
-
-### **Content Consistency Verification**
-
-- Check that technical details are consistent across related documents
-- Verify that version numbers, framework versions, and dependency information match
-- Ensure that architectural decisions are consistently represented
-- Validate that troubleshooting procedures align with current implementation
-
-## 6. Knowledge Preservation and Context Capture
-
-### **Conversation and Learning Documentation**
-
-- **Technical Discussions:** Capture significant technical discussions, decision-making rationale, and alternative approaches considered
-- **Problem-Solving Sessions:** Document debugging processes, root cause analysis, and solution discovery methods
-- **Architecture Decisions:** Record why specific patterns were chosen, trade-offs considered, and future implications
-- **Performance Insights:** Document optimization discoveries, measurement results, and performance improvement strategies
-- **User Experience Evolution:** Note UX improvements, design decisions, and usability findings
-- **Integration Learnings:** Capture API integration insights, external service patterns, and connectivity solutions
-
-### **Critical Context Preservation (MANDATORY)**
-
-#### **AI Assistant Context**
-
-- Document AI assistance patterns that worked well (prompt engineering, debugging approaches, systematic methodologies)
-- Record common AI assistance mistakes and how to avoid them (test hanging, error ignoring, incomplete analysis)
-- Preserve systematic approaches developed (testing protocols, error categorization, validation procedures)
-
-#### **Development Workflow Context**
-
-- Document development environment nuances, setup gotchas, and configuration discoveries
-- Record testing patterns that work/don't work in SmartPack's specific architecture
-- Preserve troubleshooting methodologies and diagnostic procedures that proved effective
-
-#### **Technical Implementation Context**
-
-- Document React context patterns, localStorage strategies, and state management approaches specific to SmartPack
-- Record TypeScript configuration insights, path alias solutions, and compilation optimizations
-- Preserve API integration patterns, error handling strategies, and fallback mechanisms
-
-#### **Quality Assurance Context**
-
-- Document test execution patterns, hanging test solutions, and reliable testing approaches
-- Record error categorization methods (NEW/PRE-EXISTING/ENVIRONMENTAL) and resolution strategies
-- Preserve validation procedures and quality gate implementations
-
-### **Historical Context and Evolution Tracking**
-
-#### **Decision Evolution Documentation**
-
-- Record how architectural decisions evolved through conversations and implementation
-- Document what was tried before current solutions and why changes were made
-- Preserve context about temporary solutions vs permanent architectural choices
-
-#### **Problem Pattern Recognition**
-
-- Document recurring problem patterns and their systematic solutions
-- Record common failure modes and proven resolution approaches
-- Preserve diagnostic techniques that successfully identified root causes
-
-#### **Tool and Framework Evolution**
-
-- Document how tool usage evolved (testing frameworks, development tools, AI assistance patterns)
-- Record framework version decisions and compatibility insights
-- Preserve configuration optimizations and performance improvements discovered
-
-### **Future Reference Preparation**
-
-#### **New Developer Onboarding Context**
-
-- Ensure new developers understand not just what to do, but why decisions were made
-- Document the evolution from initial implementation to current mature patterns
-- Preserve context about what approaches were tried and abandoned (with reasons)
-
-#### **Conversation Continuity**
-
-- Create comprehensive context so new chat sessions can pick up where previous ones left off
-- Document the current state of all major components and their implementation rationale
-- Preserve ongoing challenges, known limitations, and planned improvements
-
-#### **Maintenance and Extension Context**
-
-- Document extension points and how to safely modify existing functionality
-- Record testing strategies for validating changes to core components
-- Preserve architectural constraints and design principles that should guide future changes
-
-## 7. Documentation Quality and Completeness Review
-
-### **Content Review**
-
-- Verify all recent major changes are documented with appropriate detail level
-- Check that code examples and references are current and accurate
-- Ensure documentation follows established comment header standards
-- Validate that cross-references and links are functional and relevant
-
-### **Update Metadata**
-
-- Update "Last Updated" timestamps on modified documents
-- Increment version numbers where applicable
-- Update contributor information if new patterns or major contributions occurred
-- Ensure document purposes remain aligned with current content
-
-## 8. Final Validation and Preparation for Commit
-
-### **AI Assistant Documentation Protocol Reminder**
-
-**BEFORE EDITING ANY DOCUMENTATION FILES:**
-
-1. **Read Document Headers:** Always check the comment header for specific placement rules and organization principles
-2. **Identify Current Structure:** Understand existing organization (chronological order, categorization, etc.)
-3. **Follow Established Patterns:** Maintain consistency with existing document structure and formatting
-4. **Validate Cross-References:** Ensure all internal links and references remain accurate after changes
-
-**DEVLOG.md SPECIFIC REMINDER:**
-
-- ⚠️ **CRITICAL:** New entries ALWAYS go at the TOP (after header comment)
-- ⚠️ **NEVER append to bottom** - this violates reverse chronological order
-- ⚠️ **Check date order** before and after making changes
-- ⚠️ **Read the comment header** for placement rules before editing
-
-### **Documentation Completeness Check**
-
-- Verify no significant changes or learnings were missed
-- Confirm all trigger events (features, fixes, milestones) are properly documented
-- Validate that future developers will have sufficient context to continue work
-- Ensure documentation supports debugging, onboarding, and maintenance activities
-
-### **Cross-Document Integrity**
-
-- Perform final consistency check across all updated documents
-- Verify that architectural decisions are coherently represented
-- Confirm that implementation guides align with current codebase state
-- Validate that roadmap and checklist remain synchronized
-
----
-
-**COMPLETION CRITERIA:**
-
-- ✅ All relevant documents updated with recent changes and learnings
-- ✅ Cross-references synchronized and consistent across documentation
-- ✅ Significant conversations and decisions preserved for future reference
-- ✅ Technical context captured with sufficient detail for maintenance and onboarding
-- ✅ Documentation patterns maintain established standards and comment headers
-- ✅ Future development path clearly documented and accessible
+- [ ] All relevant documents updated with sufficient technical detail
+- [ ] Cross-references synchronized between related documents
+- [ ] DEVLOG.md entries added at TOP with prevention measures
+- [ ] Technical context preserved for future maintenance
+- [ ] Documentation follows established header standards

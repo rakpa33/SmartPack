@@ -178,16 +178,19 @@ Document common issues and their solutions here. Update this file as you encount
   4. Test button hierarchy against design system standards
 - **Solution:**
   1. **Implement Multi-Level Hierarchy:**
+
      ```tsx
      // Primary Actions (highest visual weight)
-     className="bg-blue-50 hover:bg-blue-100 border-blue-300 hover:border-blue-400"
-     
-     // Secondary Actions (medium visual weight)  
-     className="bg-white hover:bg-blue-50 text-blue-600 border-blue-200"
-     
+     className =
+       'bg-blue-50 hover:bg-blue-100 border-blue-300 hover:border-blue-400';
+
+     // Secondary Actions (medium visual weight)
+     className = 'bg-white hover:bg-blue-50 text-blue-600 border-blue-200';
+
      // Utility Actions (minimal visual weight)
-     className="bg-gray-50 hover:bg-gray-100 text-gray-600 border-gray-200"
+     className = 'bg-gray-50 hover:bg-gray-100 text-gray-600 border-gray-200';
      ```
+
   2. **Apply Visual Weight Distribution:** Different background colors and border strengths based on action importance
   3. **Maintain Dark Mode Consistency:** Preserve effective dark mode system while enhancing light mode
 - **Prevention:**
@@ -207,16 +210,18 @@ Document common issues and their solutions here. Update this file as you encount
   4. Test visual alignment of icon-text combinations
 - **Solution:**
   1. **Standardize on Gap Pattern:**
+
      ```tsx
      // Remove manual margins from icons
-     const iconProps = { className: "h-4 w-4" }; // Remove mr-2
-     
+     const iconProps = { className: 'h-4 w-4' }; // Remove mr-2
+
      // Use parent gap for spacing
-     <label className="inline-flex items-center gap-2">
+     <label className='inline-flex items-center gap-2'>
        {getIcon(mode)}
        <span>{mode}</span>
-     </label>
+     </label>;
      ```
+
   2. **Apply Consistent Icon Classes:** Use `h-4 w-4` without margins, rely on parent `gap-2`
   3. **Verify Pattern Compliance:** Ensure all icon buttons follow same spacing approach
 - **Prevention:**
