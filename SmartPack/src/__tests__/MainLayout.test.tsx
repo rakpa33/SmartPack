@@ -44,7 +44,43 @@ import MainLayout from '../components/MainLayout';
 import { screen, waitFor } from '@testing-library/react';
 import { TripFormProvider } from '../hooks/TripFormContext';
 import { axe } from 'jest-axe';
-import { expect } from 'vitest';
+import { expect, beforeEach, vi } from 'vitest';
+
+// Mock the API service to prevent hanging network calls
+vi.mock('../services/apiService', () => ({
+  generateAISuggestions: vi.fn().mockResolvedValue({
+    checklist: [],
+    suggestedItems: [],
+    aiGenerated: true
+  }),
+  checkApiHealth: vi.fn().mockResolvedValue(true)
+}));
+
+// Mock localStorage with a proper store that persists data
+let mockStore: Record<string, string> = {};
+
+const mockLocalStorage = {
+  getItem: (key: string) => {
+    const value = mockStore[key] || null;
+    return value;
+  },
+  setItem: (key: string, value: string) => {
+    mockStore[key] = value;
+  },
+  removeItem: (key: string) => {
+    delete mockStore[key];
+  },
+  clear: () => {
+    mockStore = {};
+  },
+  length: Object.keys(mockStore).length,
+  key: (index: number) => Object.keys(mockStore)[index] || null,
+};
+
+Object.defineProperty(window, 'localStorage', {
+  value: mockLocalStorage,
+  writable: true
+});
 
 // For Vitest compatibility with jest-axe, we need to define the matcher inline
 const expectNoA11yViolations = async (container: HTMLElement) => {
@@ -54,18 +90,18 @@ const expectNoA11yViolations = async (container: HTMLElement) => {
 
 describe('MainLayout', () => {
   beforeEach(() => {
-    // Clear localStorage to prevent test contamination
+    // Clear localStorage and set up test data
     localStorage.clear();
-    // Set up localStorage with completed form state (step: 2)
-    localStorage.setItem('tripForm', JSON.stringify({
+    const completedTripState = {
       tripName: 'Test Trip',
-      startDate: '2025-01-01',
-      endDate: '2025-01-05',
-      destinations: ['Test Destination'],
-      travelModes: ['Car'], // Must have at least one travel mode for form to be complete
+      startDate: '2024-02-15',
+      endDate: '2024-02-20',
+      destinations: ['Paris'],
+      travelModes: ['Car'],
       preferences: [],
       step: 2
-    }));
+    };
+    localStorage.setItem('tripForm', JSON.stringify(completedTripState));
   });
 
   function setup(children: React.ReactNode = null) {
@@ -96,7 +132,8 @@ describe('MainLayout', () => {
         expect(screen.queryByText('Loading...')).not.toBeInTheDocument();
       }, { timeout: 1000 });
 
-      expect(screen.getByText(/Trip Details/i)).toBeInTheDocument();
+      // Use more specific queries that don't conflict with duplicate elements
+      expect(screen.getByRole('heading', { name: /Trip Details/i })).toBeInTheDocument();
       expect(screen.getByTestId('packing-list-section')).toBeInTheDocument();
       expect(screen.getByRole('heading', { name: /AI Suggestions/i })).toBeInTheDocument();
     });
@@ -109,7 +146,7 @@ describe('MainLayout', () => {
         expect(screen.queryByText('Loading...')).not.toBeInTheDocument();
       }, { timeout: 1000 });
 
-      expect(screen.getByText(/Trip Details/i)).toBeInTheDocument();
+      expect(screen.getByRole('heading', { name: /Trip Details/i })).toBeInTheDocument();
       expect(screen.getByTestId('packing-list-section')).toBeInTheDocument();
       expect(screen.getByRole('heading', { name: /AI Suggestions/i })).toBeInTheDocument();
     });

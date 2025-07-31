@@ -73,7 +73,7 @@ export const PackingList: React.FC = () => {
       console.log('Loading AI-generated items:', state.generatedPackingList.checklist);
       loadAiGeneratedItems(state.generatedPackingList.checklist);
     }
-  }, [state.generatedPackingList, loadAiGeneratedItems]);
+  }, [state.generatedPackingList]);
 
   // Show only categories that have items (filter out empty categories)
   // This provides cleaner UX by hiding empty category sections

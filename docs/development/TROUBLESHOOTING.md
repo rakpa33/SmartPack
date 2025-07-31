@@ -83,6 +83,36 @@ Document common issues and their solutions here. Update this file as you encount
   - Prefer unit tests for rapid feedback during development
 - **Status:** ONGOING - Integration tests still have environmental issues as of 2025-07-29
 
+#### MainLayout Test Hanging Due to Unmocked API Calls
+
+- **Symptom:** Specific test file `src/__tests__/MainLayout.test.tsx` hangs indefinitely when run with `npx vitest run`, Node.js process remains running without completing
+- **Root Cause:** MainLayout component renders SuggestionsPanel which imports apiService making real fetch() calls to localhost:3000 during test execution
+- **Diagnostic Steps:**
+  1. Check for hanging Node.js processes: `tasklist /fi "imagename eq node.exe"`
+  2. Verify specific test file isolation: run other tests to confirm hanging is file-specific
+  3. Check component dependency tree for external API calls or network requests
+  4. Look for imports of apiService, fetch(), or external service calls in component hierarchy
+- **Solution:**
+  1. **Immediate:** Kill hanging process: `taskkill /F /PID [process_id]`
+  2. **Add API Mocking:** Include vi.mock() for apiService at top of test file:
+     ```typescript
+     vi.mock('../services/apiService', () => ({
+       generateAISuggestions: vi.fn().mockResolvedValue({
+         checklist: [],
+         suggestedItems: [],
+         aiGenerated: true,
+       }),
+       checkApiHealth: vi.fn().mockResolvedValue(true),
+     }));
+     ```
+  3. **Verify Fix:** Run test again - should complete in ~2-3 seconds instead of hanging
+- **Prevention:**
+  - Always mock external services (API calls, network requests) in unit tests
+  - Add API service mocking to test utilities for reuse across test files
+  - Check component dependency trees for external integrations before writing tests
+  - Consider MSW (Mock Service Worker) for more sophisticated API mocking needs
+- **Status:** RESOLVED - 2025-07-30, MainLayout tests now pass consistently with proper API mocking
+
 #### Ignoring Test Errors and Output
 
 - **Symptom:** AI assistant or developer continues without addressing test failures, skips error analysis, or proceeds despite hanging tests

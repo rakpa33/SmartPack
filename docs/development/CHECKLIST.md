@@ -489,3 +489,77 @@ FORMATTING RULES:
   - Enhanced localStorage clearing protocols for development workflow
 
 **Acceptance Criteria:** ✅ Clean UI with no empty category headers, reliable localStorage behavior, comprehensive test coverage for empty states
+
+### Step 9.8: Trello-Style Resizable Layout Implementation (NEW - 2025-07-30)
+
+#### 📋 Planned Implementation
+
+- [x] **Phase 1: Bottom Navigation Component**
+
+  - Create bottom navigation bar with Trip Details, Packing Checklist, Suggestions Panel toggles
+  - Implement custom SmartPack icons using Heroicons (MapIcon, ClipboardIcon, LightBulbIcon)
+  - Add dark/light mode theming consistent with current design system
+  - Ensure WCAG compliant touch targets for mobile landscape (44px minimum)
+  - Create comprehensive unit tests for navigation component behavior
+  - **2025-07-30:** Fixed full-screen layout optimization by removing constraining padding/margins
+
+- [x] **Phase 2: Column Visibility State Management**
+
+  - Implement React context for column visibility state (show/hide logic)
+  - Add localStorage persistence for column preferences across sessions
+  - Implement responsive breakpoint logic (desktop/mobile portrait/mobile landscape)
+  - Enforce business rules: minimum 1 column visible, mobile portrait = 1 column, mobile landscape = max 2 columns
+  - Create unit tests for state management and persistence logic
+  - **2025-07-30:** Enhanced useColumnLayout hook with responsive device detection, business rule enforcement, and comprehensive test suite (21 tests)
+  - **2025-07-30:** Fixed MainLayout test hanging issue with API service mocking, enabling reliable testing of layout components (4/4 tests passing)
+
+- [x] **Phase 3: Drag Handle System**
+
+  - Create always-visible column separators between columns (dash/line like Trello)
+  - Implement hover state with blue highlight and bi-directional arrow cursor (500ms transitions)
+  - Add drag functionality with real-time column resizing (275px minimum width per column)
+  - Implement "close threshold" logic (>50% drag distance hides column)
+  - Add haptic feedback for touch devices during drag operations
+  - Create comprehensive tests for drag interactions and threshold behavior
+  - **2025-07-30:** COMPLETE - DragHandle.tsx component (197 lines) implements all requirements plus advanced features: keyboard navigation, accessibility compliance, touch-first design, performance optimization, visual polish, and device responsiveness
+
+- [x] **Phase 4: Responsive Layout Logic**
+
+  - Implement desktop horizontal shrinking priority (Suggestions → Trip Details → Packing Checklist)
+  - Add horizontal scroll limitation (max 2 min-width columns visible)
+  - Implement mobile landscape toggle logic (Trip Details ↔ Suggestions when Packing Checklist active)
+  - Ensure Packing Checklist fills available space when other columns are at minimum width
+  - Create integration tests for responsive behavior across breakpoints
+  - **2025-07-30:** COMPLETE - Enhanced useColumnLayout hook with responsive width calculation, shrinking priority system, horizontal scroll limitation, and dynamic space allocation. MainLayout now uses CSS-in-JS for responsive column widths instead of fixed Tailwind classes.
+
+- [x] **Phase 5: Animation & Visual Polish**
+  - Implement smooth 500ms width transitions for column show/hide operations
+  - Add proper closing animations (columns animate to touching edge, Packing Checklist closes left)
+  - Ensure all transitions respect user's motion preferences (prefers-reduced-motion)
+  - Add visual feedback states for drag operations and column interactions
+  - Create visual regression tests and accessibility compliance validation
+  - **2025-07-30:** COMPLETE - Enhanced animation system with motion preference detection, smooth CSS-in-JS transitions, visual feedback states for drag operations, and comprehensive Phase 5 test suite. All components now respect prefers-reduced-motion and provide 500ms smooth transitions with proper GPU optimization.
+
+#### ✨ Enhanced Implementation Features
+
+- [ ] **Advanced Accessibility**
+
+  - Keyboard navigation support for column resizing (arrow keys + modifier)
+  - Screen reader announcements for column visibility changes
+  - Focus management when columns are hidden/shown
+  - High contrast mode support for drag handles
+
+- [x] **Performance Optimization**
+  - Debounced resize calculations to prevent layout thrashing (150ms debounce in useColumnLayout)
+  - Efficient drag event handling with RAF (requestAnimationFrame) and 16ms throttling for 60fps
+  - Optimized re-renders with React.memo for MainLayout, MainLayoutContent, and BottomNavigation
+  - useCallback memoization for all expensive calculations in useColumnLayout
+
+**Technical Architecture:**
+
+- **Components:** `BottomNavigation.tsx`, `ResizableLayout.tsx`, `DragHandle.tsx`
+- **Hooks:** `useColumnLayout.ts`, `useResizable.ts`, `useHapticFeedback.ts`
+- **Context:** `ColumnLayoutProvider.tsx` with localStorage persistence
+- **Testing:** Unit tests for each component, integration tests for layout behavior, E2E tests for user workflows
+
+**Acceptance Criteria:** Trello-style resizable layout with bottom navigation, smooth animations, accessibility compliance, comprehensive test coverage, and localStorage persistence

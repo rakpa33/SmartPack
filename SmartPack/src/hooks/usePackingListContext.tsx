@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import type { ReactNode } from 'react';
 import { PackingListContext } from './PackingListContext';
 import type { ChecklistItem, ChecklistCategory } from './PackingListContext';
@@ -62,7 +62,7 @@ export const PackingListProvider = ({ children }: { children: ReactNode }) => {
     setItems((prev) => prev.map((item) => (item.category === id ? { ...item, category: 'other' } : item)));
   };
 
-  const loadAiGeneratedItems = (aiItems: Array<{ id: string; text: string; category: string; checked: boolean; aiGenerated: boolean }>) => {
+  const loadAiGeneratedItems = useCallback((aiItems: Array<{ id: string; text: string; category: string; checked: boolean; aiGenerated: boolean }>) => {
     // Clear existing AI-generated items
     setItems((prev) => prev.filter(item => !item.aiGenerated));
 
@@ -86,7 +86,7 @@ export const PackingListProvider = ({ children }: { children: ReactNode }) => {
     });
 
     setItems((prev) => [...prev, ...newItems]);
-  };
+  }, []);
 
   return (
     <PackingListContext.Provider value={{ items, categories, addItem, editItem, removeItem, toggleItem, addCategory, editCategory, removeCategory, loadAiGeneratedItems }}>

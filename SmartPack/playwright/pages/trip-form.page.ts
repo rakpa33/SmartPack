@@ -14,14 +14,14 @@ export class TripFormPage {
 
   constructor(page: Page) {
     this.page = page;
-    this.tripNameInput = page.locator('[aria-label="Trip Name"]');
-    this.startDateInput = page.locator('[aria-label="Start Date"]');
-    this.endDateInput = page.locator('[aria-label="End Date"]');
-    this.tripDetailsInput = page.locator('[aria-label="Trip Details"]');
+    this.tripNameInput = page.getByRole('textbox', { name: 'Trip Name' });
+    this.startDateInput = page.getByRole('textbox', { name: 'Start Date' });
+    this.endDateInput = page.getByRole('textbox', { name: 'End Date' });
+    this.tripDetailsInput = page.getByRole('textbox', { name: 'Trip Details (optional)' });
     this.destinationInput = page.locator('[data-testid="destination-input-0"]');
-    this.planeCheckbox = page.locator('[aria-label="Plane"]');
-    this.carCheckbox = page.locator('[aria-label="Car"]');
-    this.trainCheckbox = page.locator('[aria-label="Train"]');
+    this.planeCheckbox = page.getByRole('checkbox', { name: 'Plane' });
+    this.carCheckbox = page.getByRole('checkbox', { name: 'Car' });
+    this.trainCheckbox = page.getByRole('checkbox', { name: 'Train' });
     this.submitButton = page.locator('button[type="submit"]');
   }
 
@@ -31,6 +31,9 @@ export class TripFormPage {
   }
 
   async fillBasicTripInfo(tripName: string, destination: string, startDate: string, endDate: string) {
+    // Wait for form to be visible and ready
+    await this.tripNameInput.waitFor({ state: 'visible' });
+    
     await this.tripNameInput.fill(tripName);
     await this.destinationInput.fill(destination);
     await this.startDateInput.fill(startDate);

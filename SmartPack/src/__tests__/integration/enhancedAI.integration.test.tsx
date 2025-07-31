@@ -152,7 +152,7 @@ describe('Enhanced AI Integration Tests', () => {
 
       // Wait for navigation to main layout
       await waitFor(() => {
-        expect(screen.getByText(/trip details/i)).toBeInTheDocument();
+        expect(screen.getByRole('heading', { name: /trip details/i })).toBeInTheDocument();
       }, { timeout: 5000 });
 
       // Wait for AI suggestions button to be enabled and click it
@@ -220,7 +220,7 @@ describe('Enhanced AI Integration Tests', () => {
 
       // Wait for navigation to main layout
       await waitFor(() => {
-        expect(screen.getByText(/trip details/i)).toBeInTheDocument();
+        expect(screen.getByRole('heading', { name: /trip details/i })).toBeInTheDocument();
       }, { timeout: 5000 });
 
       // Wait for AI suggestions button to be enabled and click it
@@ -283,7 +283,7 @@ describe('Enhanced AI Integration Tests', () => {
 
       // Wait for navigation to main layout
       await waitFor(() => {
-        expect(screen.getByText(/trip details/i)).toBeInTheDocument();
+        expect(screen.getByRole('heading', { name: /trip details/i })).toBeInTheDocument();
       }, { timeout: 5000 });
 
       // Wait for AI suggestions button to be enabled and click it
@@ -346,7 +346,7 @@ describe('Enhanced AI Integration Tests', () => {
 
       // Wait for navigation and generate list
       await waitFor(() => {
-        expect(screen.getByText(/trip details/i)).toBeInTheDocument();
+        expect(screen.getByRole('heading', { name: /trip details/i })).toBeInTheDocument();
       }, { timeout: 5000 });
 
       // Wait for AI suggestions button to be enabled and click it
@@ -378,7 +378,7 @@ describe('Enhanced AI Integration Tests', () => {
 
       // Wait for navigation to main layout
       await waitFor(() => {
-        expect(screen.getByText(/trip details/i)).toBeInTheDocument();
+        expect(screen.getByRole('heading', { name: /trip details/i })).toBeInTheDocument();
       }, { timeout: 5000 });
 
       // Wait for AI suggestions button to be enabled and click it

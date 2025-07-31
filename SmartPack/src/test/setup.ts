@@ -19,11 +19,6 @@ configure({
   
   // Configure DOM testing library
   testIdAttribute: 'data-testid',
-  
-  // Performance: Don't suggest queries on failures in CI
-  getElementError: process.env.CI 
-    ? (message: string) => new Error(message)
-    : undefined,
 });
 
 // Mock IntersectionObserver for components that use it

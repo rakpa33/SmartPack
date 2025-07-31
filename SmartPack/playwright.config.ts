@@ -43,9 +43,16 @@ export default defineConfig({
       use: { ...devices['Pixel 5'] },
     },
   ],
-  webServer: {
-    command: 'npm run dev',
-    port: 5173,
-    reuseExistingServer: !process.env.CI,
-  },
+  webServer: [
+    {
+      command: 'npm run dev',
+      port: 5173,
+      reuseExistingServer: !process.env.CI,
+    },
+    {
+      command: 'npm run lambda:dev',
+      port: 3000,
+      reuseExistingServer: !process.env.CI,
+    },
+  ],
 });

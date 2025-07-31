@@ -320,6 +320,8 @@ test('renders trip form correctly', () => {
 
 #### **API Mocking**
 
+**Basic API Service Mocking:**
+
 ```typescript
 vi.mock('@/services/api', () => ({
   generateAISuggestions: vi.fn().mockResolvedValue({
@@ -328,6 +330,34 @@ vi.mock('@/services/api', () => ({
   }),
 }));
 ```
+
+**Complete API Service Mocking (Prevents Test Hanging):**
+
+```typescript
+// Essential for components that render API-integrated components
+vi.mock('../services/apiService', () => ({
+  generateAISuggestions: vi.fn().mockResolvedValue({
+    checklist: [],
+    suggestedItems: [],
+    aiGenerated: true,
+  }),
+  checkApiHealth: vi.fn().mockResolvedValue(true),
+}));
+```
+
+**API Mocking Best Practices:**
+
+- **Always mock external services** in unit tests to prevent network calls
+- **Mock at file level** (not just function level) for components with external dependencies
+- **Provide realistic mock data** that matches actual API response structure
+- **Include error scenarios** for comprehensive testing
+- **Check component dependency trees** for hidden API integrations before testing
+
+**Common API Mocking Issues:**
+
+- **Test Hanging:** Components with unmocked API calls will hang waiting for localhost servers
+- **Network Timeouts:** Real fetch() calls during tests cause indefinite waiting
+- **Integration Leakage:** Unit tests making actual network requests indicate missing mocks
 
 #### **Component Mocking**
 

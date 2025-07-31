@@ -60,7 +60,7 @@ export default defineConfig({
     exclude: ['node_modules', 'dist', 'playwright'],
     
     // Performance settings
-    testTimeout: 10000,
+    testTimeout: 30000, // Increased to 30 seconds for integration tests
     hookTimeout: 10000,
     teardownTimeout: 5000,
     

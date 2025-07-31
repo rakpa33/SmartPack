@@ -48,3 +48,15 @@ export const mockLocalStorage = () => {
     writable: true,
   });
 };
+
+// Mock API service to prevent network calls during tests
+export const mockApiService = () => {
+  vi.mock('@services/apiService', () => ({
+    generateAISuggestions: vi.fn().mockResolvedValue({
+      checklist: [],
+      suggestedItems: [],
+      aiGenerated: true
+    }),
+    checkApiHealth: vi.fn().mockResolvedValue(true)
+  }));
+};

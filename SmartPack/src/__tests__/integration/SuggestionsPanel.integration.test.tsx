@@ -53,7 +53,7 @@ describe('SuggestionsPanel Integration', () => {
 
     // Wait for navigation to MainLayout
     await waitFor(() => {
-      expect(screen.getByText(/packing checklist/i)).toBeInTheDocument();
+      expect(screen.getByRole('heading', { name: /packing checklist/i })).toBeInTheDocument();
     });
   };
 
