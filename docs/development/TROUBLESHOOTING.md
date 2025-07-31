@@ -113,6 +113,27 @@ Document common issues and their solutions here. Update this file as you encount
   - Consider MSW (Mock Service Worker) for more sophisticated API mocking needs
 - **Status:** RESOLVED - 2025-07-30, MainLayout tests now pass consistently with proper API mocking
 
+#### TypeScript Build Errors from Development Files
+
+- **Symptom:** `npm run build` fails with "Declaration or statement expected" errors in development files like `.broken.tsx` or `.backup.tsx`
+- **Root Cause:** Development/backup files with incomplete or malformed TypeScript syntax are included in compilation
+- **Diagnostic Steps:**
+  1. Check error messages for specific file paths containing `.broken`, `.backup`, `.temp`, or similar development suffixes
+  2. Verify if errors occur in files outside the main source structure
+  3. Look for orphaned code fragments outside function scope in problematic files
+  4. Check for duplicate function definitions or incomplete syntax
+- **Solution:**
+  1. **Remove Development Files:** Delete `.broken.tsx`, `.backup.tsx`, and other non-production files: `del src\**\*.broken.tsx`
+  2. **Verify TypeScript:** Run `npx tsc --noEmit` to check compilation without output
+  3. **Test Build:** Execute `npm run build` to confirm successful compilation
+  4. **Clean Verification:** Run targeted tests to ensure functionality remains intact
+- **Prevention:**
+  - Use proper .gitignore patterns for development files: `*.broken.*`, `*.backup.*`, `*.temp.*`
+  - Store development files outside src/ directory when needed
+  - Use version control branches for experimental changes instead of backup files
+  - Implement pre-commit hooks to check for development file artifacts
+- **Status:** RESOLVED - Removed broken useColumnLayout files causing compilation errors 2025-07-30
+
 #### Ignoring Test Errors and Output
 
 - **Symptom:** AI assistant or developer continues without addressing test failures, skips error analysis, or proceeds despite hanging tests

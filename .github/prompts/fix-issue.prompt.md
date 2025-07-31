@@ -60,7 +60,129 @@ Systematically diagnose, resolve, and prevent application issues using root caus
 - Utilize TypeScript compiler for type checking and error detection
 - Review `copilotdocs/TROUBLESHOOTING.md` for known issues and established solutions
 
-## 5. Solution Implementation and Testing
+## 5. Deep Investigation and Understanding Phase
+
+### **Comprehensive Requirements Analysis**
+
+**CRITICAL: Before proceeding with implementation, achieve 95-100% certainty about:**
+
+1. **User Needs Clarification:**
+
+   - Ask targeted follow-up questions about expected behavior, edge cases, and success criteria
+   - Clarify scope, priority, and any constraints or preferences
+   - Understand the user's workflow and how this fix fits into their development process
+   - Verify assumptions about the desired outcome and implementation approach
+
+2. **Testing Strategy Confirmation:**
+
+   - Determine specific test scenarios, expected inputs/outputs, and validation methods
+   - Identify which test types are needed: unit, integration, E2E, performance, accessibility
+   - Clarify test data requirements and edge cases to cover
+   - Understand existing test patterns and preferred testing methodologies
+
+3. **Implementation Strategy Validation:**
+
+   - Confirm architectural approach and integration points with existing SmartPack systems
+   - Verify compatibility with React + TypeScript + Vite + Tailwind CSS + Headless UI stack
+   - Understand performance implications and optimization requirements
+   - Clarify code style preferences and maintainability considerations
+
+4. **Codebase Integration Understanding:**
+   - Map how changes affect existing components, contexts, and data flow
+   - Identify potential breaking changes and migration strategies
+   - Understand localStorage persistence patterns and state management impacts
+   - Assess mobile-first responsive design implications
+
+### **External Research and Best Practices Investigation**
+
+**Research trusted external sources for:**
+
+1. **Industry Best Practices:**
+
+   - Current React patterns and hooks best practices (React docs, Kent C. Dodds, Dan Abramov)
+   - TypeScript implementation standards and type safety approaches
+   - Modern testing methodologies (Testing Library docs, Jest docs, testing-blog.com)
+   - Accessibility compliance standards (WCAG guidelines, axe-core documentation)
+
+2. **Implementation Ideas and Strategies:**
+
+   - Stack Overflow solutions for similar problems with high vote counts
+   - GitHub repositories with similar implementations and proven patterns
+   - Official documentation for relevant libraries and frameworks
+   - Performance optimization techniques from web.dev and Chrome DevTools guides
+
+3. **Architecture and Design Patterns:**
+
+   - Component design patterns from React documentation and community resources
+   - State management best practices for the specific use case
+   - Error handling and resilience patterns from reliable sources
+   - Code organization and maintainability guidelines
+
+4. **Testing and Quality Assurance:**
+   - Testing strategy recommendations from official testing library documentation
+   - Accessibility testing best practices from axe-core and WCAG resources
+   - Performance testing methodologies from Chrome DevTools and web.dev
+   - Integration testing patterns for React applications
+
+### **Ideation and Strategy Development**
+
+**Collaborative ideation process:**
+
+1. **Present multiple solution approaches** with pros/cons analysis
+2. **Suggest alternative implementations** based on research findings
+3. **Recommend optimization opportunities** discovered during investigation
+4. **Propose testing strategies** aligned with industry best practices
+5. **Identify potential future improvements** that could be considered
+
+### **Confirmation Protocol**
+
+**Before implementation, explicitly confirm:**
+
+- [ ] **User Requirements:** "Based on my investigation, I understand you want [specific behavior]. Is this correct?"
+- [ ] **Testing Approach:** "I plan to test this with [specific methods]. Does this align with your expectations?"
+- [ ] **Implementation Strategy:** "I propose [specific approach] because [research-backed reasoning]. Do you agree?"
+- [ ] **Codebase Impact:** "This will affect [specific components/systems]. Are you comfortable with these changes?"
+- [ ] **External Research Integration:** "Based on [source], I recommend [specific pattern/approach]. Does this fit your vision?"
+
+**Questions to ask when uncertain:**
+
+- "What specific behavior do you expect in [scenario]?"
+- "Are there any constraints or preferences I should consider?"
+- "How does this fit into your overall development workflow?"
+- "What level of testing coverage do you expect for this change?"
+- "Are there any performance or accessibility requirements I should prioritize?"
+- "Would you prefer [approach A] or [approach B] based on [research findings]?"
+
+## 6. Implementation Plan Documentation and Approval
+
+**Before proceeding with any code changes:**
+
+### **Step 1: Confirm Implementation Plan**
+
+- [ ] **Present Complete Plan:** "Based on my investigation, here's my implementation plan: [detailed plan with specific files, changes, and reasoning]"
+- [ ] **Request Explicit Approval:** "Do you approve this implementation plan before I proceed?"
+- [ ] **Address Any Concerns:** Continue discussion until you receive clear approval
+
+### **Step 2: Update Project Documentation**
+
+Before writing any code, update the appropriate documentation:
+
+- [ ] **Update CHECKLIST.md:** Record the planned implementation in `docs/development/CHECKLIST.md`
+- [ ] **Update DEVLOG.md:** Add entry in `docs/development/DEVLOG.md` documenting the issue and planned solution
+- [ ] **Update TROUBLESHOOTING.md:** If applicable, add the issue pattern and solution to `docs/development/TROUBLESHOOTING.md`
+- [ ] **Update Architecture Docs:** If the change affects system architecture, update relevant files in `docs/development/`
+- [ ] **Update API Documentation:** If backend changes are involved, update `docs/api/API.md`
+
+### **Step 3: Implementation Readiness Check**
+
+- [ ] **Documentation Complete:** All relevant docs have been updated with the implementation plan
+- [ ] **User Approval Confirmed:** User has explicitly approved the specific implementation approach
+- [ ] **Dependencies Verified:** All required tools, libraries, and dependencies are confirmed available
+- [ ] **Testing Strategy Confirmed:** Clear testing approach is documented and approved
+
+**Only proceed to Section 7 (Solution Implementation) after completing ALL steps above.**
+
+## 7. Solution Implementation and Testing
 
 - Apply targeted fixes based on root cause analysis findings
 - Ensure solutions maintain SmartPack architecture principles and patterns
@@ -70,7 +192,7 @@ Systematically diagnose, resolve, and prevent application issues using root caus
 - **Follow Testing Protocol**: Reference `.github/prompts/testing-protocol.prompt.md` for systematic test execution
 - **Validate Incrementally**: Test changes step-by-step rather than batch testing
 
-## 6. Comprehensive Test Coverage Enhancement
+## 8. Comprehensive Test Coverage Enhancement
 
 ### **Test Execution Best Practices**
 
@@ -139,7 +261,7 @@ When tests fail:
    - Component evolution (renamed functions, updated UI text)
    - Timeout/hanging issues (unresolved promises, infinite loops)
 
-## 7. Prevention Strategy and Quality Assurance
+## 9. Prevention Strategy and Quality Assurance
 
 - Update `copilotdocs/TROUBLESHOOTING.md` with new issue patterns and solutions
 - Enhance development processes to catch similar issues earlier
@@ -148,7 +270,7 @@ When tests fail:
 - Update `copilotdocs/TESTING_GUIDELINES.md` with new testing patterns discovered
 - Consider architectural improvements to prevent entire classes of similar issues
 
-## 8. Documentation and Knowledge Sharing
+## 10. Documentation and Knowledge Sharing
 
 - Document the issue, root cause, and solution in `copilotdocs/DEVLOG.md`
 - Update `copilotdocs/ARCHITECTURE.md` if architectural patterns were involved
