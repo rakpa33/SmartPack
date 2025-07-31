@@ -6,7 +6,26 @@ import { enhanceItemsWithQuantities } from '../utils/itemQuantities';
 import { usePackingList } from '../hooks/usePackingList';
 import { useColumnLayout } from '../hooks/useColumnLayout';
 import { validateTripForm } from '../utils/tripFormValidation';
-import { ArrowPathIcon, SparklesIcon, PencilIcon, CheckCircleIcon } from '@heroicons/react/24/solid';
+import { ArrowPathIcon, SparklesIcon, PencilIcon, CheckCircleIcon, PlusIcon, TruckIcon, GlobeAltIcon, BuildingOfficeIcon } from '@heroicons/react/24/solid';
+
+// Transportation mode icons mapping
+const getTravelModeIcon = (mode: string) => {
+  const iconProps = { className: "h-4 w-4" };
+  switch (mode) {
+    case 'Car':
+      return <TruckIcon {...iconProps} />;
+    case 'Plane':
+      return <GlobeAltIcon {...iconProps} />;
+    case 'Train':
+      return <BuildingOfficeIcon {...iconProps} />;
+    case 'Bus':
+      return <TruckIcon {...iconProps} />;
+    case 'Boat':
+      return <GlobeAltIcon {...iconProps} />;
+    default:
+      return null;
+  }
+};
 
 /**
  * TripDetails: Displays submitted trip data in the left column of MainLayout.
@@ -355,10 +374,10 @@ export const TripDetails: React.FC = () => {
               }}
               onBlur={() => setTouched(t => ({ ...t, tripName: true }))}
               className={`w-full px-3 py-2 border rounded-md text-sm bg-white dark:bg-gray-800 min-h-[44px] focus:ring-2 transition-colors ${touched.tripName && errors.tripName
-                  ? 'border-red-500 dark:border-red-400 focus:ring-red-500 focus:border-red-500'
-                  : validFields.tripName && touched.tripName
-                    ? 'border-green-500 dark:border-green-400 focus:ring-green-500 focus:border-green-500'
-                    : 'border-gray-300 dark:border-gray-600 focus:ring-blue-500 focus:border-blue-500'
+                ? 'border-red-500 dark:border-red-400 focus:ring-red-500 focus:border-red-500'
+                : validFields.tripName && touched.tripName
+                  ? 'border-green-500 dark:border-green-400 focus:ring-green-500 focus:border-green-500'
+                  : 'border-gray-300 dark:border-gray-600 focus:ring-blue-500 focus:border-blue-500'
                 }`}
               placeholder="e.g., Summer Vacation in Italy"
               aria-describedby={touched.tripName && errors.tripName ? "trip-name-error" : "trip-name-hint"}
@@ -399,10 +418,10 @@ export const TripDetails: React.FC = () => {
                 }}
                 onBlur={() => setTouched(t => ({ ...t, startDate: true }))}
                 className={`w-full px-3 py-2 border rounded-md text-sm bg-white dark:bg-gray-800 min-h-[44px] focus:ring-2 transition-colors ${touched.startDate && errors.startDate
-                    ? 'border-red-500 dark:border-red-400 focus:ring-red-500 focus:border-red-500'
-                    : validFields.startDate && touched.startDate
-                      ? 'border-green-500 dark:border-green-400 focus:ring-green-500 focus:border-green-500'
-                      : 'border-gray-300 dark:border-gray-600 focus:ring-blue-500 focus:border-blue-500'
+                  ? 'border-red-500 dark:border-red-400 focus:ring-red-500 focus:border-red-500'
+                  : validFields.startDate && touched.startDate
+                    ? 'border-green-500 dark:border-green-400 focus:ring-green-500 focus:border-green-500'
+                    : 'border-gray-300 dark:border-gray-600 focus:ring-blue-500 focus:border-blue-500'
                   }`}
                 aria-describedby={touched.startDate && errors.startDate ? "start-date-error" : undefined}
                 aria-invalid={touched.startDate && errors.startDate ? "true" : "false"}
@@ -435,10 +454,10 @@ export const TripDetails: React.FC = () => {
                 }}
                 onBlur={() => setTouched(t => ({ ...t, endDate: true }))}
                 className={`w-full px-3 py-2 border rounded-md text-sm bg-white dark:bg-gray-800 min-h-[44px] focus:ring-2 transition-colors ${touched.endDate && errors.endDate
-                    ? 'border-red-500 dark:border-red-400 focus:ring-red-500 focus:border-red-500'
-                    : validFields.endDate && touched.endDate
-                      ? 'border-green-500 dark:border-green-400 focus:ring-green-500 focus:border-green-500'
-                      : 'border-gray-300 dark:border-gray-600 focus:ring-blue-500 focus:border-blue-500'
+                  ? 'border-red-500 dark:border-red-400 focus:ring-red-500 focus:border-red-500'
+                  : validFields.endDate && touched.endDate
+                    ? 'border-green-500 dark:border-green-400 focus:ring-green-500 focus:border-green-500'
+                    : 'border-gray-300 dark:border-gray-600 focus:ring-blue-500 focus:border-blue-500'
                   }`}
                 aria-describedby={touched.endDate && errors.endDate ? "end-date-error" : undefined}
                 aria-invalid={touched.endDate && errors.endDate ? "true" : "false"}
@@ -482,10 +501,10 @@ export const TripDetails: React.FC = () => {
                           debounceValidation(`destinations_${index}`, e.target.value);
                         }}
                         className={`w-full px-3 py-2 border rounded-md text-sm bg-white dark:bg-gray-800 min-h-[44px] focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors ${validFields[`destinations_${index}`] && dest.trim()
-                            ? 'border-green-500 dark:border-green-400 ring-1 ring-green-500/20'
-                            : touched[`destinations_${index}`] && errors.destinations && errors.destinations[index]
-                              ? 'border-red-500 dark:border-red-400 focus:ring-red-500 focus:border-red-500'
-                              : 'border-gray-300 dark:border-gray-600'
+                          ? 'border-green-500 dark:border-green-400 ring-1 ring-green-500/20'
+                          : touched[`destinations_${index}`] && errors.destinations && errors.destinations[index]
+                            ? 'border-red-500 dark:border-red-400 focus:ring-red-500 focus:border-red-500'
+                            : 'border-gray-300 dark:border-gray-600'
                           }`}
                         placeholder="e.g., Paris, Rome, Tokyo"
                         aria-describedby={touched[`destinations_${index}`] && errors.destinations && errors.destinations[index] ? `destination-${index}-error` : undefined}
@@ -533,9 +552,9 @@ export const TripDetails: React.FC = () => {
             <button
               type="button"
               onClick={() => setEditForm(prev => ({ ...prev, destinations: [...prev.destinations, ''] }))}
-              className="mt-3 inline-flex items-center gap-2 text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-200 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-blue-500 rounded px-2 py-1"
+              className="mt-3 min-h-[44px] px-3 py-2 text-sm font-medium text-blue-700 dark:text-blue-200 hover:text-blue-800 dark:hover:text-blue-100 bg-blue-50 dark:bg-blue-900 hover:bg-blue-100 dark:hover:bg-blue-800 rounded-md border-2 border-blue-300 dark:border-blue-700 hover:border-blue-400 dark:hover:border-blue-600 focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all shadow-sm hover:shadow-md inline-flex items-center gap-2"
             >
-              <span className="text-lg">+</span>
+              <PlusIcon className="h-4 w-4" />
               Add Another Destination
             </button>
           </div>          <fieldset className="border border-gray-200 dark:border-gray-700 rounded-lg p-4">
@@ -549,9 +568,9 @@ export const TripDetails: React.FC = () => {
               {['Car', 'Plane', 'Train', 'Bus', 'Boat'].map(mode => (
                 <label
                   key={mode}
-                  className={`inline-flex items-center text-sm cursor-pointer group p-3 rounded-md border transition-all min-h-[44px] ${editForm.travelModes.includes(mode)
-                      ? 'bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-700 text-blue-900 dark:text-blue-100'
-                      : 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700'
+                  className={`inline-flex items-center gap-2 text-sm cursor-pointer group p-3 rounded-md border-2 transition-all min-h-[44px] shadow-sm hover:shadow-md ${editForm.travelModes.includes(mode)
+                    ? 'bg-blue-50 dark:bg-blue-900 border-blue-300 dark:border-blue-600 text-blue-800 dark:text-blue-100 shadow-md'
+                    : 'bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 hover:bg-blue-50 dark:hover:bg-blue-950 hover:border-blue-200 dark:hover:border-blue-700 text-gray-700 dark:text-gray-200'
                     }`}
                 >
                   <input
@@ -566,14 +585,15 @@ export const TripDetails: React.FC = () => {
                       setTouched(t => ({ ...t, travelModes: true }));
                       debounceValidation('travelModes', newModes);
                     }}
-                    className="mr-3 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                    className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
                     aria-describedby={touched.travelModes && errors.travelModes ? "travel-modes-error" : undefined}
                   />
+                  {getTravelModeIcon(mode)}
                   <span className="select-none transition-colors flex-1">
                     {mode}
                   </span>
                   {editForm.travelModes.includes(mode) && (
-                    <CheckCircleIcon className="h-4 w-4 text-blue-600 ml-2" aria-hidden="true" />
+                    <CheckCircleIcon className="h-4 w-4 text-blue-600" aria-hidden="true" />
                   )}
                 </label>
               ))}
@@ -608,8 +628,8 @@ export const TripDetails: React.FC = () => {
                   debounceValidation('tripDetails', e.target.value);
                 }}
                 className={`w-full px-3 py-2 border rounded-md text-sm bg-white dark:bg-gray-800 min-h-[80px] focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors resize-vertical ${editForm.tripDetails.trim() && editForm.tripDetails.length > 10
-                    ? 'border-green-500 dark:border-green-400 ring-1 ring-green-500/20'
-                    : 'border-gray-300 dark:border-gray-600'
+                  ? 'border-green-500 dark:border-green-400 ring-1 ring-green-500/20'
+                  : 'border-gray-300 dark:border-gray-600'
                   }`}
                 placeholder="e.g., Business meetings, beach activities, formal dinner, hiking, photography, conference presentations..."
                 rows={4}
@@ -625,8 +645,8 @@ export const TripDetails: React.FC = () => {
                 This helps generate more accurate packing suggestions
               </p>
               <p id="trip-details-counter" className={`text-xs ${editForm.tripDetails.length > 450
-                  ? 'text-amber-600 dark:text-amber-400'
-                  : 'text-gray-500 dark:text-gray-400'
+                ? 'text-amber-600 dark:text-amber-400'
+                : 'text-gray-500 dark:text-gray-400'
                 }`}>
                 {editForm.tripDetails.length}/500 characters
               </p>
@@ -661,8 +681,8 @@ export const TripDetails: React.FC = () => {
               onClick={handleUpdatePackingList}
               disabled={isUpdating || !isFormValid()}
               className={`w-full min-h-[48px] px-6 py-3 rounded-lg text-base font-semibold flex items-center justify-center gap-2 focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all transform ${isFormValid() && !isUpdating
-                  ? 'bg-blue-600 text-white hover:bg-blue-700 hover:scale-[1.02] shadow-lg hover:shadow-xl'
-                  : 'bg-gray-300 dark:bg-gray-600 text-gray-500 dark:text-gray-400 cursor-not-allowed'
+                ? 'bg-blue-600 text-white hover:bg-blue-700 hover:scale-[1.02] shadow-lg hover:shadow-xl'
+                : 'bg-gray-300 dark:bg-gray-600 text-gray-500 dark:text-gray-400 cursor-not-allowed'
                 }`}
             >
               {isUpdating ? (
@@ -686,8 +706,8 @@ export const TripDetails: React.FC = () => {
                   onClick={handleSaveEdit}
                   disabled={!isFormValid()}
                   className={`flex-1 min-h-[44px] px-4 py-2 rounded-md text-sm font-medium flex items-center justify-center gap-2 focus:ring-2 focus:outline-none transition-all ${isFormValid()
-                      ? 'bg-green-600 text-white hover:bg-green-700 focus:ring-green-500 shadow-md hover:shadow-lg'
-                      : 'bg-gray-200 dark:bg-gray-700 text-gray-500 dark:text-gray-400 cursor-not-allowed'
+                    ? 'bg-green-600 text-white hover:bg-green-700 focus:ring-green-500 shadow-md hover:shadow-lg'
+                    : 'bg-gray-200 dark:bg-gray-700 text-gray-500 dark:text-gray-400 cursor-not-allowed'
                     }`}
                 >
                   <PencilIcon className="h-4 w-4" />
@@ -698,8 +718,8 @@ export const TripDetails: React.FC = () => {
                   onClick={handleUpdateSuggestions}
                   disabled={isUpdating || !isFormValid()}
                   className={`flex-1 min-h-[44px] px-4 py-2 rounded-md text-sm font-medium flex items-center justify-center gap-2 focus:ring-2 focus:outline-none transition-all ${isFormValid() && !isUpdating
-                      ? 'bg-purple-600 text-white hover:bg-purple-700 focus:ring-purple-500 shadow-md hover:shadow-lg'
-                      : 'bg-gray-200 dark:bg-gray-700 text-gray-500 dark:text-gray-400 cursor-not-allowed'
+                    ? 'bg-purple-600 text-white hover:bg-purple-700 focus:ring-purple-500 shadow-md hover:shadow-lg'
+                    : 'bg-gray-200 dark:bg-gray-700 text-gray-500 dark:text-gray-400 cursor-not-allowed'
                     }`}
                 >
                   {isUpdating ? (

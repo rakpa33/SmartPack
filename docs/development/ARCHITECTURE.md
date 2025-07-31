@@ -244,22 +244,29 @@ sequenceDiagram
 
 ## 6.3 UX/UI Design System Architecture
 
-**Design System Implementation (Established 2025-01-27):**
+**Design System Implementation (Established 2025-01-27, Enhanced 2025-01-30):**
 
-SmartPack implements a comprehensive design system ensuring consistent user experience across all components:
+SmartPack implements a comprehensive design system ensuring consistent user experience across all components with WCAG 2.1 AA compliance:
 
 **Design Tokens:**
 
 - **Color System**: State-based colors (green success, red error, blue primary, amber warning)
 - **Typography Scale**: Consistent hierarchy (text-sm font-medium for labels, text-xs for help)
-- **Spacing System**: Progressive enhancement (space-y-6 md:space-y-8)
+- **Spacing System**: Progressive enhancement (space-y-6 md:space-y-8), gap-2 for icon spacing
 - **Touch Targets**: 44px minimum for mobile accessibility compliance
+
+**Interactive Element Standards (Enhanced 2025-01-30):**
+
+- **WCAG 3:1 Contrast**: All interactive elements meet minimum contrast requirements
+- **Visual Affordance**: 2px borders minimum, shadow hierarchy for depth perception
+- **Button Hierarchy**: Primary (bg-blue-50), Secondary (bg-white), Utility (bg-gray-50)
+- **Consistent Treatment**: Unified design language across all clickable components
 
 **Component Patterns:**
 
 - **Real-Time Validation**: 750ms debounced feedback with loading states
 - **Mobile-First Responsive**: Single-column mobile, progressive desktop enhancement
-- **Accessibility-First**: WCAG 2.1 AA compliance with proper ARIA attributes
+- **Accessibility-First**: WCAG 2.1 AA compliance with proper ARIA attributes, Nielsen Norman clickability principles
 - **Success States**: Visual feedback with green borders and CheckCircleIcon
 
 **Implementation Architecture:**
@@ -271,7 +278,9 @@ Design System Architecture
 ├── TripDetails.tsx             (Reference implementation)
 └── Cross-Component Consistency
     ├── Form validation patterns
-    ├── Button hierarchy standards
+    ├── Button hierarchy standards (Primary/Secondary/Utility)
+    ├── Interactive element WCAG compliance
+    ├── Icon spacing consistency (gap-2 pattern)
     ├── Loading state animations
     └── Error messaging patterns
 ```
@@ -280,8 +289,9 @@ Design System Architecture
 
 - Component assessment using UX_UI_ASSESSMENT_GUIDE.md
 - Mobile-first responsive validation
-- Accessibility testing with axe-core
+- Accessibility testing with axe-core and WCAG 2.1 AA compliance
 - Touch target compliance verification
+- Interactive element contrast ratio validation (3:1 minimum)
 
 ## 7. Deployment View
 

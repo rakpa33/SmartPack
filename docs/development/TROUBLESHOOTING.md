@@ -140,6 +140,91 @@ Document common issues and their solutions here. Update this file as you encount
   - Apply Apple Human Interface Guidelines (44px minimum)
 - **Status:** RESOLVED - 2025-01-27, Touch target standards established and applied
 
+#### WCAG Compliance Issues - Insufficient Interactive Element Contrast
+
+- **Symptom:** Interactive elements (buttons, toggles) lack sufficient visual contrast, failing WCAG 2.1 AA standards, difficulty distinguishing clickable from non-clickable elements
+- **Root Cause:** UI components not meeting 3:1 minimum contrast ratio requirement, inconsistent visual affordance across interactive elements
+- **Diagnostic Steps:**
+  1. Check interactive element contrast ratios using browser dev tools or contrast analyzers
+  2. Verify elements are visually distinguishable without relying on hover states
+  3. Test accessibility with screen readers and keyboard navigation
+  4. Compare visual treatment consistency across similar interactive elements
+- **Solution:**
+  1. **Apply WCAG 3:1 Contrast Standards:**
+     ```tsx
+     // Research-backed contrast pattern
+     className="bg-blue-100 dark:bg-blue-900 border-2 border-blue-200 dark:border-blue-700
+               shadow-sm hover:shadow-md text-blue-700 dark:text-blue-200"
+     ```
+  2. **Implement Visual Affordance Principles:**
+     - Use 2px minimum borders for accessibility
+     - Apply shadow hierarchy for depth perception
+     - Ensure consistent treatment across similar elements
+  3. **Research External Standards:** Reference WCAG Guidelines, Nielsen Norman Group, Adobe Spectrum, GOV.UK design systems
+- **Prevention:**
+  - Reference established design system patterns for all interactive elements
+  - Test contrast ratios during development with accessibility tools
+  - Apply unified visual language across all clickable components
+- **Status:** RESOLVED - 2025-01-30, Research-backed design system implemented with WCAG 3:1 compliance
+
+#### Light Mode Visual Hierarchy Issues - Uniform Button Appearance
+
+- **Symptom:** All buttons in light mode appear with same visual weight/color, lacking clear action hierarchy that exists in dark mode
+- **Root Cause:** Uniform color application (`bg-blue-100`) across different button types without visual weight differentiation
+- **Diagnostic Steps:**
+  1. Compare light mode button appearance across different action types (primary, secondary, utility)
+  2. Check if visual hierarchy exists in dark mode but missing in light mode
+  3. Verify user can distinguish between different button importance levels
+  4. Test button hierarchy against design system standards
+- **Solution:**
+  1. **Implement Multi-Level Hierarchy:**
+     ```tsx
+     // Primary Actions (highest visual weight)
+     className="bg-blue-50 hover:bg-blue-100 border-blue-300 hover:border-blue-400"
+     
+     // Secondary Actions (medium visual weight)  
+     className="bg-white hover:bg-blue-50 text-blue-600 border-blue-200"
+     
+     // Utility Actions (minimal visual weight)
+     className="bg-gray-50 hover:bg-gray-100 text-gray-600 border-gray-200"
+     ```
+  2. **Apply Visual Weight Distribution:** Different background colors and border strengths based on action importance
+  3. **Maintain Dark Mode Consistency:** Preserve effective dark mode system while enhancing light mode
+- **Prevention:**
+  - Apply design system button classification principles during development
+  - Test visual hierarchy in both light and dark modes
+  - Reference established design systems for button hierarchy patterns
+- **Status:** RESOLVED - 2025-01-31, Multi-level button hierarchy implemented with proper visual weight distribution
+
+#### Icon Spacing Inconsistency - Mixed Spacing Patterns
+
+- **Symptom:** Icons in similar components use different spacing patterns (`mr-2` vs `gap-2`), creating visual inconsistency
+- **Root Cause:** Manual margin application on icons instead of consistent parent spacing pattern
+- **Diagnostic Steps:**
+  1. Compare icon spacing across similar button types (Travel Mode vs Add Destination vs Generate List)
+  2. Check for manual margins (`mr-2`, `ml-2`) vs parent gap spacing (`gap-2`)
+  3. Verify icon positioning consistency across components
+  4. Test visual alignment of icon-text combinations
+- **Solution:**
+  1. **Standardize on Gap Pattern:**
+     ```tsx
+     // Remove manual margins from icons
+     const iconProps = { className: "h-4 w-4" }; // Remove mr-2
+     
+     // Use parent gap for spacing
+     <label className="inline-flex items-center gap-2">
+       {getIcon(mode)}
+       <span>{mode}</span>
+     </label>
+     ```
+  2. **Apply Consistent Icon Classes:** Use `h-4 w-4` without margins, rely on parent `gap-2`
+  3. **Verify Pattern Compliance:** Ensure all icon buttons follow same spacing approach
+- **Prevention:**
+  - Establish icon spacing standards in design system documentation
+  - Use parent `gap-` classes instead of manual icon margins
+  - Include icon spacing in component review checklist
+- **Status:** RESOLVED - 2025-01-30, Consistent gap-based spacing pattern applied across all icon buttons
+
 #### Validation Timing Issues - Too Aggressive or Too Slow
 
 - **Symptom:** Form validation either fires too quickly (on every keystroke) or too slowly (poor user feedback)

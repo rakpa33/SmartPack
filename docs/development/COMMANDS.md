@@ -209,9 +209,20 @@ npx tsc --noEmit src/__tests__/specific-test.tsx
 ### Legacy Testing
 
 - **Run E2E tests**: `npx playwright test`
+- **Run Playwright UI mode**: `npx playwright test --ui` (interactive test runner)
+- **Run Playwright with specific browser**: `npx playwright test --project=chromium`
+- **Run Playwright in debug mode**: `npx playwright test --debug`
 - **Run accessibility (axe) tests**: `npx vitest run src/__tests__/*.a11y.test.tsx`
 - **Run TripForm state tests**: `npx vitest run src/__tests__/useTripForm.test.tsx`
 - **Component tests**: `npx vitest run src/__tests__/components/`
+
+### Playwright UI Testing
+
+- **Launch Playwright UI**: `npx playwright test --ui` (graphical test runner)
+- **Playwright UI for specific project**: `npx playwright test --ui --project=chromium`
+- **Playwright UI for specific tests**: `npx playwright test --ui playwright/user-journey.spec.ts`
+- **Playwright UI with debug**: `npx playwright test --ui --debug`
+- **Install Playwright browsers**: `npx playwright install`
 
 ### Test Development
 
