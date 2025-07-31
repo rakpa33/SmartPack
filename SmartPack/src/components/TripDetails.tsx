@@ -5,6 +5,7 @@ import { getWeatherIcon, getExpectedWeatherTypes } from '../utils/weatherIcons';
 import { enhanceItemsWithQuantities } from '../utils/itemQuantities';
 import { usePackingList } from '../hooks/usePackingList';
 import { useColumnLayout } from '../hooks/useColumnLayout';
+import { validateTripForm } from '../utils/tripFormValidation';
 import { ArrowPathIcon, SparklesIcon, PencilIcon } from '@heroicons/react/24/solid';
 
 /**
@@ -18,6 +19,7 @@ export const TripDetails: React.FC = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
   const [tempUnit, setTempUnit] = useState<'C' | 'F'>('C');
+  const [touched, setTouched] = useState<{ [k: string]: boolean }>({});
   const [editForm, setEditForm] = useState<{
     tripName: string;
     startDate: string;
@@ -38,12 +40,6 @@ export const TripDetails: React.FC = () => {
   if (!state) {
     console.log('TripDetails: No state found');
     return <div>Loading trip details...</div>;
-  }
-
-  // Explicit check for step=2 (completed form)
-  if (state.step < 2) {
-    console.log('TripDetails: Form not completed, step is', state.step);
-    return <div>Please complete the trip form</div>;
   }
 
   const {
@@ -69,7 +65,26 @@ export const TripDetails: React.FC = () => {
     }
   }, [isFirstTimeUser, isEditing]);
 
-  // Auto-save when editForm changes (for first-time users)
+  // Validate form fields using the same logic as TripForm
+  const errors = validateTripForm({
+    tripName: editForm.tripName,
+    destinations: editForm.destinations,
+    travelModes: editForm.travelModes,
+    startDate: editForm.startDate,
+    endDate: editForm.endDate,
+    preferences: [editForm.tripDetails],
+    step: 1
+  });
+
+  // Check if form is valid
+  const isFormValid = () => {
+    return Object.keys(errors).every(key => {
+      if (key === 'destinations') {
+        return !errors.destinations || errors.destinations.every(err => !err);
+      }
+      return !errors[key as keyof typeof errors];
+    });
+  };  // Auto-save when editForm changes (for first-time users)
   useEffect(() => {
     if (isEditing && editForm.tripName.trim()) {
       const timeoutId = setTimeout(() => {
@@ -82,19 +97,29 @@ export const TripDetails: React.FC = () => {
 
   // Initialize edit form when entering edit mode
   const handleEditMode = () => {
+    // Ensure we always have at least one destination field
+    const processedDestinations = destinations.length > 0 ? destinations : [''];
+    const filteredDestinations = processedDestinations.filter(d => d.trim());
+    const finalDestinations = filteredDestinations.length > 0 ? filteredDestinations : [''];
+
     setEditForm({
       tripName: tripName || '',
       startDate: startDate || '',
       endDate: endDate || '',
-      destinations: destinations.length > 0 ? destinations.filter(d => d.trim()) : [''],
+      destinations: finalDestinations,
       travelModes: [...travelModes],
       tripDetails: preferences.length > 0 ? preferences[0] || '' : ''
     });
-    setIsEditing(true);
-  };
 
-  // Save edited trip details
+    // Clear touched state when entering edit mode
+    setTouched({});
+    setIsEditing(true);
+  };  // Save edited trip details
   const handleSaveEdit = () => {
+    if (!isFormValid()) {
+      return; // Don't save if form is invalid
+    }
+
     const updatedState = {
       ...state,
       tripName: editForm.tripName,
@@ -131,15 +156,35 @@ export const TripDetails: React.FC = () => {
 
   // Update full packing checklist
   const handleUpdatePackingList = async () => {
+    if (!isFormValid()) {
+      return; // Don't proceed if form is invalid
+    }
+
+    // Auto-save the form first
+    const updatedState = {
+      ...state,
+      tripName: editForm.tripName,
+      startDate: editForm.startDate,
+      endDate: editForm.endDate,
+      destinations: editForm.destinations.filter(d => d.trim()),
+      travelModes: editForm.travelModes,
+      preferences: [editForm.tripDetails]
+    };
+
+    dispatch({
+      type: 'SET_FORM_STATE',
+      value: updatedState
+    });
+
     setIsUpdating(true);
     try {
       const tripData = {
-        name: tripName || '',
-        startDate: startDate || '',
-        endDate: endDate || '',
-        destinations: destinations.filter(d => d.trim()),
-        travelModes: travelModes,
-        tripDetails: preferences.length > 0 ? preferences[0] || '' : ''
+        name: editForm.tripName,
+        startDate: editForm.startDate,
+        endDate: editForm.endDate,
+        destinations: editForm.destinations.filter(d => d.trim()),
+        travelModes: editForm.travelModes,
+        tripDetails: editForm.tripDetails
       };
 
       const weatherData = weather ? [{
@@ -257,38 +302,66 @@ export const TripDetails: React.FC = () => {
       {isEditing ? (
         <div className="space-y-3">
           <div>
-            <label className="block text-sm font-medium mb-1">Trip Name</label>
+            <label className="block text-sm font-medium mb-1">
+              Trip Name <span className="text-red-500">*</span>
+            </label>
             <input
               type="text"
               value={editForm.tripName}
               onChange={(e) => setEditForm(prev => ({ ...prev, tripName: e.target.value }))}
-              className="w-full px-2 py-1 border border-gray-300 dark:border-gray-600 rounded text-sm bg-white dark:bg-gray-800"
+              onBlur={() => setTouched(t => ({ ...t, tripName: true }))}
+              className={`w-full px-2 py-1 border rounded text-sm bg-white dark:bg-gray-800 ${touched.tripName && errors.tripName
+                ? 'border-red-500 dark:border-red-400'
+                : 'border-gray-300 dark:border-gray-600'
+                }`}
+              placeholder="Enter trip name"
             />
-          </div>
-
-          <div className="grid grid-cols-2 gap-2">
+            {touched.tripName && errors.tripName && (
+              <p className="text-red-500 text-xs mt-1">{errors.tripName}</p>
+            )}
+          </div>          <div className="grid grid-cols-2 gap-2">
             <div>
-              <label className="block text-sm font-medium mb-1">Start Date</label>
+              <label className="block text-sm font-medium mb-1">
+                Start Date <span className="text-red-500">*</span>
+              </label>
               <input
                 type="date"
                 value={editForm.startDate}
                 onChange={(e) => setEditForm(prev => ({ ...prev, startDate: e.target.value }))}
-                className="w-full px-2 py-1 border border-gray-300 dark:border-gray-600 rounded text-sm bg-white dark:bg-gray-800"
+                onBlur={() => setTouched(t => ({ ...t, startDate: true }))}
+                className={`w-full px-2 py-1 border rounded text-sm bg-white dark:bg-gray-800 ${touched.startDate && errors.startDate
+                  ? 'border-red-500 dark:border-red-400'
+                  : 'border-gray-300 dark:border-gray-600'
+                  }`}
               />
+              {touched.startDate && errors.startDate && (
+                <p className="text-red-500 text-xs mt-1">{errors.startDate}</p>
+              )}
             </div>
             <div>
-              <label className="block text-sm font-medium mb-1">End Date</label>
+              <label className="block text-sm font-medium mb-1">
+                End Date <span className="text-red-500">*</span>
+              </label>
               <input
                 type="date"
                 value={editForm.endDate}
                 onChange={(e) => setEditForm(prev => ({ ...prev, endDate: e.target.value }))}
-                className="w-full px-2 py-1 border border-gray-300 dark:border-gray-600 rounded text-sm bg-white dark:bg-gray-800"
+                onBlur={() => setTouched(t => ({ ...t, endDate: true }))}
+                className={`w-full px-2 py-1 border rounded text-sm bg-white dark:bg-gray-800 ${touched.endDate && errors.endDate
+                  ? 'border-red-500 dark:border-red-400'
+                  : 'border-gray-300 dark:border-gray-600'
+                  }`}
               />
+              {touched.endDate && errors.endDate && (
+                <p className="text-red-500 text-xs mt-1">{errors.endDate}</p>
+              )}
             </div>
           </div>
 
           <div>
-            <label className="block text-sm font-medium mb-1">Destinations</label>
+            <label className="block text-sm font-medium mb-1">
+              Destinations <span className="text-red-500">*</span>
+            </label>
             {editForm.destinations.map((dest, index) => (
               <div key={index} className="flex gap-2 mb-1">
                 <input
@@ -299,7 +372,12 @@ export const TripDetails: React.FC = () => {
                     newDests[index] = e.target.value;
                     setEditForm(prev => ({ ...prev, destinations: newDests }));
                   }}
-                  className="flex-1 px-2 py-1 border border-gray-300 dark:border-gray-600 rounded text-sm bg-white dark:bg-gray-800"
+                  onBlur={() => setTouched(t => ({ ...t, [`destinations_${index}`]: true }))}
+                  className={`flex-1 px-2 py-1 border rounded text-sm bg-white dark:bg-gray-800 ${touched[`destinations_${index}`] && errors.destinations && errors.destinations[index]
+                    ? 'border-red-500 dark:border-red-400'
+                    : 'border-gray-300 dark:border-gray-600'
+                    }`}
+                  placeholder="Enter destination"
                 />
                 {editForm.destinations.length > 1 && (
                   <button
@@ -314,16 +392,22 @@ export const TripDetails: React.FC = () => {
                 )}
               </div>
             ))}
+            {editForm.destinations.map((_, index) => {
+              const hasError = touched[`destinations_${index}`] && errors.destinations && errors.destinations[index];
+              return hasError ? (
+                <p key={`error-${index}`} className="text-red-500 text-xs mt-1">{errors.destinations?.[index]}</p>
+              ) : null;
+            })}
             <button
               onClick={() => setEditForm(prev => ({ ...prev, destinations: [...prev.destinations, ''] }))}
               className="text-blue-600 hover:text-blue-800 text-sm"
             >
               Add Destination
             </button>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium mb-1">Travel Modes</label>
+          </div>          <div>
+            <label className="block text-sm font-medium mb-1">
+              Travel Modes <span className="text-red-500">*</span>
+            </label>
             <div className="flex flex-wrap gap-2">
               {['Car', 'Plane', 'Train', 'Bus', 'Boat'].map(mode => (
                 <label key={mode} className="inline-flex items-center text-sm">
@@ -336,6 +420,7 @@ export const TripDetails: React.FC = () => {
                       } else {
                         setEditForm(prev => ({ ...prev, travelModes: prev.travelModes.filter(m => m !== mode) }));
                       }
+                      setTouched(t => ({ ...t, travelModes: true }));
                     }}
                     className="mr-1"
                   />
@@ -343,6 +428,9 @@ export const TripDetails: React.FC = () => {
                 </label>
               ))}
             </div>
+            {touched.travelModes && errors.travelModes && (
+              <p className="text-red-500 text-xs mt-1">{errors.travelModes}</p>
+            )}
           </div>
 
           <div>

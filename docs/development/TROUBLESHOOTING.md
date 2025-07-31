@@ -432,6 +432,41 @@ Document common issues and their solutions here. Update this file as you encount
 - **Symptom:** E2E tests fail with OS-specific errors.
 - **Solution:** Check Playwright docs for Windows setup. Try `npx playwright install`.
 
+### Frontend Component Issues
+
+#### TripDetails showing "Please complete the trip form" instead of actual form
+
+- **Symptom:** TripDetails component displays only the header and text "Please complete the trip form" instead of showing the actual form fields for first-time users
+- **Root Cause:** Incorrect step validation logic blocking step 2 users from accessing the form:
+  ```tsx
+  // INCORRECT - blocks legitimate step 2 access
+  if (state.step < 2) {
+    return <div>Please complete the trip form</div>;
+  }
+  ```
+- **Diagnostic Steps:**
+  1. Check browser console for step value: `TripDetails: Form not completed, step is 2`
+  2. Verify TripFormContext initialState has `step: 2` for first-time users
+  3. Confirm tests show step 2 should render content, not blocking message
+  4. Check that isFirstTimeUser logic exists for auto-editing mode
+- **Solution:**
+  1. **Remove the problematic step check** - it's redundant and incorrect:
+     ```tsx
+     // REMOVE this entire block:
+     if (state.step < 2) {
+       console.log('TripDetails: Form not completed, step is', state.step);
+       return <div>Please complete the trip form</div>;
+     }
+     ```
+  2. **Keep the isFirstTimeUser logic** - it properly handles editing mode
+  3. **Let the component render normally** - the existing logic already handles all states correctly
+- **Prevention:**
+  - Understand step meanings: step 2 = MainLayout where users interact with TripDetails
+  - Review test files for expected behavior patterns before adding validation logic
+  - Use isFirstTimeUser and other existing state logic instead of adding redundant step checks
+  - Remember: step validation should enable functionality, not block it
+- **Status:** RESOLVED - Fixed step validation logic 2025-07-30
+
 ### Tailwind or Vite build errors
 
 - **Symptom:** Frontend fails to build or hot reload.

@@ -1,0 +1,87 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Test Destination Fix</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        padding: 20px;
+      }
+      .test-result {
+        margin: 10px 0;
+        padding: 10px;
+        border-radius: 4px;
+      }
+      .pass {
+        background-color: #d4edda;
+        color: #155724;
+        border: 1px solid #c3e6cb;
+      }
+      .fail {
+        background-color: #f8d7da;
+        color: #721c24;
+        border: 1px solid #f5c6cb;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Testing Destination Input Fix</h1>
+    <p>
+      Navigate to
+      <a href="http://localhost:5174/" target="_blank"
+        >http://localhost:5174/</a
+      >
+      and verify:
+    </p>
+
+    <div class="test-result">
+      <h3>✅ Test 1: Destination Input Field Visible</h3>
+      <p>
+        <strong>Expected:</strong> At least one destination input field should
+        be visible in the Trip Details form
+      </p>
+      <p>
+        <strong>Check:</strong> Look for an input field under the "Destinations"
+        label
+      </p>
+    </div>
+
+    <div class="test-result">
+      <h3>✅ Test 2: Add Destination Button Text</h3>
+      <p>
+        <strong>Expected:</strong> "Add Destination" button should have visible
+        text
+      </p>
+      <p>
+        <strong>Check:</strong> Blue text button that says "Add Destination"
+      </p>
+    </div>
+
+    <div class="test-result">
+      <h3>✅ Test 3: Form Functionality</h3>
+      <p>
+        <strong>Expected:</strong> User can type in destination field and add
+        more destinations
+      </p>
+      <p>
+        <strong>Check:</strong> Type in the destination input and click "Add
+        Destination" to add more fields
+      </p>
+    </div>
+
+    <h2>Current State Verification</h2>
+    <p>
+      For first-time users, the Trip Details should be in editing mode and show:
+    </p>
+    <ul>
+      <li>Trip Name input field</li>
+      <li>Start Date and End Date inputs</li>
+      <li>
+        <strong>At least one Destination input field</strong> ← This was the bug
+      </li>
+      <li>Travel mode checkboxes</li>
+      <li>Trip Details textarea</li>
+      <li>Update Full List button</li>
+    </ul>
+  </body>
+</html>
