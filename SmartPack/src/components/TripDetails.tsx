@@ -32,7 +32,8 @@ export const TripDetails: React.FC<TripDetailsProps> = ({
   weatherTypes = [],
   isFirstTimeOrNewTrip = true,
 }) => {
-  const [isEditing, setIsEditing] = useState(false);
+  // First-time users should automatically be in editing mode
+  const [isEditing, setIsEditing] = useState(isFirstTimeOrNewTrip);
 
   if (!tripName && !startDate && !endDate && (!destinations || destinations.length === 0)) {
     return <div>Loading trip details...</div>;

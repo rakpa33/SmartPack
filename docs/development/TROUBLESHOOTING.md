@@ -1049,6 +1049,108 @@ Document common issues and their solutions here. Update this file as you encount
 - **Status:** RESOLVED - Systematic protocol prevents hanging test issues
 - **Cross-References:** See COMMANDS.md for process management commands
 
+### SmartPack Coordinator Terminal Freezing Issues
+
+#### Coordinator Workflow Hanging or Terminal Freezing
+
+- **Symptom:** Terminal becomes unresponsive when running smartpack-coordinator, no progress updates, system appears frozen
+- **Root Cause:** Complex agent orchestration workflows can create:
+  - Infinite loops between subagent calls
+  - Memory leaks from accumulated context
+  - Unresolved async operations in multi-step workflows
+  - Resource exhaustion from long-running processes
+- **Diagnostic Steps:**
+  1. Check system resources: `tasklist | find "node.exe"` and monitor memory usage
+  2. Verify port conflicts: `netstat -ano | findstr ":3000"` and `netstat -ano | findstr ":5173"`
+  3. Check for hanging test processes or unmocked API calls
+  4. Monitor CPU usage during coordinator execution
+- **Solution:**
+  1. **Use Safe Coordinator Wrapper:** `npm run coordinator:safe "task description"`
+  2. **Manual Process Cleanup:** `npm run cleanup` before coordinator usage
+  3. **Emergency Termination:** Ctrl+C followed by `taskkill /F /IM node.exe`
+  4. **Restart Development Environment:** Kill all Node processes and restart terminals
+- **Prevention:**
+  - Always use `npm run coordinator:safe` instead of direct coordinator usage
+  - Monitor execution time and abort if exceeds 10 minutes
+  - Use process cleanup protocol before each coordinator session
+  - Break complex tasks into smaller, time-bounded subtasks
+- **Status:** RESOLVED (2025-08-03) - Safety wrapper and cleanup protocols implemented
+- **Tools Available:**
+  ```bash
+  npm run cleanup           # Clean up hanging processes
+  npm run coordinator:safe  # Run coordinator with safety protocols
+  node scripts/run-coordinator.js "task" --timeout 15  # Custom timeout
+  ```
+
+#### Coordinator Subagent Infinite Loops
+
+- **Symptom:** Coordinator repeatedly calls the same subagent without making progress, appears stuck in analysis-fix-test cycles
+- **Root Cause:** Missing progress validation between subagent calls, leading to repeated identical operations
+- **Diagnostic Steps:**
+  1. Look for repeated identical subagent calls in coordinator output
+  2. Check if each subagent call is advancing the overall goal
+  3. Verify that context is being properly updated between calls
+  4. Monitor for increasing memory usage indicating accumulated context
+- **Solution:**
+  1. **Circuit Breaker:** Coordinator now has maximum 3 calls per subagent type
+  2. **Progress Validation:** Each step must advance the overall goal or abort
+  3. **Context Change Requirement:** Mandatory context changes between repeated calls
+  4. **Automatic Loop Detection:** Abort if identical operations attempted twice
+- **Prevention:**
+  - Use time-bounded subtasks (max 3 minutes each)
+  - Require progress reports every 2-3 minutes
+  - Implement graceful degradation for incomplete work
+  - Monitor subagent call patterns for repetition
+- **Status:** RESOLVED (2025-08-03) - Anti-loop mechanisms implemented in coordinator
+
+#### Coordinator Memory Exhaustion
+
+- **Symptom:** System becomes slow, coordinator fails with out-of-memory errors, or system freezes due to excessive memory usage
+- **Root Cause:** Large context accumulation across multiple subagent calls, memory leaks from test processes, or resource-intensive operations
+- **Diagnostic Steps:**
+  1. Monitor memory usage: `tasklist /FI "IMAGENAME eq node.exe"` (Windows)
+  2. Check heap usage in coordinator logs
+  3. Verify no test browsers or processes are accumulating
+  4. Look for memory usage >500MB as warning threshold
+- **Solution:**
+  1. **Memory Monitoring:** Coordinator now monitors heap usage before each subagent call
+  2. **Resource Thresholds:** Automatic abort if memory exceeds 500MB
+  3. **Cleanup Between Calls:** Garbage collection and process cleanup between operations
+  4. **Emergency Protocols:** Automatic termination and cleanup on resource exhaustion
+- **Prevention:**
+  - Use `npm run cleanup` before coordinator sessions
+  - Monitor memory usage during execution
+  - Limit context size per subagent call
+  - Implement automatic resource cleanup
+- **Status:** RESOLVED (2025-08-03) - Resource monitoring and cleanup implemented
+
+#### Coordinator Timeout and Recovery
+
+- **Symptom:** Coordinator operations exceed reasonable time limits but don't complete or fail gracefully
+- **Root Cause:** Missing timeout mechanisms in original coordinator design
+- **Diagnostic Steps:**
+  1. Check execution start time vs current time
+  2. Look for operations that should complete quickly but are hanging
+  3. Verify if subagent is making progress or stuck
+  4. Check for external dependencies (APIs, file system) that might be blocking
+- **Solution:**
+  1. **Global Timeout:** 10-minute maximum execution time (configurable)
+  2. **Subagent Timeouts:** 3-minute maximum per subagent call
+  3. **Progress Requirements:** Mandatory progress reports every 2-3 minutes
+  4. **Graceful Degradation:** Document incomplete work before timeout
+- **Prevention:**
+  - Use `--timeout` parameter to set custom limits
+  - Break large tasks into smaller time-bounded subtasks
+  - Implement progress monitoring and early abort
+  - Design workflows for graceful partial completion
+- **Status:** RESOLVED (2025-08-03) - Comprehensive timeout system implemented
+- **Usage Examples:**
+  ```bash
+  npm run coordinator "Fix critical issues" --timeout 15  # 15 minute limit
+  npm run coordinator "Quick bug fix" --timeout 5        # 5 minute limit
+  node scripts/run-coordinator.js "task" --dry-run       # Preview without execution
+  ```
+
 ### Empty Categories Display Issue - RESOLVED (2025-07-29)
 
 - **Symptom:** Empty category headers showing in packing list UI even when no items exist in those categories

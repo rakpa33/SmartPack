@@ -81,7 +81,15 @@ const MainLayoutContent: React.FC<MainLayoutProps> = React.memo(({ children }) =
           >
             <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-4 h-full text-gray-900 dark:text-gray-100 border border-gray-200 dark:border-gray-700">
               <PackingListProvider>
-                <TripDetails />
+                <TripDetails
+                  tripName={state.tripName}
+                  startDate={state.startDate}
+                  endDate={state.endDate}
+                  destinations={state.destinations}
+                  travelModes={state.travelModes}
+                  preferences={state.preferences}
+                  isFirstTimeOrNewTrip={isFirstTimeUser}
+                />
               </PackingListProvider>
             </div>
           </section>

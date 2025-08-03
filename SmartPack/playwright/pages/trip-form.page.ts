@@ -5,7 +5,7 @@ export class TripFormPage {
   readonly tripNameInput: Locator;
   readonly startDateInput: Locator;
   readonly endDateInput: Locator;
-  readonly tripDetailsInput: Locator;
+  readonly preferencesInput: Locator;
   readonly destinationInput: Locator;
   readonly planeCheckbox: Locator;
   readonly carCheckbox: Locator;
@@ -14,10 +14,10 @@ export class TripFormPage {
 
   constructor(page: Page) {
     this.page = page;
-    this.tripNameInput = page.getByRole('textbox', { name: 'Trip Name' });
-    this.startDateInput = page.getByRole('textbox', { name: 'Start Date' });
-    this.endDateInput = page.getByRole('textbox', { name: 'End Date' });
-    this.tripDetailsInput = page.getByRole('textbox', { name: 'Trip Details (optional)' });
+    this.tripNameInput = page.locator('#tripName');
+    this.startDateInput = page.locator('#startDate');
+    this.endDateInput = page.locator('#endDate');
+    this.preferencesInput = page.locator('#preferences');
     this.destinationInput = page.locator('[data-testid="destination-input-0"]');
     this.planeCheckbox = page.getByRole('checkbox', { name: 'Plane' });
     this.carCheckbox = page.getByRole('checkbox', { name: 'Car' });
@@ -40,8 +40,8 @@ export class TripFormPage {
     await this.endDateInput.fill(endDate);
   }
 
-  async fillTripDetails(details: string) {
-    await this.tripDetailsInput.fill(details);
+  async fillPreferences(preferences: string) {
+    await this.preferencesInput.fill(preferences);
   }
 
   async selectTravelMode(mode: 'plane' | 'car' | 'train') {
@@ -65,13 +65,13 @@ export class TripFormPage {
   async fillCompleteTrip(options: {
     tripName: string;
     destination: string;
-    details: string;
+    preferences: string;
     startDate: string;
     endDate: string;
     travelMode: 'plane' | 'car' | 'train';
   }) {
     await this.fillBasicTripInfo(options.tripName, options.destination, options.startDate, options.endDate);
-    await this.fillTripDetails(options.details);
+    await this.fillPreferences(options.preferences);
     await this.selectTravelMode(options.travelMode);
     await this.submitForm();
   }

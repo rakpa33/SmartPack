@@ -4,8 +4,10 @@
  */
 
 import '@testing-library/jest-dom';
+import './jest-dom.d.ts';
 import { vi, expect } from 'vitest';
 import { configure } from '@testing-library/react';
+import { act } from '@testing-library/react';
 
 // Setup accessibility testing compatibility with Vitest
 import { toHaveNoViolations } from 'jest-axe';
@@ -100,6 +102,13 @@ console.error = (...args) => {
 
 // Setup timezone for consistent date testing
 process.env.TZ = 'UTC';
+
+// Global act wrapper for React state updates in tests
+global.actWrapper = (callback: () => void) => {
+  return act(() => {
+    callback();
+  });
+};
 
 // Clear all mocks before each test
 beforeEach(() => {

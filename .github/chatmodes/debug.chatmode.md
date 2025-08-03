@@ -1,7 +1,7 @@
 ---
 description: 'Debug your application to find and fix a bug'
 model: GPT-4.1
-tools: [ 'codebase', 'readFiles','editFiles','githubRepo','runCommands','fetch','search','usages','findTestFiles','get_errors','test_failure','run_in_terminal','get_terminal_output',]
+tools: [ 'codebase', 'readFiles','editFiles','githubRepo','runCommands','fetch','search','usages','findTestFiles']
 ---
 
 # Debug Mode Instructions

@@ -36,7 +36,7 @@
  * - Focuses on information display and formatting
  */
 
-import { render, screen } from '@testing-library/react';
+import { render, screen, act } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { axe } from 'jest-axe';
 import { expect } from 'vitest';
@@ -61,10 +61,19 @@ function renderTripDetails(state: Partial<TripFormState> = {}) {
     preferences: [],
     step: 2, // Set step to 2 so TripDetails renders content instead of "Please complete the trip form"
   };
+  const finalState = { ...defaultState, ...state };
   return render(
-    <TripFormContext.Provider value={{ state: { ...defaultState, ...state }, dispatch: () => { } }}>
+    <TripFormContext.Provider value={{ state: finalState, dispatch: () => { } }}>
       <PackingListProvider>
-        <TripDetails />
+        <TripDetails
+          tripName={finalState.tripName}
+          startDate={finalState.startDate}
+          endDate={finalState.endDate}
+          destinations={finalState.destinations}
+          travelModes={finalState.travelModes}
+          preferences={finalState.preferences}
+          isFirstTimeOrNewTrip={!finalState.tripName && finalState.destinations.length === 1 && !finalState.destinations[0] && finalState.travelModes.length === 0}
+        />
       </PackingListProvider>
     </TripFormContext.Provider>
   );
@@ -119,7 +128,11 @@ describe('TripDetails', () => {
     it('should enter editing mode when Edit button is clicked', async () => {
       renderTripDetails({ tripName: 'Edit Test', destinations: ['Rome'], travelModes: ['Car'], startDate: '2025-09-01', endDate: '2025-09-10' });
       expect(screen.getByText('Edit')).toBeInTheDocument();
-      await userEvent.click(screen.getByText('Edit'));
+      
+      await act(async () => {
+        await userEvent.click(screen.getByText('Edit'));
+      });
+      
       expect(screen.getByDisplayValue('Edit Test')).toBeInTheDocument();
       expect(screen.getByText('Save')).toBeInTheDocument();
       expect(screen.getByText('Cancel')).toBeInTheDocument();
