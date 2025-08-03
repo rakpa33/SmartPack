@@ -37,12 +37,13 @@
  */
 
 import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { axe } from 'jest-axe';
 import { expect } from 'vitest';
 import { TripDetails } from '../components/TripDetails';
 import { TripFormContext } from '../hooks/TripFormContextOnly';
-import { PackingListProvider } from '../hooks/usePackingListContext';
 import type { TripFormState } from '../hooks/TripFormTypes';
+import { PackingListProvider } from '../hooks/usePackingListContext';
 
 // For Vitest compatibility with jest-axe, we need to define the matcher inline
 const expectNoA11yViolations = async (container: HTMLElement) => {
@@ -78,7 +79,6 @@ describe('TripDetails', () => {
   describe('when rendering', () => {
     it('should display all fields with (not set) or (none) when empty', () => {
       renderTripDetails();
-
       expect(screen.getByText('Trip Name:')).toBeInTheDocument();
       expect(screen.getAllByText('(not set)')).toHaveLength(2); // Trip Name and Dates
       expect(screen.getByText('Destinations:')).toBeInTheDocument();
@@ -99,7 +99,6 @@ describe('TripDetails', () => {
         travelModes: ['Plane', 'Train'],
         preferences: ['Vegan', 'Window seat'],
       });
-
       expect(screen.getByText('Summer Adventure')).toBeInTheDocument();
       expect(screen.getByText('2025-08-01 – 2025-08-10')).toBeInTheDocument();
       expect(screen.getByText('Paris, Berlin')).toBeInTheDocument();
@@ -112,10 +111,40 @@ describe('TripDetails', () => {
         destinations: ['Paris', '', 'London'],
         preferences: ['', 'Aisle seat', ''],
       });
-
       expect(screen.getByText('Paris, London')).toBeInTheDocument();
       expect(screen.getByText('Aisle seat')).toBeInTheDocument();
       expect(screen.queryByText(', ,')).not.toBeInTheDocument();
+    });
+
+    it('should enter editing mode when Edit button is clicked', async () => {
+      renderTripDetails({ tripName: 'Edit Test', destinations: ['Rome'], travelModes: ['Car'], startDate: '2025-09-01', endDate: '2025-09-10' });
+      expect(screen.getByText('Edit')).toBeInTheDocument();
+      await userEvent.click(screen.getByText('Edit'));
+      expect(screen.getByDisplayValue('Edit Test')).toBeInTheDocument();
+      expect(screen.getByText('Save')).toBeInTheDocument();
+      expect(screen.getByText('Cancel')).toBeInTheDocument();
+    });
+
+    it('should save changes and exit editing mode', async () => {
+      renderTripDetails({ tripName: 'Edit Test', destinations: ['Rome'], travelModes: ['Car'], startDate: '2025-09-01', endDate: '2025-09-10' });
+      await userEvent.click(screen.getByText('Edit'));
+      const tripNameInput = screen.getByDisplayValue('Edit Test');
+      await userEvent.clear(tripNameInput);
+      await userEvent.type(tripNameInput, 'Edited Trip');
+      await userEvent.click(screen.getByText('Save'));
+      expect(screen.getByText('Edited Trip')).toBeInTheDocument();
+      expect(screen.queryByText('Save')).not.toBeInTheDocument();
+    });
+
+    it('should cancel editing and revert changes', async () => {
+      renderTripDetails({ tripName: 'Edit Test', destinations: ['Rome'], travelModes: ['Car'], startDate: '2025-09-01', endDate: '2025-09-10' });
+      await userEvent.click(screen.getByText('Edit'));
+      const tripNameInput = screen.getByDisplayValue('Edit Test');
+      await userEvent.clear(tripNameInput);
+      await userEvent.type(tripNameInput, 'Canceled Edit');
+      await userEvent.click(screen.getByText('Cancel'));
+      expect(screen.getByText('Edit Test')).toBeInTheDocument();
+      expect(screen.queryByText('Save')).not.toBeInTheDocument();
     });
   });
 });

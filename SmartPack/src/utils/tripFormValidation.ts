@@ -1,5 +1,6 @@
-import { isValidCity, isDateInPast, isEndDateBeforeStart } from './validation';
 import type { TripFormState } from '../hooks/TripFormTypes';
+
+import { isDateInPast, isEndDateBeforeStart, isValidCity } from './validation';
 
 export type TripFormErrors = {
   tripName?: string;

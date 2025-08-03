@@ -1,3 +1,13 @@
+# TripDetails Unreachable Code and JSX Fragment Errors (2025-08-01)
+
+- **Symptom:** TypeScript build fails with "Declaration or statement expected" and "Expression expected" errors in TripDetails.tsx. Lint reports unreachable code and duplicate fragments.
+- **Root Cause:** Incomplete merges and manual edits left orphaned code and multiple return blocks after the main return statement.
+- **Solution:** Remove all unreachable code and duplicate fragments after the main return. Ensure only one valid return block and close all open JSX tags.
+- **Prevention:**
+  - Always validate with lint/build and analyze terminal output for errors after editing
+  - Document all fixes in DEVLOG.md and TROUBLESHOOTING.md
+  - Use pre-commit hooks to prevent committing unreachable code
+
 <!--
 This file documents known issues, solutions, debugging procedures, and resolution strategies for SmartPack development and deployment.
 Keep this comment at the top; do not overwrite or remove it when updating the document.
@@ -177,6 +187,7 @@ Document common issues and their solutions here. Update this file as you encount
   3. Verify user can distinguish between different button importance levels
   4. Test button hierarchy against design system standards
 - **Solution:**
+
   1. **Implement Multi-Level Hierarchy:**
 
      ```tsx
@@ -193,6 +204,7 @@ Document common issues and their solutions here. Update this file as you encount
 
   2. **Apply Visual Weight Distribution:** Different background colors and border strengths based on action importance
   3. **Maintain Dark Mode Consistency:** Preserve effective dark mode system while enhancing light mode
+
 - **Prevention:**
   - Apply design system button classification principles during development
   - Test visual hierarchy in both light and dark modes
@@ -209,6 +221,7 @@ Document common issues and their solutions here. Update this file as you encount
   3. Verify icon positioning consistency across components
   4. Test visual alignment of icon-text combinations
 - **Solution:**
+
   1. **Standardize on Gap Pattern:**
 
      ```tsx
@@ -224,6 +237,7 @@ Document common issues and their solutions here. Update this file as you encount
 
   2. **Apply Consistent Icon Classes:** Use `h-4 w-4` without margins, rely on parent `gap-2`
   3. **Verify Pattern Compliance:** Ensure all icon buttons follow same spacing approach
+
 - **Prevention:**
   - Establish icon spacing standards in design system documentation
   - Use parent `gap-` classes instead of manual icon margins

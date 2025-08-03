@@ -1,0 +1,210 @@
+import React, { useState } from 'react';
+import { validateTripForm } from '../utils/tripFormValidation';
+
+export interface TripDetailsEditFormProps {
+  tripName?: string;
+  startDate?: string;
+  endDate?: string;
+  destinations?: string[];
+  travelModes?: string[];
+  preferences?: string[];
+  onSave: (updated: {
+    tripName: string;
+    startDate: string;
+    endDate: string;
+    destinations: string[];
+    travelModes: string[];
+    preferences: string[];
+  }) => void;
+  onCancel: () => void;
+}
+
+export const TripDetailsEditForm: React.FC<TripDetailsEditFormProps> = (props) => {
+  const {
+    tripName = '',
+    startDate = '',
+    endDate = '',
+    destinations = [''],
+    travelModes = [],
+    preferences = [],
+    onSave,
+    onCancel,
+  } = props;
+
+  const [editTripName, setEditTripName] = useState(tripName);
+  const [editStartDate, setEditStartDate] = useState(startDate);
+  const [editEndDate, setEditEndDate] = useState(endDate);
+  const [editDestinations, setEditDestinations] = useState(destinations.length ? destinations : ['']);
+  const [editTravelModes, setEditTravelModes] = useState(travelModes);
+  const [editPreferences, setEditPreferences] = useState(preferences);
+  const [touched, setTouched] = useState<{ [k: string]: boolean }>({});
+
+  const errors = validateTripForm({
+    tripName: editTripName,
+    startDate: editStartDate,
+    endDate: editEndDate,
+    destinations: editDestinations,
+    travelModes: editTravelModes,
+    preferences: editPreferences,
+    step: 1,
+  });
+
+  const travelModeOptions = ['Car', 'Plane', 'Train', 'Bus', 'Boat'];
+  const handleTravelModeChange = (mode: string) => {
+    setEditTravelModes((modes: string[]) =>
+      modes.includes(mode)
+        ? modes.filter((m: string) => m !== mode)
+        : [...modes, mode]
+    );
+    setTouched((t: { [k: string]: boolean }) => ({ ...t, travelModes: true }));
+  };
+
+  const handleDestinationChange = (idx: number, value: string) => {
+    setEditDestinations((dests: string[]) => dests.map((d: string, i: number) => (i === idx ? value : d)));
+  };
+  const handleDestinationBlur = (idx: number) => {
+    setTouched((t: { [k: string]: boolean }) => ({ ...t, [`destinations_${idx}`]: true }));
+  };
+
+  const isValid =
+    !errors.tripName &&
+    !errors.startDate &&
+    !errors.endDate &&
+    !errors.travelModes &&
+    errors.destinations && errors.destinations.every((e: string | undefined) => !e);
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const allTouched: { [k: string]: boolean } = {
+      tripName: true,
+      startDate: true,
+      endDate: true,
+      travelModes: true,
+    };
+    editDestinations.forEach((_: string, i: number) => {
+      allTouched[`destinations_${i}`] = true;
+    });
+    setTouched(allTouched);
+    if (isValid) {
+      onSave({
+        tripName: editTripName,
+        startDate: editStartDate,
+        endDate: editEndDate,
+        destinations: editDestinations,
+        travelModes: editTravelModes,
+        preferences: editPreferences,
+      });
+    }
+  };
+
+  return (
+    <form className="space-y-4" onSubmit={handleSubmit}>
+      <div>
+        <label htmlFor="tripName" className="block font-medium">Trip Name</label>
+        <input
+          id="tripName"
+          type="text"
+          className="input input-bordered w-full"
+          value={editTripName}
+          onChange={e => setEditTripName(e.target.value)}
+          onBlur={() => setTouched(t => ({ ...t, tripName: true }))}
+          aria-invalid={!!errors.tripName}
+          aria-describedby="tripName-error"
+        />
+        {touched.tripName && errors.tripName && (
+          <div id="tripName-error" className="text-error text-sm" role="alert">{errors.tripName}</div>
+        )}
+      </div>
+      <div>
+        <label htmlFor="startDate" className="block font-medium">Start Date</label>
+        <input
+          id="startDate"
+          type="date"
+          className="input input-bordered w-full"
+          value={editStartDate}
+          onChange={e => setEditStartDate(e.target.value)}
+          onBlur={() => setTouched(t => ({ ...t, startDate: true }))}
+          aria-invalid={!!errors.startDate}
+          aria-describedby="startDate-error"
+        />
+        {touched.startDate && errors.startDate && (
+          <div id="startDate-error" className="text-error text-sm" role="alert">{errors.startDate}</div>
+        )}
+      </div>
+      <div>
+        <label htmlFor="endDate" className="block font-medium">End Date</label>
+        <input
+          id="endDate"
+          type="date"
+          className="input input-bordered w-full"
+          value={editEndDate}
+          onChange={e => setEditEndDate(e.target.value)}
+          onBlur={() => setTouched(t => ({ ...t, endDate: true }))}
+          aria-invalid={!!errors.endDate}
+          aria-describedby="endDate-error"
+        />
+        {touched.endDate && errors.endDate && (
+          <div id="endDate-error" className="text-error text-sm" role="alert">{errors.endDate}</div>
+        )}
+      </div>
+      <div>
+        <label className="block font-medium">Destinations</label>
+        {editDestinations.map((d, i) => (
+          <div key={i} className="flex items-center gap-2 mb-2">
+            <input
+              data-testid={`destination-input-${i}`}
+              type="text"
+              className="input input-bordered flex-1"
+              value={d}
+              onChange={e => handleDestinationChange(i, e.target.value)}
+              onBlur={() => handleDestinationBlur(i)}
+              aria-invalid={!!(errors.destinations && errors.destinations[i])}
+              aria-describedby={`destinations-error-${i}`}
+              placeholder="Enter destination city"
+            />
+            {editDestinations.length > 1 && (
+              <button type="button" className="btn btn-xs btn-error" aria-label="Remove destination" onClick={() => setEditDestinations(dests => dests.filter((_, idx) => idx !== i))}>Remove</button>
+            )}
+          </div>
+        ))}
+        <button type="button" className="btn btn-xs btn-secondary" onClick={() => setEditDestinations(dests => [...dests, ''])}>Add Destination</button>
+        {editDestinations.map((_, i) => (
+          touched[`destinations_${i}`] && errors.destinations && errors.destinations[i] ? (
+            <div key={i} id={`destinations-error-${i}`} className="text-error text-sm" role="alert">{errors.destinations[i]}</div>
+          ) : null
+        ))}
+      </div>
+      <div>
+        <label className="block font-medium">Travel Modes</label>
+        <div className="flex gap-4 flex-wrap">
+          {travelModeOptions.map(mode => (
+            <label key={mode} className="inline-flex items-center gap-1">
+              <input
+                type="checkbox"
+                checked={editTravelModes.includes(mode)}
+                onChange={() => handleTravelModeChange(mode)}
+              />
+              {mode}
+            </label>
+          ))}
+        </div>
+        {touched.travelModes && errors.travelModes && (
+          <div className="text-error text-sm" role="alert">{errors.travelModes}</div>
+        )}
+      </div>
+      <div>
+        <label className="block font-medium">Preferences</label>
+        <input
+          type="text"
+          className="input input-bordered w-full"
+          value={editPreferences.join(', ')}
+          onChange={e => setEditPreferences(e.target.value.split(',').map(p => p.trim()))}
+        />
+      </div>
+      <div className="flex gap-2 mt-4">
+        <button type="submit" className="btn btn-primary" disabled={!isValid}>Save</button>
+        <button type="button" className="btn btn-secondary" onClick={onCancel}>Cancel</button>
+      </div>
+    </form>
+  );
+};

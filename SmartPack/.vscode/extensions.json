@@ -1,18 +1,14 @@
 {
   "recommendations": [
     "ms-vscode.vscode-typescript-next",
-    "bradlc.vscode-tailwindcss", 
+    "bradlc.vscode-tailwindcss",
     "ms-playwright.playwright",
     "vitest.explorer",
     "esbenp.prettier-vscode",
     "dbaeumer.vscode-eslint",
-    "ms-vscode.test-adapter-converter",
-    "streetsidesoftware.code-spell-checker",
-    "ms-vscode.vscode-json",
-    "formulahendry.auto-rename-tag",
-    "christian-kohler.path-intellisense",
-    "ms-vscode.vscode-npm-script",
-    "github.copilot",
-    "github.copilot-chat"
+    "dequelabs.axe-linter",
+    "yoavbls.pretty-ts-errors",
+    "ChakrounAnas.turbo-console-log",
+    "WallabyJs.quokka-vscode"
   ]
 }

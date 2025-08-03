@@ -1,5 +1,35 @@
 # SmartPack - GitHub Copilot Instructions
 
+# Recommended VS Code Extensions
+
+To ensure a smooth and productive SmartPack development workflow, install and enable the following VS Code extensions:
+
+- **ESLint** (`dbaeumer.vscode-eslint`): Enforces code quality and style.
+- **Prettier** (`esbenp.prettier-vscode`): Auto-formats code for consistency.
+- **Playwright Test for VSCode** (`ms-playwright.playwright`): E2E and integration testing.
+- **Vitest Explorer** (`vitest.explorer`): Unit and integration test management.
+- **GitHub Copilot** (`github.copilot`): AI-powered code suggestions.
+- **GitHub Copilot Chat** (`github.copilot-chat`): AI chat for coding assistance.
+- **Tailwind CSS IntelliSense** (`bradlc.vscode-tailwindcss`): Tailwind utility autocompletion.
+- **axe Accessibility Linter** (`dequelabs.axe-linter`): Automated accessibility checks.
+- **Pretty TypeScript Errors** (`yoavbls.pretty-ts-errors`): Improved TypeScript error messages.
+- **Turbo Console Log** (`ChakrounAnas.turbo-console-log`): Fast logging for debugging.
+- **Quokka.js** (`WallabyJs.quokka-vscode`): Live prototyping for JS/TS code.
+
+These extensions are recommended in `.vscode/extensions.json` and should be installed for all contributors. Remove language packs or tools not relevant to SmartPack's stack for best performance.
+
+# Working Directory
+
+**Always run terminal commands, scripts, and npm tasks from the `SmartPack/SmartPack` directory.**
+
+If you open a new terminal, first run:
+
+```cmd
+cd SmartPack\SmartPack
+```
+
+This ensures all commands (e.g., `npm install`, `npm run dev`, `npm test`) execute in the correct project context.
+
 ## Project Overview
 
 SmartPack is a mobile-first, single-user travel packing app built with React + TypeScript + Vite + Tailwind CSS + Headless UI. AI-powered suggestions via AWS Lambda + Ollama, weather integration with Open-Meteo API, and localStorage persistence.
@@ -9,7 +39,7 @@ SmartPack is a mobile-first, single-user travel packing app built with React + T
 For comprehensive guidance, reference these instruction files:
 
 - **Development**: [smartpack-development.instructions.md](.github/smartpack-development.instructions.md)
-- **Testing**: [smartpack-testing.instructions.md](.github/smartpack-testing.instructions.md)
+- **Testing**: [smartpack-testing.instructions.md](.github/prompts/smartpack-testing.instructions.md)
 - **Documentation**: [smartpack-documentation.instructions.md](.github/smartpack-documentation.instructions.md)
 
 ## Key Documentation Files
