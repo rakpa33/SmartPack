@@ -387,6 +387,54 @@ export function ColumnLayoutProvider({
     setColumnVisibility(prev => enforceVisibilityRules(prev, deviceType));
   }, [deviceType]);
 
+  // Listen for changes in trip form data to detect first-time user transitions
+  useEffect(() => {
+    const checkForFirstTimeUserTransition = () => {
+      try {
+        const tripFormData = localStorage.getItem('tripForm');
+        if (!tripFormData) return;
+
+        const parsedData = JSON.parse(tripFormData);
+        const isStillFirstTimeUser = !parsedData.tripName &&
+          (!parsedData.destinations || parsedData.destinations.length === 1) &&
+          (!parsedData.destinations || !parsedData.destinations[0]) &&
+          (!parsedData.travelModes || parsedData.travelModes.length === 0);
+
+        // If user was first-time but now has meaningful data, show all columns
+        if (!isStillFirstTimeUser) {
+          const currentVisibleCount = Object.values(columnVisibility).filter(Boolean).length;
+          // Only update if currently showing just one column (first-time user state)
+          if (currentVisibleCount === 1 && columnVisibility.tripDetails) {
+            console.log('🔄 User transition detected: first-time → experienced, showing all columns');
+            setColumnVisibility(prev => enforceVisibilityRules(DEFAULT_VISIBILITY, deviceType));
+          }
+        }
+      } catch (error) {
+        console.error('Error checking first-time user transition:', error);
+      }
+    };
+
+    // Listen for localStorage changes (from same tab)
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === 'tripForm') {
+        checkForFirstTimeUserTransition();
+      }
+    };
+
+    // Listen for custom events (from same window/components)
+    const handleTripFormUpdate = () => {
+      checkForFirstTimeUserTransition();
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    window.addEventListener('tripFormUpdated', handleTripFormUpdate);
+
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener('tripFormUpdated', handleTripFormUpdate);
+    };
+  }, [columnVisibility, deviceType]);
+
   // Phase 4: Only enforce horizontal constraints when window size changes, not on every visibility change
   useEffect(() => {
     const handleResize = () => {

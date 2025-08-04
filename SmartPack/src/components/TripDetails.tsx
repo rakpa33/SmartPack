@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 
 import { TripDetailsEditForm } from './TripDetailsEditForm';
 import { TripWeatherPanel } from './TripWeatherPanel';
+import { useTripForm } from '../hooks/useTripForm';
+import type { TripFormState } from '../hooks/TripFormTypes';
 
 export interface TripDetailsProps {
   tripName?: string;
@@ -34,6 +36,25 @@ export const TripDetails: React.FC<TripDetailsProps> = ({
 }) => {
   // First-time users should automatically be in editing mode
   const [isEditing, setIsEditing] = useState(isFirstTimeOrNewTrip);
+  const { dispatch } = useTripForm();
+
+  const handleSave = (formData: TripFormState) => {
+    // Update the global trip form state with the saved data
+    dispatch({
+      type: 'SET_FORM_STATE',
+      value: formData
+    });
+    
+    // Notify column layout that trip form data has been updated
+    setTimeout(() => {
+      window.dispatchEvent(new CustomEvent('tripFormUpdated'));
+    }, 100); // Small delay to ensure localStorage is updated
+    
+    // Exit editing mode
+    setIsEditing(false);
+    
+    console.log('✅ Trip details saved to global state:', formData);
+  };
 
   if (!tripName && !startDate && !endDate && (!destinations || destinations.length === 0)) {
     return <div>Loading trip details...</div>;
@@ -58,7 +79,7 @@ export const TripDetails: React.FC<TripDetailsProps> = ({
             destinations={destinations}
             travelModes={travelModes}
             preferences={preferences}
-            onSave={() => setIsEditing(false)}
+            onSave={handleSave}
             onCancel={() => setIsEditing(false)}
           />
         ) : (
