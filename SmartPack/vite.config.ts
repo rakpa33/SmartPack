@@ -22,6 +22,9 @@ export default defineConfig({
     globals: true,
     environment: 'jsdom',
     setupFiles: ['./src/test/setup.ts'],
+    typecheck: {
+      include: ['src/**/*.{test,spec}.{ts,tsx}', 'src/test/**/*.d.ts'],
+    },
     
     // Performance optimizations
     pool: 'threads',

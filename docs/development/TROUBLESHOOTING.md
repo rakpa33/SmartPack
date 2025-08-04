@@ -1,3 +1,40 @@
+# Agent Registration Issues (2025-08-03)
+
+- **Symptom:** "Agent type 'agent-name' not found" error when trying to use newly created agents
+- **Root Cause:** New agent .md files are not automatically registered in Claude Code system
+- **Solution:** Agent files must be recognized by Claude Code's agent discovery system
+- **Prevention:** 
+  - Verify agent registration after creating new agent files
+  - Test agent accessibility before depending on them in workflows
+  - Consider agent restart or cache refresh if needed
+- **Status:** IDENTIFIED - needs further investigation
+
+# Test Setup Configuration Errors (2025-08-03)
+
+- **Symptom:** Test setup file (setup.ts) has import and configuration errors preventing proper test environment initialization. TypeScript errors on jest-dom imports, jest-axe integration failures, React 18 state update warnings.
+- **Root Cause:** Incorrect TypeScript declaration file imports, Vitest/Jest compatibility issues, missing React 18 act() wrapper configuration.
+- **Diagnostic Steps:**
+  1. Check `src/test/setup.ts` for direct `.d.ts` file imports
+  2. Verify jest-axe matcher extensions are compatible with Vitest
+  3. Review test failures for React state update warnings
+  4. Validate TypeScript type definitions in `jest-dom.d.ts`
+- **Solution:**
+  1. Remove incorrect `import './jest-dom.d.ts'` from setup.ts
+  2. Update jest-dom.d.ts to extend Vitest `JestAssertion` interface instead of Jest
+  3. Add automatic React `act()` wrapping configuration
+  4. Enhance jest-axe integration with proper Vitest compatibility
+  5. Consolidate React Testing Library configuration
+- **Files Modified:**
+  - `src/test/setup.ts` - Fixed imports and enhanced configuration
+  - `src/test/jest-dom.d.ts` - Updated TypeScript type definitions
+  - `vite.config.ts` - Enhanced test configuration
+- **Prevention:**
+  - Never directly import TypeScript declaration files (.d.ts)
+  - Use Vitest-specific type extensions, not Jest interfaces
+  - Configure automatic React act() wrapping for React 18 compatibility
+  - Test configuration changes with `npm test` before committing
+- **Status:** RESOLVED (2025-08-03) - All test infrastructure tests passing
+
 # TripDetails Unreachable Code and JSX Fragment Errors (2025-08-01)
 
 - **Symptom:** TypeScript build fails with "Declaration or statement expected" and "Expression expected" errors in TripDetails.tsx. Lint reports unreachable code and duplicate fragments.

@@ -1,13 +1,17 @@
 /**
  * Custom Jest DOM matchers type definitions for Vitest
- * Extends the default Jest matchers with @testing-library/jest-dom functionality
+ * Extends the default Vitest matchers with @testing-library/jest-dom functionality
  */
 
 import '@testing-library/jest-dom';
 
 declare global {
   namespace Vi {
-    interface JestAssertion<T = any> extends jest.Matchers<void, T> {
+    interface JestAssertion<T = any> {
+      // Jest-axe accessibility matcher
+      toHaveNoViolations(): T;
+      
+      // @testing-library/jest-dom matchers
       toBeInTheDocument(): T;
       toBeVisible(): T;
       toBeEmptyDOMElement(): T;
