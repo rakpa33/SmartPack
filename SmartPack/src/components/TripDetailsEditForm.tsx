@@ -143,28 +143,30 @@ export const TripDetailsEditForm: React.FC<TripDetailsEditFormProps> = ({
       <div>
         <label className="block font-medium text-gray-900 dark:text-gray-100">Destinations</label>
         {editForm.destinations.map((d, i) => (
-          <div key={i} className="flex items-center gap-2 mb-2">
-            <label htmlFor={`destination-${i}`} className="sr-only">Destination</label>
-            <input
-              id={`destination-${i}`}
-              type="text"
-              className="input input-bordered flex-1 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 border border-gray-400 dark:border-gray-600"
-              value={d}
-              onChange={e => handleDestinationChange(i, e.target.value)}
-              onBlur={() => {
-                console.warn('🚨 BLUR EVENT FIRED for destination', i, 'with value:', d);
-                handleBlur(`destinations_${i}`);
-                handleDestinationBlur(i);
-              }}
-              aria-invalid={!!(errors.destinations && errors.destinations[i])}
-              aria-describedby={`destinations-error-${i}`}
-              data-testid={`destination-input-${i}`}
-            />
-            {editForm.destinations.length > 1 && (
-              <button type="button" onClick={() => handleRemoveDestination(i)} aria-label="Remove destination" className="btn btn-sm btn-error">Remove</button>
-            )}
+          <div key={i} className="mb-2">
+            <div className="flex items-center gap-2">
+              <label htmlFor={`destination-${i}`} className="sr-only">Destination</label>
+              <input
+                id={`destination-${i}`}
+                type="text"
+                className="input input-bordered flex-1 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 border border-gray-400 dark:border-gray-600"
+                value={d}
+                onChange={e => handleDestinationChange(i, e.target.value)}
+                onBlur={() => {
+                  console.warn('🚨 BLUR EVENT FIRED for destination', i, 'with value:', d);
+                  handleBlur(`destinations_${i}`);
+                  handleDestinationBlur(i);
+                }}
+                aria-invalid={!!(errors.destinations && errors.destinations[i])}
+                aria-describedby={`destinations-error-${i}`}
+                data-testid={`destination-input-${i}`}
+              />
+              {editForm.destinations.length > 1 && (
+                <button type="button" onClick={() => handleRemoveDestination(i)} aria-label="Remove destination" className="btn btn-sm btn-error">Remove</button>
+              )}
+            </div>
             {touched[`destinations_${i}`] && errors.destinations && errors.destinations[i] && (
-              <div id={`destinations-error-${i}`} className="text-error text-sm" role="alert">{errors.destinations[i]}</div>
+              <div id={`destinations-error-${i}`} className="text-error text-sm mt-1" role="alert">{errors.destinations[i]}</div>
             )}
           </div>
         ))}
