@@ -1,2 +1,84 @@
-<testsuites id="" name="" tests="0" failures="0" skipped="0" errors="0" time="0.042836999999999986">
+<testsuites id="" name="" tests="2" failures="1" skipped="0" errors="0" time="6.037261">
+<testsuite name="urgent-geocoding-fix-validation.spec.ts" timestamp="2025-08-04T01:53:55.327Z" hostname="chromium" tests="2" failures="1" skipped="0" time="6.237" errors="0">
+<testcase name="CRITICAL: Geocoding Fix Validation › Verify handleDestinationBlur function execution" classname="urgent-geocoding-fix-validation.spec.ts" time="4.581">
+<failure message="urgent-geocoding-fix-validation.spec.ts:4:3 Verify handleDestinationBlur function execution" type="FAILURE">
+<![CDATA[  [chromium] › urgent-geocoding-fix-validation.spec.ts:4:3 › CRITICAL: Geocoding Fix Validation › Verify handleDestinationBlur function execution 
+
+    Error: SHIP BLOCKER: handleDestinationBlur function not executing on blur event
+
+      83 |       console.log('❌ CRITICAL FAILURE: handleDestinationBlur function not executing on blur');
+      84 |       console.log('🔧 ROOT CAUSE: Blur event handler not properly attached or not triggering');
+    > 85 |       throw new Error('SHIP BLOCKER: handleDestinationBlur function not executing on blur event');
+         |             ^
+      86 |     } else {
+      87 |       console.log('✅ SUCCESS: handleDestinationBlur function is executing');
+      88 |     }
+        at C:\Users\Rachel\Desktop\SmartPack\SmartPack\playwright\urgent-geocoding-fix-validation.spec.ts:85:13
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\test-results\urgent-geocoding-fix-valid-1464b-tionBlur-function-execution-chromium\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ..\test-results\urgent-geocoding-fix-valid-1464b-tionBlur-function-execution-chromium\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\test-results\urgent-geocoding-fix-valid-1464b-tionBlur-function-execution-chromium\error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[🚨 CRITICAL VALIDATION: Testing if handleDestinationBlur function executes
+📱 Navigating to http://localhost:5177...
+🔍 Looking for destination input with correct selector...
+✅ Found destination input field
+📝 Typed "Osaka" in destination field
+📊 Value before blur: Osaka
+🔄 Triggering blur event (clicking outside field)...
+⏳ Waiting 3 seconds for function execution...
+📊 Value after blur: Osaka
+═══════════════════════════════════════
+🔍 EXECUTION ANALYSIS:
+  Total console messages: 0
+  Geocoding-related logs: 0
+❌ NO handleDestinationBlur logs - function NOT executing
+🎯 CRITICAL RESULTS:
+  Input value: "Osaka" → "Osaka"
+  Function executed: NO ❌
+  Expected: Should see logs from handleDestinationBlur
+═══════════════════════════════════════
+❌ CRITICAL FAILURE: handleDestinationBlur function not executing on blur
+🔧 ROOT CAUSE: Blur event handler not properly attached or not triggering
+
+[[ATTACHMENT|test-results\urgent-geocoding-fix-valid-1464b-tionBlur-function-execution-chromium\test-failed-1.png]]
+
+[[ATTACHMENT|test-results\urgent-geocoding-fix-valid-1464b-tionBlur-function-execution-chromium\video.webm]]
+
+[[ATTACHMENT|test-results\urgent-geocoding-fix-valid-1464b-tionBlur-function-execution-chromium\error-context.md]]
+]]>
+</system-out>
+</testcase>
+<testcase name="CRITICAL: Geocoding Fix Validation › Direct API test to verify geocode function works" classname="urgent-geocoding-fix-validation.spec.ts" time="1.656">
+<system-out>
+<![CDATA[🧪 DIRECT API TEST: Testing geocode function directly
+🌐 Direct API test result: {
+  place_id: [33m407207819[39m,
+  licence: [32m'Data © OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright'[39m,
+  osm_type: [32m'relation'[39m,
+  osm_id: [33m358674[39m,
+  lat: [32m'34.6937569'[39m,
+  lon: [32m'135.5014539'[39m,
+  class: [32m'boundary'[39m,
+  type: [32m'administrative'[39m,
+  place_rank: [33m14[39m,
+  importance: [33m0.7298219728348557[39m,
+  addresstype: [32m'city'[39m,
+  name: [32m'Osaka'[39m,
+  display_name: [32m'Osaka, Osaka Prefecture, Japan'[39m,
+  boundingbox: [ [32m'34.5861540'[39m, [32m'34.7688490'[39m, [32m'135.3099784'[39m, [32m'135.5991702'[39m ]
+}
+✅ API works correctly: Osaka, Osaka Prefecture, Japan
+]]>
+</system-out>
+</testcase>
+</testsuite>
 </testsuites>

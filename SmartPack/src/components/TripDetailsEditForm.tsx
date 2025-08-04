@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import type { TripFormState } from '../hooks/TripFormTypes';
 import type { TripFormErrors } from '../utils/tripFormValidation';
 import { validateTripForm } from '../utils/tripFormValidation';
+import { geocodeCity } from '../utils/geocode';
 
 interface TripDetailsEditFormProps {
   tripName?: string;
@@ -72,6 +73,32 @@ export const TripDetailsEditForm: React.FC<TripDetailsEditFormProps> = ({
     setTouched(prev => ({ ...prev, [field]: true }));
   };
 
+  const handleDestinationBlur = async (idx: number) => {
+    const city = editForm.destinations[idx];
+    console.log('🔍 TripDetailsEditForm handleDestinationBlur called for idx:', idx, 'city:', city);
+    
+    if (!city.trim()) {
+      console.log('Empty city, skipping geocoding');
+      return;
+    }
+
+    try {
+      console.log('Calling geocodeCity for:', city);
+      const geo = await geocodeCity(city);
+      console.log('Geocoding result:', geo);
+      
+      if (geo && geo.display_name && geo.display_name !== city) {
+        console.log('✅ Updating destination from', city, 'to', geo.display_name);
+        setEditForm(prev => ({
+          ...prev,
+          destinations: prev.destinations.map((d, i) => i === idx ? geo.display_name : d)
+        }));
+      }
+    } catch (error) {
+      console.error('Geocoding error:', error);
+    }
+  };
+
   const isFormValid =
     !errors.tripName &&
     editForm.destinations.every((_, i) => !errors.destinations?.[i]) &&
@@ -124,7 +151,11 @@ export const TripDetailsEditForm: React.FC<TripDetailsEditFormProps> = ({
               className="input input-bordered flex-1 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 border border-gray-400 dark:border-gray-600"
               value={d}
               onChange={e => handleDestinationChange(i, e.target.value)}
-              onBlur={() => handleBlur(`destinations_${i}`)}
+              onBlur={() => {
+                console.warn('🚨 BLUR EVENT FIRED for destination', i, 'with value:', d);
+                handleBlur(`destinations_${i}`);
+                handleDestinationBlur(i);
+              }}
               aria-invalid={!!(errors.destinations && errors.destinations[i])}
               aria-describedby={`destinations-error-${i}`}
               data-testid={`destination-input-${i}`}
