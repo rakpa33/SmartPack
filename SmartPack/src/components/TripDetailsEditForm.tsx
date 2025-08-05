@@ -19,7 +19,7 @@ export const TripDetailsEditForm: React.FC<TripDetailsEditFormProps> = ({
   tripName = '',
   startDate = '',
   endDate = '',
-  destinations = [''],
+  destinations = [],
   travelModes = [],
   preferences = [''],
   onSave,
