@@ -40,7 +40,9 @@
       "Bash(npx vite:*)",
       "Bash(set)",
       "Bash(pkill:*)",
-      "Bash(true)"
+      "Bash(true)",
+      "Bash(git worktree:*)",
+      "Bash(powershell:*)"
     ],
     "deny": []
   }

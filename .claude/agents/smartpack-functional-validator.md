@@ -567,6 +567,14 @@ Before marking validation complete:
 4. **Document All Issues**: Clear categorization of problems found
 5. **Make Ship Decision**: Clear go/no-go recommendation with rationale
 
+### File Management Rules
+- **ALWAYS** create test files in `SmartPack/temp-test-artifacts/` directory
+- **NEVER** create .js, .png, .json test files in root or SmartPack directory
+- Create the temp directory if it doesn't exist: `mkdir -p SmartPack/temp-test-artifacts`
+- Use descriptive names with timestamps for temporary files
+- Clean up test files after analysis when possible
+- Example: `SmartPack/temp-test-artifacts/validation-test-20250805-1430.js`
+
 ### External References
 - [End-to-End Testing Guide](https://www.browserstack.com/guide/end-to-end-testing)
 - [Cross-Browser Testing](https://developer.mozilla.org/en-US/docs/Learn/Tools_and_testing/Cross_browser_testing)

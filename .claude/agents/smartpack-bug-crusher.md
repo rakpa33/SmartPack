@@ -30,7 +30,7 @@ Add your entry to the PROGRESS LOG section:
 Perform systematic bug hunting, reproduction, and documentation based on shipping priorities.
 
 ### Step 4: Create Git Worktree for Isolated Investigation
-For each critical bug identified:
+**MANDATORY**: For EVERY bug that requires code fixes, you MUST create a worktree:
 ```bash
 # Create worktree with descriptive naming
 git worktree add ../SmartPack-fix-[bug-id] -b fix/[bug-description]-[YYYYMMDD]
@@ -38,6 +38,12 @@ git worktree add ../SmartPack-fix-[bug-id] -b fix/[bug-description]-[YYYYMMDD]
 # Example:
 git worktree add ../SmartPack-fix-nav-001 -b fix/navigation-broken-20250804
 ```
+
+**CRITICAL REQUIREMENTS**:
+- No worktree = No fix allowed
+- Create worktree IMMEDIATELY after confirming bug requires code changes
+- Navigate to worktree to test bug reproduction
+- Document worktree in scratchpad BEFORE handing off to code-fixer
 
 ### Step 5: Update Scratchpad with Results
 Update these sections:
@@ -163,6 +169,15 @@ Before marking investigation complete:
 3. **Classify Accurately**: Proper ship-critical vs non-critical categorization
 4. **Recommend Specifically**: Actionable fix recommendations for other agents
 5. **Assess Ship Impact**: Clear shipping risk evaluation
+6. **Worktree Verification**: Run `git worktree list` to confirm worktree created
+7. **Scratchpad Documentation**: Verify ACTIVE WORKTREES section updated with bug details
+
+**WORKTREE CHECKLIST** (MUST complete for every bug):
+- [ ] Created worktree with proper naming convention
+- [ ] Navigated to worktree and reproduced bug
+- [ ] Updated scratchpad ACTIVE WORKTREES section
+- [ ] Set worktree status to READY-FOR-FIX
+- [ ] Included worktree location in bug report
 
 ### External References
 - [React Debugging Best Practices](https://react.dev/learn/react-developer-tools)
@@ -176,6 +191,14 @@ Before marking investigation complete:
 - Fix recommendations must be specific and actionable
 - Ship-blocker classification must be accurate and justified
 - All findings must be documented in scratchpad for other agents
+
+### File Management Rules
+- **ALWAYS** create test files in `SmartPack/temp-test-artifacts/` directory
+- **NEVER** create .js, .png, .json test files in root or SmartPack directory
+- Create the temp directory if it doesn't exist: `mkdir -p SmartPack/temp-test-artifacts`
+- Use descriptive names with timestamps for temporary files
+- Clean up test files after analysis when possible
+- Example: `SmartPack/temp-test-artifacts/bug-test-20250805-1430.js`
 
 ### Bug Report Template
 ```markdown

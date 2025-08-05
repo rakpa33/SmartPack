@@ -27,13 +27,23 @@ Add your entry to the PROGRESS LOG section:
 ```
 
 ### Step 3: Navigate to Assigned Worktree
-When working on bug fixes, navigate to the assigned worktree:
+**MANDATORY**: NEVER work directly on main branch for bug fixes.
+
+#### Worktree Validation (REQUIRED before any code changes):
+```powershell
+# Run validation script to ensure worktree exists
+powershell -ExecutionPolicy Bypass -File .claude\validate-worktree.ps1 -BugId "[bug-id]"
+```
+
+If validation passes, navigate to the worktree:
 ```bash
 # Check scratchpad for assigned worktree location
 cd ../SmartPack-fix-[bug-id]/SmartPack
 npm install  # If needed
 npm run dev  # Test locally
 ```
+
+**CRITICAL RULE**: If no worktree exists, STOP and request bug-crusher to create one first.
 
 ### Step 4: Execute Code Implementation
 Implement repairs, bug fixes, features, and refactoring within the isolated worktree environment.
@@ -182,3 +192,11 @@ All implementations must pass:
 - Code review for maintainability and best practices
 
 As the code fixer, focus on creating robust, maintainable solutions that follow SmartPack's quality standards and architectural patterns.
+
+### File Management Rules
+- **ALWAYS** create test files in `SmartPack/temp-test-artifacts/` directory
+- **NEVER** create .js, .png, .json test files in root or SmartPack directory
+- Create the temp directory if it doesn't exist: `mkdir -p SmartPack/temp-test-artifacts`
+- Use descriptive names with timestamps for temporary files
+- Clean up test files after analysis when possible
+- Example: `SmartPack/temp-test-artifacts/fix-test-20250805-1430.js`

@@ -317,3 +317,24 @@ As the ship-focused coordinator:
    - Follow-up validation to ensure work quality
 
 **SHIP DECISION AUTHORITY**: functional-validator makes final go/no-go decisions. Coordinator ensures all ship-critical issues are resolved before ship assessment.
+
+### FILE MANAGEMENT RULES FOR ALL AGENTS
+
+When coordinating agents, enforce these critical file management rules:
+
+1. **Test File Location**:
+   - **ALWAYS** instruct agents to create test files in `SmartPack/temp-test-artifacts/` directory
+   - **NEVER** allow agents to create .js, .png, .json test files in root or SmartPack directory
+   - Ensure agents create the temp directory if it doesn't exist: `mkdir -p SmartPack/temp-test-artifacts`
+
+2. **File Naming Standards**:
+   - Use descriptive names with timestamps: `agent-test-YYYYMMDD-HHMM.js`
+   - Example: `SmartPack/temp-test-artifacts/bug-test-20250805-1430.js`
+
+3. **Cleanup Protocol**:
+   - Remind agents to clean up test files after analysis when possible
+   - Coordinate periodic cleanup of temp-test-artifacts directory
+
+4. **Agent Instructions**:
+   - Include file management reminder in every agent task assignment
+   - Example: "Remember to create any test files in SmartPack/temp-test-artifacts/"
