@@ -18,9 +18,11 @@ Read `C:\Users\Rachel\Desktop\SmartPack\.claude\scratchpad.md` to understand:
 
 ### Step 2: MANDATORY Compliance Check
 **CRITICAL**: Before ANY code changes, verify you're not working on main branch:
-```powershell
+```bash
 # Check current branch and worktree compliance
-powershell -ExecutionPolicy Bypass -File .claude\check-worktree-compliance.ps1
+.claude/validate-worktree.bat  # Windows
+# OR
+.claude/validate-worktree.sh   # Unix/Mac
 ```
 
 **If compliance check FAILS**: 
@@ -39,24 +41,42 @@ Add your entry to the PROGRESS LOG section:
 **CURRENT PROGRESS**: [Implementation status]
 ```
 
-### Step 4: Navigate to Assigned Worktree
-**MANDATORY**: NEVER work directly on main branch for bug fixes.
+### Step 4: MANDATORY WORKTREE NAVIGATION (CRITICAL)
+**NEVER WORK ON MAIN BRANCH - WORKTREE NAVIGATION IS REQUIRED FOR ALL CODE CHANGES**
 
-#### Worktree Validation (REQUIRED before any code changes):
-```powershell
-# Run validation script to ensure worktree exists
-powershell -ExecutionPolicy Bypass -File .claude\validate-worktree.ps1 -BugId "[bug-id]"
-```
-
-If validation passes, navigate to the worktree:
+#### Worktree Navigation Protocol (REQUIRED before ANY code changes):
 ```bash
-# Check scratchpad for assigned worktree location
+# STEP 1: Check scratchpad for assigned worktree location
+# STEP 2: Navigate to worktree (MANDATORY)
 cd ../SmartPack-fix-[bug-id]/SmartPack
-npm install  # If needed
-npm run dev  # Test locally
+
+# STEP 3: Verify you're in the worktree (CRITICAL VALIDATION)
+pwd
+# Output MUST show: /path/to/SmartPack-fix-[bug-id]/SmartPack
+# If showing main repo path, STOP IMMEDIATELY
+
+# STEP 4: Verify git branch
+git branch
+# Output MUST show: * fix/[description]-[date]
+# If showing main branch, STOP IMMEDIATELY
+
+# STEP 5: Install dependencies if needed
+npm install
+
+# STEP 6: Test locally in isolated environment
+npm run dev
 ```
 
-**CRITICAL RULE**: If no worktree exists, STOP and request bug-crusher to create one first.
+**CRITICAL VALIDATION CHECKLIST** (MUST verify before ANY code changes):
+- [ ] pwd shows worktree path (NOT main repo)
+- [ ] git branch shows feature branch (NOT main)
+- [ ] npm run dev works in worktree
+- [ ] All file edits happen in worktree directory
+
+**FAILURE TO NAVIGATE = IMMEDIATE STOP**
+- If no worktree exists, STOP and request bug-crusher to create one first
+- If validation fails, STOP and fix navigation before proceeding
+- Working on main branch invalidates ALL code changes
 
 ### Step 5: Execute Code Implementation
 Implement repairs, bug fixes, features, and refactoring within the isolated worktree environment.
@@ -119,10 +139,16 @@ Deliver comprehensive summary of code changes made, validation results, and reco
 
 ### Git Worktree Protocol
 1. **Check Worktree Assignment**: Read scratchpad for assigned worktree from bug-crusher
-2. **Navigate to Worktree**: Work in isolated environment
+2. **MANDATORY NAVIGATION**: Work in isolated environment
    ```bash
+   # CRITICAL: Navigate to worktree BEFORE any code changes
    cd ../SmartPack-fix-[bug-id]/SmartPack
+   
+   # VALIDATE: Verify you're in worktree (not main repo)
+   pwd  # Must show worktree path
+   git branch  # Must show feature branch, not main
    ```
+   **FAILURE TO NAVIGATE TO WORKTREE INVALIDATES ALL CODE CHANGES**
 3. **Update Status**: Change worktree status to IN-PROGRESS in scratchpad
 4. **Implement Fix**: Make all changes within the worktree
 5. **Test Locally**: Verify fix works in isolation

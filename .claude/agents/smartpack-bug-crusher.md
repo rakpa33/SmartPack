@@ -42,8 +42,29 @@ git worktree add ../SmartPack-fix-nav-001 -b fix/navigation-broken-20250804
 **CRITICAL REQUIREMENTS**:
 - No worktree = No fix allowed
 - Create worktree IMMEDIATELY after confirming bug requires code changes
-- Navigate to worktree to test bug reproduction
+- **MANDATORY NAVIGATION**: Navigate to worktree to test bug reproduction
 - Document worktree in scratchpad BEFORE handing off to code-fixer
+
+### Step 4.1: NAVIGATE TO WORKTREE (MANDATORY)
+**CRITICAL**: After creating worktree, you MUST navigate to it for all investigation work:
+```bash
+# REQUIRED: Navigate to worktree directory
+cd ../SmartPack-fix-[bug-id]/SmartPack
+
+# Verify you're in worktree (current directory should show worktree path)
+pwd
+
+# Install dependencies if needed
+npm install
+
+# Test locally in isolated environment
+npm run dev
+```
+
+**FAILURE TO NAVIGATE = INVALID INVESTIGATION**
+- All bug reproduction MUST happen in worktree
+- All testing MUST happen in worktree
+- Working on main branch invalidates the entire investigation
 
 ### Step 5: Update Scratchpad with Results
 Update these sections:
@@ -112,12 +133,21 @@ Deliver comprehensive bug documentation with reproduction steps, fix recommendat
    ```bash
    git worktree add ../SmartPack-fix-[bug-id] -b fix/[description]-[YYYYMMDD]
    ```
-2. **Navigate to Worktree**: Investigate bug in isolated environment
+2. **MANDATORY NAVIGATION**: Investigate bug in isolated environment
    ```bash
+   # CRITICAL: Navigate to worktree BEFORE any investigation
    cd ../SmartPack-fix-[bug-id]/SmartPack
-   npm install  # If needed
-   npm run dev  # Test locally
+   
+   # Verify location (MUST show worktree path, not main repo)
+   pwd
+   
+   # Install dependencies if needed
+   npm install
+   
+   # Test locally in isolated environment
+   npm run dev
    ```
+   **FAILURE TO NAVIGATE TO WORKTREE INVALIDATES ALL INVESTIGATION WORK**
 3. **Document in Scratchpad**: Track all active worktrees with status
 4. **Handoff to Code-Fixer**: Provide worktree location and fix plan
 5. **Worktree Status Tracking**:

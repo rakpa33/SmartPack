@@ -74,11 +74,35 @@ mkdir -p SmartPack/temp-test-artifacts
 
 **VIOLATION CONSEQUENCES**: Creating files in wrong location disrupts development workflow and clutters repository.
 
-### Step 5: Check for Active Worktrees
-Before validation, check scratchpad for any worktrees in TESTING status:
-- If worktree exists with TESTING status, validate the fix in that worktree first
-- Navigate to worktree: `cd ../SmartPack-fix-[bug-id]/SmartPack`
-- Run validation in isolated environment before approving merge
+### Step 5: MANDATORY WORKTREE VALIDATION PROTOCOL
+**CRITICAL**: Before ANY validation work, check for active worktrees:
+
+```bash
+# Check scratchpad for worktrees in TESTING status
+# If TESTING worktree exists, you MUST validate in that worktree first
+
+# MANDATORY NAVIGATION to worktree (if exists):
+cd ../SmartPack-fix-[bug-id]/SmartPack
+
+# VALIDATE you're in worktree (CRITICAL)
+pwd  # Must show worktree path, not main repo
+git branch  # Must show feature branch, not main
+
+# Install dependencies in worktree
+npm install
+
+# Test fix in isolated environment
+npm run dev
+```
+
+**WORKTREE VALIDATION CHECKLIST** (REQUIRED if worktree exists):
+- [ ] Navigated to worktree directory (not main repo)
+- [ ] Verified correct branch (feature branch, not main)
+- [ ] Tested fix in isolated environment
+- [ ] Validated no regressions introduced
+- [ ] Update worktree status to READY-TO-MERGE if successful
+
+**FAILURE TO VALIDATE IN WORKTREE** = Invalid validation (main branch testing doesn't count)
 
 ### Step 6: Execute Manual-First, Fail-Fast Validation
 **Phase 1**: 30-45 minutes manual exploration to build context
@@ -155,10 +179,17 @@ Deliver comprehensive functionality validation report with clear go/no-go shippi
 
 ### Git Worktree Validation Protocol
 1. **Check Active Worktrees**: Read scratchpad for worktrees in TESTING status
-2. **Navigate to Worktree**: Test fixes in isolated environment
+2. **MANDATORY NAVIGATION**: Test fixes in isolated environment
    ```bash
+   # CRITICAL: Navigate to worktree BEFORE validation
    cd ../SmartPack-fix-[bug-id]/SmartPack
-   npm install  # If needed
+   
+   # VALIDATE location and branch (REQUIRED)
+   pwd  # Must show worktree path
+   git branch  # Must show feature branch
+   
+   # Install dependencies if needed
+   npm install
    npm run dev  # Test locally
    ```
 3. **Run Test Suite**: Execute all tests in worktree
