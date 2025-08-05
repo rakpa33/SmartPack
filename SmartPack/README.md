@@ -26,6 +26,18 @@ SmartPack is a smart packing assistant that helps you prepare for your trips by 
 - npm
 - **Ollama** (for AI functionality)
 - AWS CLI (for deployment)
+- Git (with proper configuration for Windows - see below)
+
+### Windows Git Configuration
+
+If you're developing on Windows, configure Git to handle line endings properly:
+
+```bash
+# Configure Git to preserve LF line endings
+git config core.autocrlf input
+```
+
+The project includes a `.gitattributes` file that enforces consistent line endings across all platforms.
 
 ### Installation
 

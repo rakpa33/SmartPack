@@ -16,6 +16,16 @@ cd SmartPack\SmartPack
 - npm package manager
 - Ollama service (for AI functionality)
 - Modern browser with ES2020+ support
+- Git with proper line ending configuration (see below)
+
+**Git Configuration for Windows**:
+```bash
+# Set Git to preserve LF in repository
+git config core.autocrlf input
+
+# Ensure .gitattributes exists for consistent line endings
+# Project includes .gitattributes with LF enforcement
+```
 
 ## Development Workflow Standards
 

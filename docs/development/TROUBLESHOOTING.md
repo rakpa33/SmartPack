@@ -1,3 +1,34 @@
+# Git Line Ending (CRLF/LF) Issues on Windows (2025-08-05)
+
+- **Symptom:** "LF will be replaced by CRLF" warnings preventing commits, or errors about line endings when trying to commit files
+- **Root Cause:** Git configured with `core.autocrlf=true` on Windows causes conversion warnings; special files like "nul" can block Git operations
+- **Diagnostic Steps:**
+  1. Check Git config: `git config --list | grep autocrlf`
+  2. Look for "nul" files: `git status` shows errors about "SmartPack/nul"
+  3. Check for .gitattributes file defining line ending rules
+  4. Verify if warnings appear on every commit attempt
+- **Solution:**
+  1. **Create .gitattributes file** in project root to enforce consistent line endings:
+     ```
+     * text=auto
+     *.js text eol=lf
+     *.jsx text eol=lf
+     *.ts text eol=lf
+     *.tsx text eol=lf
+     *.json text eol=lf
+     *.md text eol=lf
+     ```
+  2. **Configure Git**: `git config core.autocrlf input`
+  3. **Remove problematic files**: `rm -f nul ../nul`
+  4. **Add to .gitignore**: Add `nul` and `NUL` to prevent future issues
+  5. **Normalize repository**: `git add --renormalize .`
+- **Prevention:**
+  - Always include .gitattributes in new projects
+  - Use `core.autocrlf=input` on Windows development machines
+  - Add Windows special filenames to .gitignore
+  - Document Git configuration in project setup instructions
+- **Status:** RESOLVED (2025-08-05) - Permanent fix with .gitattributes
+
 # Agent Registration Issues (2025-08-03)
 
 - **Symptom:** "Agent type 'agent-name' not found" error when trying to use newly created agents
