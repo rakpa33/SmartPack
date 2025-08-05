@@ -47,11 +47,22 @@ Create or update session in scratchpad.md:
 
 **NEW WORKTREE MANAGEMENT PROTOCOL**: Scratchpad is now a clean tracker only. Detailed work is in temp docs.
 
+**CRITICAL - CHECK FOR ACTIVE AGENT WORK**:
+Before recommending ANY agents or taking ANY action:
+1. **Read entire scratchpad** to identify all active agent work
+2. **Look for "AGENT ACTIVE:" markers** indicating ongoing work
+3. **Check worktree status** - if marked as "Agent working on fix", DO NOT interfere
+4. **Review recent agent updates** to understand what's currently being worked on
+5. **NEVER duplicate work** - if an agent is actively working on an issue, coordinate support but don't restart the work
+6. **NEVER attempt to close branches** that other agents are actively working on
+
 Before recommending agents, check active worktrees in scratchpad tracker:
 - Review all worktrees listed in the "Active Worktrees" section
+- **CRITICAL**: Check for "AGENT ACTIVE" or "Agent working" status indicators
 - Check referenced temp documents in `.claude/active-worktrees/` for detailed status
 - Prioritize RESOLVED worktrees for cleanup and merge coordination
 - Track ACTIVE worktrees for status updates
+- **NEVER recommend new agents for issues already being worked on**
 
 **CRITICAL**: Run worktree compliance monitoring:
 ```powershell
@@ -65,7 +76,21 @@ powershell -ExecutionPolicy Bypass -File .claude\monitor-worktrees.ps1
 - Require worktree creation/documentation before proceeding
 - Ensure all bug fixes use isolated worktrees
 
-### Step 4: Recommend Appropriate Agent (Ship-Priority Order)
+### Step 4: Verify No Duplicate Work Before Agent Recommendation
+
+**MANDATORY PRE-RECOMMENDATION CHECK**:
+1. If issue is already being worked on by another agent → DO NOT recommend new agent
+2. If worktree shows "AGENT ACTIVE" → Offer to check status but don't interfere
+3. If agent reports "working on fix" → Let them complete their work
+4. Only recommend agents for NEW issues or UNASSIGNED tasks
+
+### Step 5: Recommend Appropriate Agent (Ship-Priority Order)
+
+**CRITICAL FILE DISCOVERY ISSUES:**
+If encountering file discovery problems, missing files, or codebase navigation issues:
+- **smartpack-integrity-auditor**: IMMEDIATELY invoke for codebase verification and file discovery
+  - Use when: Can't find expected files, directory structure unclear, temp files in wrong locations
+  - Command: `Task: "Emergency integrity audit - unable to locate [specific files/components]"`
 
 **SHIP-CRITICAL AGENTS (Use First for 2-Day Timeline):**
 
@@ -88,8 +113,9 @@ powershell -ExecutionPolicy Bypass -File .claude\monitor-worktrees.ps1
 - **smartpack-test-specialist**: Component testing, test fixes, targeted coverage
 - **smartpack-test-auditor**: System-wide test analysis, comprehensive validation
 - **smartpack-context-extractor**: Conversation context preservation before session cleanup
+- **smartpack-integrity-auditor**: Codebase integrity verification, file discovery, cleanup operations
 
-### Step 5: Update Scratchpad and Create Temp Documents
+### Step 6: Update Scratchpad and Create Temp Documents
 
 **For New Worktrees**:
 1. Add minimal entry to scratchpad tracker (Active Worktrees section)
@@ -205,6 +231,28 @@ failures, weather API issues, backend connectivity problems
 
 ## SHIP-FOCUSED COORDINATION RESPONSIBILITIES
 
+### Emergency File Discovery Protocol
+
+**IMMEDIATE ACTION when agents report file discovery issues:**
+
+1. **Detection Triggers**:
+   - Agent reports "cannot find file/component"
+   - Agent searches multiple times without success
+   - Agent expresses confusion about directory structure
+   - Agent finds files in unexpected locations
+
+2. **Immediate Response**:
+   ```
+   Task: "Emergency integrity audit - [agent-name] unable to locate [specific issue description]"
+   Agent: smartpack-integrity-auditor
+   ```
+
+3. **Follow-up Actions**:
+   - Wait for integrity auditor's file discovery report
+   - Share findings with struggling agent via scratchpad
+   - Create worktree if structural fixes needed
+   - Update agent guidelines if pattern detected
+
 ### 2-Day Shipping Timeline Management
 
 1. **Priority Assessment**: Always prioritize ship-critical agents over quality enhancement
@@ -224,6 +272,12 @@ failures, weather API issues, backend connectivity problems
 ```
 User Request → Assess Ship Impact → Choose Agent Tier:
 
+EMERGENCY FILE/NAVIGATION ISSUES:
+- Can't find files → integrity-auditor (emergency audit)
+- Directory structure unclear → integrity-auditor
+- Missing expected components → integrity-auditor
+- Temp files in wrong places → integrity-auditor
+
 SHIP-CRITICAL (Do First):
 - Broken functionality → bug-crusher
 - Need ship decision → functional-validator
@@ -240,6 +294,7 @@ FOUNDATION (Do For Implementation):
 - Need code changes → code-fixer
 - System analysis → architecture-analyzer
 - Testing needs → test-specialist/test-auditor
+- Codebase cleanup → integrity-auditor (scheduled audit)
 ```
 
 ### Git Worktree Management and Enforcement
