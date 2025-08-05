@@ -43,13 +43,15 @@ Create or update session in scratchpad.md:
 **STARTED**: [Date]
 ```
 
-### Step 3: Check Active Worktrees and Enforce Compliance
+### Step 3: Check Active Worktrees and Manage Temp Documents
 
-Before recommending agents, check for active worktrees in scratchpad:
-- Review all worktrees and their current status
-- Prioritize READY-TO-MERGE worktrees for merge coordination
-- Track IN-PROGRESS worktrees for status updates
-- Ensure proper cleanup of MERGED worktrees
+**NEW WORKTREE MANAGEMENT PROTOCOL**: Scratchpad is now a clean tracker only. Detailed work is in temp docs.
+
+Before recommending agents, check active worktrees in scratchpad tracker:
+- Review all worktrees listed in the "Active Worktrees" section
+- Check referenced temp documents in `.claude/active-worktrees/` for detailed status
+- Prioritize RESOLVED worktrees for cleanup and merge coordination
+- Track ACTIVE worktrees for status updates
 
 **CRITICAL**: Run worktree compliance monitoring:
 ```powershell
@@ -87,9 +89,18 @@ powershell -ExecutionPolicy Bypass -File .claude\monitor-worktrees.ps1
 - **smartpack-test-auditor**: System-wide test analysis, comprehensive validation
 - **smartpack-context-extractor**: Conversation context preservation before session cleanup
 
-### Step 5: Update Scratchpad
+### Step 5: Update Scratchpad and Create Temp Documents
 
-Add specific task to PENDING TASKS, provide context for the recommended agent, and track worktree assignments.
+**For New Worktrees**:
+1. Add minimal entry to scratchpad tracker (Active Worktrees section)
+2. Create detailed temp document in `.claude/active-worktrees/[task-id].md`
+3. Include all context, progress logs, and detailed information in temp doc
+4. Keep scratchpad clean and focused on tracking only
+
+**For Existing Worktrees**:
+1. Update status in scratchpad tracker
+2. Add detailed progress to appropriate temp document
+3. Agents should read temp docs for work context, not scratchpad
 
 ---
 
@@ -249,15 +260,49 @@ As coordinator, track and manage multiple active worktrees and ENFORCE complianc
    - Require proper worktree creation before proceeding
    - Re-educate agents on mandatory worktree protocol
 
-3. **Worktree Tracking**: Maintain Active Worktrees section in scratchpad
+3. **Worktree Creation and Tracking**:
+   
+   **Creating New Worktrees**:
+   ```bash
+   # Create worktree
+   git worktree add ../SmartPack-[task-id] -b fix/[description]-[YYYYMMDD]
+   ```
+   
+   **Add to Scratchpad Tracker**:
    ```markdown
-   ## Active Worktrees
-   - **Bug ID**: [bug-id]
+   ### [task-id]
    - **Branch**: fix/[description]-[YYYYMMDD]
-   - **Location**: ../SmartPack-fix-[bug-id]
-   - **Status**: [INVESTIGATING/READY-FOR-FIX/IN-PROGRESS/TESTING/READY-TO-MERGE/MERGED]
-   - **Assigned To**: [current agent]
-   - **Priority**: [SHIP-BLOCKER/HIGH/LOW]
+   - **Location**: ../SmartPack-[task-id]
+   - **Status**: [ACTIVE/RESOLVED/READY-FOR-CLEANUP]
+   - **Priority**: [SHIP-CRITICAL/HIGH/MEDIUM/LOW]
+   - **Details**: .claude/active-worktrees/[task-id].md
+   - **Created**: [Date]
+   - **Assigned**: [agent-name]
+   - **Summary**: [One-line description]
+   ```
+   
+   **Create Temp Document** `.claude/active-worktrees/[task-id].md`:
+   ```markdown
+   # [Task Description] Worktree
+   
+   ## Worktree Information
+   - **Branch**: fix/[description]-[YYYYMMDD]
+   - **Location**: ../SmartPack-[task-id]
+   - **Created**: [Date]
+   - **Purpose**: [Detailed description]
+   - **Priority**: [SHIP-CRITICAL/HIGH/MEDIUM/LOW]
+   
+   ## Current Status
+   [ACTIVE/IN-PROGRESS/TESTING/RESOLVED]
+   
+   ## Work Context
+   [All relevant context, findings, issues]
+   
+   ## Agent Progress Log
+   [Detailed work by each agent]
+   
+   ## Pending Tasks
+   [Specific tasks remaining]
    ```
 
 2. **Status Management**:
@@ -268,17 +313,36 @@ As coordinator, track and manage multiple active worktrees and ENFORCE complianc
    - READY-TO-MERGE: Approved for merge to main
    - MERGED: Successfully merged, ready for cleanup
 
-3. **Merge Coordination**:
+3. **Merge and Cleanup Coordination**:
+   
+   **After Work Completion**:
    ```bash
    # After functional-validator approves
    cd ../../SmartPack
    git checkout main
    git merge fix/[description]-[YYYYMMDD]
-   
-   # Cleanup after merge
-   git worktree remove ../SmartPack-fix-[bug-id]
-   git branch -d fix/[description]-[YYYYMMDD]
    ```
+   
+   **Cleanup Process**:
+   1. **Extract valuable information from temp doc**:
+      - Copy bug resolutions to TROUBLESHOOTING.md
+      - Add technical changes to DEVLOG.md
+      - Update CLAUDE.md with new patterns/guidelines
+   
+   2. **Clean up worktree**:
+      ```bash
+      git worktree remove ../SmartPack-[task-id]
+      git branch -d fix/[description]-[YYYYMMDD]
+      ```
+   
+   3. **Update scratchpad tracker**:
+      - Move entry to "Recently Completed Worktrees" section
+      - Add completion date and summary
+   
+   4. **Delete temp document**:
+      ```bash
+      rm .claude/active-worktrees/[task-id].md
+      ```
 
 4. **Priority Management**:
    - SHIP-BLOCKER worktrees get immediate attention
