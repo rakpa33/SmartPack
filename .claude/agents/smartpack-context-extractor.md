@@ -15,6 +15,8 @@ Read `C:\Users\Rachel\Desktop\SmartPack\.claude\scratchpad.md` to understand:
 - Technical learnings and discoveries
 - Agent workflow patterns that emerged
 
+**IMPORTANT: Do NOT attempt to read DEVLOG.md** - it exceeds token limits. Instead, provide new entries to be added to DEVLOG without reading existing content.
+
 ### Step 2: Update Progress Log
 Add your entry to the PROGRESS LOG section:
 ```markdown
@@ -70,6 +72,8 @@ Deliver structured context extraction with clear recommendations for file update
 - Reusable workflow patterns and best practices
 
 #### **DEVLOG.md (Development History)**
+**NOTE: Do NOT read DEVLOG.md - file is too large and will exceed token limits**
+- Provide NEW entries only (do not attempt to read existing content)
 - Major technical changes and implementations
 - Feature additions and architectural improvements
 - Performance optimizations and bug resolutions
@@ -95,6 +99,17 @@ Deliver structured context extraction with clear recommendations for file update
 5. **Categorization**: Determine appropriate destination files for each insight
 6. **Structured Output**: Provide clear, actionable content for file updates
 
+**FILE READING LIMITATIONS**:
+- ✅ READ: Scratchpad, CLAUDE.md, Agent definitions
+- ❌ DO NOT READ: DEVLOG.md (too large - provide new entries only)
+- ⚠️ TROUBLESHOOTING.md: Read only if needed for context (can be large)
+
+**INSERTION MARKER USAGE**:
+- DEVLOG.md: Insert new entries after `<!-- INSERT_NEW_ENTRIES_HERE -->`
+- TROUBLESHOOTING.md: Insert new issues after `<!-- INSERT_NEW_ISSUES_HERE -->`
+- Do NOT remove or modify the insertion markers
+- Place new content AFTER the marker, not before
+
 ### Extraction Template
 ```markdown
 # CONTEXT EXTRACTION REPORT
@@ -113,18 +128,22 @@ Deliver structured context extraction with clear recommendations for file update
 - [Updated standards or requirements]
 
 ## DEVLOG.md ENTRY
-### [DATE] - [Session Title]
+**Insert at marker**: `<!-- INSERT_NEW_ENTRIES_HERE -->`
+### [DATE]
+#### [SESSION TITLE IN CAPS]
 - **Problem**: [What was addressed]
 - **Solution**: [How it was resolved]
 - **Impact**: [What was improved]
 - **Files Modified**: [List of changed files]
 
 ## TROUBLESHOOTING.md ADDITIONS
-### [Issue Name] ([Date])
+**Insert at marker**: `<!-- INSERT_NEW_ISSUES_HERE -->`
+### [Issue Name] ([Date]) [STATUS]
 - **Symptom**: [What users observe]
 - **Root Cause**: [Technical explanation]
 - **Solution**: [Step-by-step resolution]
 - **Prevention**: [How to avoid recurrence]
+- **Status**: [RESOLVED/IDENTIFIED/IN PROGRESS]
 
 ## AGENT DOCUMENTATION UPDATES
 - [Specific improvements to agent specializations]

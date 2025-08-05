@@ -1,4 +1,29 @@
-# File Organization Issues (2025-08-05) [RESOLVED]
+# SmartPack Troubleshooting Guide
+
+This file documents known issues, their root causes, solutions, and prevention strategies.
+
+## Navigation
+- [Latest Issues](#latest-issues)
+- [Resolved Issues](#resolved-issues)
+- [Common Patterns](#common-patterns)
+
+## Latest Issues
+<!-- INSERT_NEW_ISSUES_HERE -->
+<!-- DO NOT REMOVE THE ABOVE MARKER - Used by agents to add new issues -->
+
+### Chrome Autocomplete False Positive (2025-08-05) [RESOLVED]
+- **Issue:** Conflicting test results showing Chrome autocomplete failure
+- **Symptoms:** Three different agents reported contradictory Chrome compatibility assessments
+- **Root Cause:** Testing methodology differences between agents - automated vs manual testing discrepancies
+- **Resolution:** Comprehensive cross-browser testing with both automated and manual verification proved functionality working correctly
+- **Key Learning:** Always verify with multiple testing approaches - automated tests can give false positives
+- **Testing Artifacts:** definitive-chrome-test-20250805.cjs, manual-verification-script-20250805.cjs
+- **Confidence:** Very High (99%) - Multiple testing methodologies confirm Chrome works perfectly
+- **Status:** RESOLVED - Chrome location autocomplete confirmed working
+
+## Resolved Issues
+
+### File Organization Issues (2025-08-05) [RESOLVED]
 
 - **Symptom:** Manual validation artifacts scattered in wrong directories (manual-validation-*.png in root)
 - **Root Cause:** Agents creating validation files in convenient but incorrect locations
@@ -9,7 +34,7 @@
 - **Prevention:** Updated gitignore patterns and agent guidelines
 - **Status:** RESOLVED - All artifacts properly organized
 
-# Local CLAUDE.md Navigation Files (2025-08-05) [CLARIFIED]
+### Local CLAUDE.md Navigation Files (2025-08-05) [CLARIFIED]
 
 - **IMPORTANT:** Local CLAUDE.md files in subdirectories are INTENTIONAL navigation aids, NOT duplicates
 - **Purpose:** These files help agents navigate efficiently and reduce token usage:
@@ -26,7 +51,7 @@
 - **Note:** Integrity auditor has been updated to protect these files
 - **Status:** PROTECTED - Navigation system in place
 
-# Legacy File Accumulation (2025-08-05) [RESOLVED]
+### Legacy File Accumulation (2025-08-05) [RESOLVED]
 
 - **Symptom:** Debug files and temporary artifacts accumulating in worktrees
 - **Root Cause:** Incomplete cleanup after worktree resolution
@@ -37,7 +62,7 @@
 - **Prevention:** Include cleanup steps in worktree resolution workflow
 - **Status:** RESOLVED - Legacy files cleaned up
 
-# Location Autocomplete False Positive (2025-08-05) [RESOLVED]
+### Location Autocomplete False Positive (2025-08-05) [RESOLVED]
 
 - **Symptom:** Tests reported destination field value doesn't expand to full location (e.g., "Osaka" doesn't become "Osaka, Japan")
 - **Root Cause:** Testing methodology issue - tests were not properly waiting for async geocoding
@@ -49,7 +74,70 @@
 - **Impact:** None - feature functions properly
 - **Status:** RESOLVED - Confirmed working 2025-08-05 23:45
 
-# Destination Field Test Selector Issue (2025-08-05) [LIKELY FALSE POSITIVE]
+### Navigation File Protection from Integrity Audits (2025-08-05) [RESOLVED]
+
+- **Symptom**: Integrity auditor removing essential navigation CLAUDE.md files from subdirectories
+- **Root Cause**: Auditor incorrectly applying "single source of truth" principle to navigation aids vs. project documentation
+- **Diagnostic Steps**:
+  1. Check if subdirectory CLAUDE.md files exist (SmartPack/, src/, components/, hooks/)
+  2. Verify agent navigation efficiency - are agents exploring directories inefficiently?
+  3. Review audit logs for file removal justification
+  4. Assess token usage patterns in agent conversations
+- **Solution**: 
+  1. **Distinguish Documentation Types**: Navigation aids ≠ duplicate documentation
+  2. **Restore Navigation Files**: Re-create essential CLAUDE.md files in key subdirectories
+  3. **Update Auditor Protocol**: Add pre-audit validation to assess file purpose
+  4. **Implement Protection**: Add safeguards for operational efficiency files
+- **Prevention**:
+  - Enhanced integrity auditor with content analysis requirements
+  - Clear documentation hierarchy standards in project guidelines
+  - Pre-audit validation checklist for file removal operations
+- **Status**: RESOLVED - Navigation system restored and protected
+
+### Integrity Auditor Overreach Prevention (2025-08-05) [RESOLVED]
+
+- **Symptom**: Agent making broad cleanup decisions without understanding file purposes
+- **Root Cause**: Insufficient validation of file utility before removal operations
+- **Diagnostic Steps**:
+  1. Review audit report for justification of file removals
+  2. Assess operational impact of removed files
+  3. Check for loss of workflow efficiency patterns
+- **Solution**:
+  1. **Pre-Audit Validation**: Require content analysis before file removal
+  2. **Purpose Assessment**: Evaluate file utility for agent operations
+  3. **Protection Protocols**: Safeguard files that improve system efficiency
+  4. **Impact Analysis**: Consider operational consequences of cleanup actions
+- **Prevention**: Updated auditor with validation requirements and protection mechanisms
+- **Status**: RESOLVED - Enhanced auditor protocols prevent future overreach
+
+### Save Button Permanently Disabled (2025-08-05) [RESOLVED]
+
+- **Symptom:** Save button remains disabled even when form appears complete
+- **Root Cause:** Default destinations parameter initialized with `['']` (array with empty string) in TripDetailsEditForm.tsx
+- **Diagnostic Steps:**
+  1. Form validation logic inspection revealed destinations=[''] fails validation
+  2. validateTripForm() checks each destination with !d.trim()
+  3. Empty string fails this check, causing permanent validation failure
+- **Solution:** Change `destinations = ['']` to `destinations = []` on line 22
+- **Prevention:** Always initialize arrays empty rather than with empty strings
+- **Impact:** Ship-blocking bug that prevented core user workflow
+- **Status:** RESOLVED - Fix merged to main branch
+
+### Complete Form Validation Requirements (2025-08-05) [DOCUMENTED]
+
+- **Symptom:** Save button disabled despite filling trip name and destination
+- **Root Cause:** Form requires ALL 5 fields to be valid before enabling Save button
+- **Required Fields:**
+  1. Trip Name (string, non-empty)
+  2. Destinations (array of valid locations)
+  3. Travel Modes (array with at least one mode selected)
+  4. Start Date (valid date string)
+  5. End Date (valid date string, must be after start date)
+- **Testing Note:** Automated tests must provide ALL fields, not just partial data
+- **Impact:** Tests showed false failures when functionality was correct
+- **Status:** DOCUMENTED - Critical for proper testing
+
+### Destination Field Test Selector Issue (2025-08-05) [LIKELY FALSE POSITIVE]
 
 - **Symptom:** Test cannot find destination input field in trip form
 - **Root Cause:** Likely test selector mismatch since autocomplete works (field must exist)
@@ -60,7 +148,7 @@
 - **Impact:** Test infrastructure issue only - actual functionality works
 - **Status:** LIKELY FALSE POSITIVE - Field exists and works per manual testing
 
-# Git Line Ending (CRLF/LF) Issues on Windows (2025-08-05)
+### Git Line Ending (CRLF/LF) Issues on Windows (2025-08-05)
 
 - **Symptom:** "LF will be replaced by CRLF" warnings preventing commits, or errors about line endings when trying to commit files
 - **Root Cause:** Git configured with `core.autocrlf=true` on Windows causes conversion warnings; special files like "nul" can block Git operations
@@ -91,7 +179,7 @@
   - Document Git configuration in project setup instructions
 - **Status:** RESOLVED (2025-08-05) - Permanent fix with .gitattributes
 
-# Agent Registration Issues (2025-08-03)
+### Agent Registration Issues (2025-08-03)
 
 - **Symptom:** "Agent type 'agent-name' not found" error when trying to use newly created agents
 - **Root Cause:** New agent .md files are not automatically registered in Claude Code system
@@ -102,7 +190,7 @@
   - Consider agent restart or cache refresh if needed
 - **Status:** IDENTIFIED - needs further investigation
 
-# Test Setup Configuration Errors (2025-08-03)
+### Test Setup Configuration Errors (2025-08-03)
 
 - **Symptom:** Test setup file (setup.ts) has import and configuration errors preventing proper test environment initialization. TypeScript errors on jest-dom imports, jest-axe integration failures, React 18 state update warnings.
 - **Root Cause:** Incorrect TypeScript declaration file imports, Vitest/Jest compatibility issues, missing React 18 act() wrapper configuration.
@@ -128,7 +216,7 @@
   - Test configuration changes with `npm test` before committing
 - **Status:** RESOLVED (2025-08-03) - All test infrastructure tests passing
 
-# TripDetails Unreachable Code and JSX Fragment Errors (2025-08-01)
+### TripDetails Unreachable Code and JSX Fragment Errors (2025-08-01)
 
 - **Symptom:** TypeScript build fails with "Declaration or statement expected" and "Expression expected" errors in TripDetails.tsx. Lint reports unreachable code and duplicate fragments.
 - **Root Cause:** Incomplete merges and manual edits left orphaned code and multiple return blocks after the main return statement.
@@ -194,7 +282,7 @@ HOW TO USE FOR AI ASSISTANCE:
 - Cross-reference with COMMANDS.md for accurate command syntax
 -->
 
-# Troubleshooting Guide for SmartPack
+### Legacy Troubleshooting Entries
 
 Document common issues and their solutions here. Update this file as you encounter new problems.
 

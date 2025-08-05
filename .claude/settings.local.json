@@ -10,7 +10,9 @@
       "Bash(powershell:*)",
       "Bash(dir:*)",
       "Bash(git checkout:*)",
-      "WebFetch(domain:docs.anthropic.com)"
+      "WebFetch(domain:docs.anthropic.com)",
+      "Bash(git worktree:*)",
+      "Bash(git branch:*)"
     ],
     "deny": []
   }

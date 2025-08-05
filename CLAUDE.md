@@ -5,6 +5,20 @@ SmartPack is a travel packing application built with React 18 + TypeScript + Vit
 
 **SHIP STATUS**: 2-day maximum shipping timeline - prioritize functional app over perfect implementation.
 
+## CRITICAL OPERATIONAL PROTOCOLS
+
+### File Deletion Workflow (MANDATORY - NEVER SKIP)
+**VIOLATION HISTORY**: 2025-08-05 - Deleted worktree MD files without reading (2 incidents)
+
+**REQUIRED STEPS BEFORE ANY FILE DELETION:**
+1. **READ FIRST**: Always use Read tool on file before deletion
+2. **ASSESS VALUE**: Determine if content needs preservation
+3. **EXTRACT CONTEXT**: If valuable, preserve in CLAUDE.md or appropriate docs
+4. **CONFIRM UNDERSTANDING**: Verify what will be lost
+5. **DELETE ONLY AFTER**: All above steps are complete
+
+**THIS IS NON-NEGOTIABLE**: Rushing to delete without review is a critical failure pattern that has occurred multiple times. ALWAYS follow this protocol.
+
 ## Ship-Focused Agent System Architecture
 
 ### SHIP-CRITICAL AGENTS (Priority 1 - Must Work for Launch)
@@ -34,10 +48,25 @@ SmartPack is a travel packing application built with React 18 + TypeScript + Vit
 4. **Progress Tracking**: Agents update progress logs and share findings via scratchpad
 5. **Ship Readiness**: functional-validator makes final go/no-go shipping decisions
 
+### Proven Agent Coordination Success Pattern (2025-08-05)
+- **Bug Resolution Flow**: bug-crusher (identify) → code-fixer (implement) → functional-validator (verify)
+- **Critical Fix Example**: Save button bug resolved through systematic agent handoffs
+- **Testing Priority**: Manual-first validation proved more reliable than automated tests
+- **Complete Validation**: Ensure ALL form fields tested (5 required: name, destinations, modes, dates)
+
 ### Handoff Protocol Examples
 - **Bug Fix Flow**: bug-crusher identifies issues → code-fixer implements fixes → functional-validator verifies
 - **UX Enhancement Flow**: ux-flow-optimizer designs workflows → ui-polish-specialist implements → mobile-ux-specialist optimizes for touch
 - **Design Implementation Flow**: visual-designer creates specs → ui-polish-specialist implements → performance-enhancer optimizes
+- **Worktree Cleanup Flow**: work completion → information extraction → git cleanup → documentation update → verification
+
+### Worktree Cleanup Verification Protocol (2025-08-05)
+**CRITICAL**: Always verify cleanup execution with system commands, not just documentation
+1. **Extract First**: Preserve valuable information to TROUBLESHOOTING.md/DEVLOG.md before cleanup
+2. **Execute Cleanup**: Run actual git commands (`git worktree remove`, `git branch -d`)
+3. **Verify State**: Use `git worktree list` and `git branch -a` to confirm cleanup
+4. **Update Documentation**: Only mark as "CLEANED" after verification shows completion
+5. **Archive Artifacts**: Move temp documents to `.claude/active-worktrees/archived/`
 
 ## Ship-Focused Quality Standards
 
