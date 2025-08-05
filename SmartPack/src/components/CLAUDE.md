@@ -1,0 +1,223 @@
+# SmartPack Components Directory Navigation
+
+## Directory Purpose
+The `components/` directory contains all React UI components organized by functionality and feature area. Each component follows TypeScript strict mode and accessibility-first design principles.
+
+## Component Inventory
+
+### Layout Components
+- **`MainLayout.tsx`** - Three-column responsive layout system
+  - Manages desktop (Trip Details | Packing List | AI Suggestions) and mobile layouts
+  - Handles column resizing and responsive breakpoints
+  - Contains bottom navigation for mobile devices
+
+- **`BottomNavigation.tsx`** - Mobile navigation component
+  - Tab-based navigation for mobile layouts
+  - Integrates with MainLayout state management
+  - Accessible keyboard navigation support
+
+### Form Components
+- **`TripDetails.tsx`** - Trip information display and editing
+  - Shows trip summary with inline editing capabilities
+  - Integrates with TripFormContext for state management
+  - Weather integration and display
+
+- **`TripDetailsEditForm.tsx`** - Dedicated trip editing form
+  - Multi-step form with validation
+  - Real-time field validation with 750ms debounce
+  - Autocomplete for destinations with geocoding
+
+- **`TripDetailsWithGeneration.tsx`** - Enhanced trip details with AI integration
+  - Combines trip display with AI packing list generation
+  - Handles loading states and error conditions
+
+### List Components
+- **`PackingList.tsx`** - Main packing checklist interface
+  - Dynamic category organization
+  - Item checking/unchecking with persistence
+  - Drag and drop support for reordering
+
+- **`ChecklistItem.tsx`** - Individual packing list item
+  - Checkbox interaction with haptic feedback
+  - Edit/delete functionality
+  - Accessibility-compliant with 44px touch targets
+
+### Panel Components
+- **`SuggestionsPanel.tsx`** - AI-powered packing suggestions
+  - Displays AI-generated recommendations
+  - Integration with Ollama service
+  - Fallback UI when AI service unavailable
+
+- **`TripWeatherPanel.tsx`** - Weather information display
+  - Current and forecast weather data
+  - Weather-appropriate packing suggestions
+  - Location-based weather integration
+
+### Utility Components
+- **`DarkModeToggle.tsx`** - Theme switching component
+  - System preference detection
+  - Persistent theme selection
+  - Smooth transition animations
+
+- **`DragHandle.tsx`** - Resizable column handle
+  - Touch and mouse drag support
+  - Visual feedback during drag operations
+  - Integration with column layout system
+
+## Component Patterns
+
+### TypeScript Standards
+```typescript
+// Example component interface pattern
+interface ComponentProps {
+  required: string;
+  optional?: boolean;
+  children?: React.ReactNode;
+}
+
+export const Component: React.FC<ComponentProps> = ({ 
+  required, 
+  optional = false,
+  children 
+}) => {
+  // Component implementation
+};
+```
+
+### Accessibility Standards
+- **44px minimum touch targets** for mobile interaction
+- **Proper ARIA labels** and semantic HTML structure
+- **Keyboard navigation support** for all interactive elements
+- **Screen reader compatibility** with descriptive text
+- **Focus management** with visible focus indicators
+
+### Styling Patterns
+```typescript
+// Tailwind CSS class organization pattern
+const baseClasses = "p-4 rounded-lg border";
+const stateClasses = {
+  default: "bg-white border-gray-200",
+  active: "bg-blue-50 border-blue-200",
+  error: "bg-red-50 border-red-200"
+};
+
+// Usage in components
+className={cn(baseClasses, stateClasses.default)}
+```
+
+## Component Dependencies
+
+### Context Integration
+- **TripFormContext**: Trip data and form state management
+- **PackingListContext**: Packing list operations and persistence
+- **Column Layout Context**: Layout state and responsive behavior
+
+### Hook Usage
+- **useTripForm**: Form validation and submission logic
+- **usePackingList**: Checklist operations and persistence
+- **useColumnLayout**: Layout management and responsiveness
+- **useWeather**: Weather data fetching and caching
+- **useGeocode**: Location services and autocomplete
+
+### Service Integration
+- **apiService**: Ollama AI integration and weather API calls
+- **localStorage**: Data persistence across sessions
+- **geocoding**: Location lookup and validation
+
+## Testing Strategy
+
+### Component Testing Patterns
+```typescript
+// Standard component test structure
+describe('ComponentName', () => {
+  it('renders with required props', () => {
+    render(<ComponentName required="value" />);
+    expect(screen.getByRole('...')).toBeInTheDocument();
+  });
+
+  it('handles user interactions', async () => {
+    const user = userEvent.setup();
+    render(<ComponentName />);
+    await user.click(screen.getByRole('button'));
+    // Assert expected behavior
+  });
+
+  it('meets accessibility standards', async () => {
+    const { container } = render(<ComponentName />);
+    const results = await axe(container);
+    expect(results).toHaveNoViolations();
+  });
+});
+```
+
+### Test File Locations
+- Unit tests: `src/__tests__/ComponentName.test.tsx`
+- Integration tests: `src/__tests__/integration/ComponentName.integration.test.tsx`
+- Accessibility tests: Included in main test files with jest-axe
+
+## Development Guidelines
+
+### Adding New Components
+1. **Create component file** in appropriate subdirectory if needed
+2. **Define TypeScript interface** for props with strict typing
+3. **Implement accessibility features** from the start
+4. **Add comprehensive tests** including accessibility validation
+5. **Update this navigation file** with component description
+
+### Component Architecture
+- **Single Responsibility**: Each component has one clear purpose
+- **Composition over Inheritance**: Use component composition patterns
+- **Props Interface**: Always define explicit prop interfaces
+- **Error Boundaries**: Handle errors gracefully with fallback UI
+
+### Performance Considerations
+- **React.memo**: Use for expensive components with stable props
+- **Lazy Loading**: Implement for large components not immediately needed
+- **Event Handler Optimization**: Use useCallback for expensive handlers
+- **Bundle Size**: Monitor component impact on build size
+
+## Integration Points
+
+### Layout System Integration
+- Components integrate with `MainLayout` responsive system
+- Mobile-first design with progressive enhancement
+- Column layout system for desktop three-column view
+
+### State Management Integration
+- Components consume context providers for global state
+- Local state management with useState for component-specific data
+- Form state integration with validation hooks
+
+### Service Integration
+- AI service integration through `SuggestionsPanel`
+- Weather service integration through `TripWeatherPanel`
+- Geocoding service integration through form components
+
+## Quick Reference
+
+### Finding Component Usage
+```bash
+# Find where a component is used
+grep -r "ComponentName" src/
+
+# Find component imports
+grep -r "from.*ComponentName" src/
+```
+
+### Component Testing
+```bash
+# Run tests for specific component
+npm test -- ComponentName.test.tsx
+
+# Run accessibility tests
+npm test -- --grep "accessibility"
+```
+
+### Component Analysis
+```bash
+# Check component complexity
+npm run lint src/components/ComponentName.tsx
+
+# Type check specific component
+npm run type-check -- src/components/ComponentName.tsx
+```
