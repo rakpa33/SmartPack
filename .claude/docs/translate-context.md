@@ -67,6 +67,51 @@ Based on the context extraction report, update:
 "Clean up the scratchpad.md file by moving completed work to appropriate documentation and resetting it for the next session. Preserve any ongoing context that might be needed."
 ```
 
+## Real-World Examples
+
+### Example 1: Bug Fix Pattern Extraction
+**Context**: Save button disabled issue resolved after finding default form validation error
+**Extraction**:
+```markdown
+TROUBLESHOOTING.md Entry:
+### Save Button Permanently Disabled
+**Symptom**: Save button remains disabled even with valid form input
+**Root Cause**: Default form state initializes destinations as [''] (array with empty string) 
+**Solution**: Change destinations = [''] to destinations = [] in TripDetailsEditForm.tsx
+**Prevention**: Always initialize form arrays as empty [] not with empty strings ['']
+**Testing**: Verify form validation logic with all required fields populated
+```
+
+### Example 2: Agent Learning Preservation
+**Context**: Integrity auditor incorrectly deleted navigation CLAUDE.md files
+**Extraction**:
+```markdown
+Agent Update (smartpack-integrity-auditor.md):
+### PROTECTED FILES - DO NOT DELETE
+- Navigation CLAUDE.md files in src/, components/, hooks/ directories
+- Purpose: Reduce token usage, provide quick navigation
+- Action: PRESERVE these files, they are NOT duplicates
+- Requirement: Read file contents before any deletion recommendation
+```
+
+### Example 3: Session Summary Template
+**Context**: Completed 2-day shipping deadline validation
+**Extraction**:
+```markdown
+DEVLOG.md Entry:
+### [2025-08-05] Ship Readiness Validation Complete
+**Agents Used**: functional-validator, bug-crusher, code-fixer
+**Key Achievement**: Resolved save button blocker, validated ship readiness
+**Technical Changes**:
+- Fixed TripDetailsEditForm.tsx line 22: destinations = []
+- Updated test validation to include all required form fields
+- Confirmed application ready for 2-day shipping deadline
+**Files Modified**: 
+- src/components/TripDetailsEditForm.tsx
+- playwright/ship-readiness-validation.spec.ts
+**Impact**: Core workflow functional, app ready for launch
+```
+
 ## Validation Checklist
 
 Before clearing conversation:

@@ -1,5 +1,11 @@
 # SmartPack Source Directory Navigation
 
+**⚠️ NAVIGATION GUIDE - DO NOT DELETE**  
+This file is a critical navigation aid that reduces token usage and improves agent efficiency.  
+It provides quick directory structure understanding without deep exploration.  
+**Purpose**: Directory inventory, file locations, architectural overview  
+**Status**: Protected file per `.claude/agents/smartpack-integrity-auditor.md`
+
 ## Directory Purpose
 The `src/` directory contains the complete React application source code, organized by feature and functionality rather than technical file type.
 

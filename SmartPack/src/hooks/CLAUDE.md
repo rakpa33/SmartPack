@@ -1,5 +1,11 @@
 # SmartPack Hooks Directory Navigation
 
+**⚠️ HOOKS DOCUMENTATION - DO NOT DELETE**  
+This file documents all custom hooks and their integration patterns.  
+Essential for understanding state management and business logic flow.  
+**Purpose**: Hook catalog, state patterns, integration guide  
+**Status**: Protected file per `.claude/agents/smartpack-integrity-auditor.md`
+
 ## Directory Purpose
 The `hooks/` directory contains custom React hooks that encapsulate business logic, state management, and side effects. Each hook follows React hooks conventions and TypeScript strict mode.
 

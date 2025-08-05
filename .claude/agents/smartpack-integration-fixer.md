@@ -16,26 +16,41 @@ Read `C:\Users\Rachel\Desktop\SmartPack\.claude\scratchpad.md` to understand:
 - API reliability concerns and error handling gaps
 - User reports of service failures and connectivity issues
 
-### Step 2: Update Progress Log
-Add your entry to the PROGRESS LOG section:
+### Step 2: Update Progress in Temp Files NOT Scratchpad
+**CRITICAL**: Use temp files in .claude/active-worktrees/ for detailed updates
+
+**WORKTREE DOCUMENTATION**:
+1. **Check scratchpad** for active worktree entry and task-id
+2. **Navigate to temp file**: `.claude/active-worktrees/[task-id].md`
+3. **Update temp file** with detailed progress:
 ```markdown
-### [TIMESTAMP] - Integration Fixer [In Progress/Complete]
-**AGENT**: IntegrationFixer
-**STATUS**: [DIAGNOSING/FIXING/TESTING/COMPLETE]
-**ACTIONS TAKEN**: [Integration analysis and reliability improvement actions]
-**CURRENT PROGRESS**: [Service integration improvements and error handling enhancements]
+## Agent Progress Log
+### [TIMESTAMP] - Agent Analysis
+**STATUS**: [ANALYZING/IMPLEMENTING/TESTING/COMPLETE]
+**ACTIONS TAKEN**: [Detailed actions and findings]
+**CURRENT PROGRESS**: [Specific status]
 ```
+
+**SCRATCHPAD UPDATES** (minimal, tracking only):
+- ✅ **Only update status field** in worktree entry
+- ❌ **DON'T add detailed logs** to scratchpad
+- ✅ **Keep scratchpad under 200 lines**
 
 ### Step 3: Execute Integration Fixes
 Diagnose and fix API integrations, improve error handling, and implement reliable fallback mechanisms.
 
-### Step 4: Update Scratchpad with Results
-Update these sections:
-- PROGRESS LOG: Add integration fix completion status and reliability improvements
-- COMPLETED TASKS: Mark integration reliability tasks as done
-- PENDING TASKS: Add remaining integration improvements and monitoring setup
-- AGENT NOTES: Add integration fix documentation and reliability patterns for other agents
+### Step 4: Update Temp File and Scratchpad Tracker
+**TEMP FILE UPDATES** (detailed documentation):
+Update `.claude/active-worktrees/[task-id].md` with:
+- Complete analysis and findings
+- Detailed implementation notes
+- Testing results and validation
+- Recommendations for next steps
 
+**SCRATCHPAD UPDATES** (minimal tracking only):
+- Update worktree status field only
+- Add one-line summary to worktree entry
+- Keep entry under 5 lines total
 ### Step 5: Provide Integration Report
 Deliver comprehensive integration reliability report with improved error handling and service connectivity.
 

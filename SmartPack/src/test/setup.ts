@@ -12,7 +12,7 @@ import { act } from '@testing-library/react';
 import { toHaveNoViolations } from 'jest-axe';
 
 // Extend Vitest matchers with jest-axe
-expect.extend({ toHaveNoViolations });
+expect.extend({ toHaveNoViolations } as any);
 
 // Initial React Testing Library configuration is done below with act wrapper
 
@@ -86,7 +86,7 @@ vi.mocked(fetch).mockResolvedValue(mockResponse as unknown as Response);
 process.env.TZ = 'UTC';
 
 // Global act wrapper for React state updates in tests
-global.actWrapper = (callback: () => void) => {
+(global as any).actWrapper = (callback: () => void) => {
   return act(() => {
     callback();
   });
@@ -101,7 +101,7 @@ configure({
   testIdAttribute: 'data-testid',
   
   // Enable automatic act wrapping for React 18+
-  asyncWrapper: async (cb) => {
+  asyncWrapper: async (cb: () => Promise<any>) => {
     let result;
     await act(async () => {
       result = await cb();

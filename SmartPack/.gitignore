@@ -47,3 +47,20 @@ junit.xml
 # Temporary files
 .tmp/
 .cache/
+
+# Manual validation artifacts (should be in temp-test-artifacts/)
+manual-validation-*.png
+mobile-validation-*.png
+playwright-results.xml
+
+# Allow essential navigation CLAUDE.md files but prevent other duplicate docs
+# (SmartPack/CLAUDE.md, src/CLAUDE.md, src/components/CLAUDE.md, src/hooks/CLAUDE.md are intentional)
+
+# Definitive test files (should be properly categorized)
+*definitive*.md
+*definitive*.cjs
+*definitive*.js
+
+# Legacy debug files
+debug-*.js
+debug-*.cjs

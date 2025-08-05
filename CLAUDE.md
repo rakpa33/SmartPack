@@ -68,14 +68,41 @@ SmartPack is a travel packing application built with React 18 + TypeScript + Vit
 - **Error Handling**: Comprehensive error boundaries with user-friendly messaging
 - **API Integration**: Proper error handling, loading states, timeout management
 
-## File Organization
+## Documentation Hierarchy & File Organization
 
-### Documentation Structure
-- `CLAUDE.md`: Project memory (this file)
-- `docs/development/DEVLOG.md`: Chronological development history
-- `docs/development/TROUBLESHOOTING.md`: Issue resolution database
-- `.claude/scratchpad.md`: Active session context sharing
-- `.claude/agents/`: Specialized agent definitions
+### Documentation Hierarchy Explained
+SmartPack uses a **layered documentation system** with specialized files for different purposes:
+
+#### 1. Project Memory (Root Level)
+- **`CLAUDE.md`** (this file): Project-wide memory, agent system, quality standards
+- **Purpose**: Central source of truth for project guidelines and patterns
+- **When to update**: Major architectural decisions, new agent patterns, quality standards
+
+#### 2. Technical Documentation (`docs/` directory)
+- **`docs/development/DEVLOG.md`**: Chronological development history
+- **`docs/development/TROUBLESHOOTING.md`**: Issue resolution database
+- **Purpose**: Detailed technical history and problem-solving patterns
+- **When to update**: After completing features, resolving bugs, discovering patterns
+
+#### 3. Navigation Files (Directory-Specific CLAUDE.md)
+**CRITICAL - DO NOT DELETE**: These are specialized navigation aids, NOT duplicates
+- **`SmartPack/CLAUDE.md`**: Main project navigation, commands, architecture
+- **`SmartPack/src/CLAUDE.md`**: Source directory structure and file purposes
+- **`SmartPack/src/components/CLAUDE.md`**: Component inventory and patterns
+- **`SmartPack/src/hooks/CLAUDE.md`**: Hooks documentation and usage patterns
+
+**Navigation File Benefits**:
+- ✅ Reduce token usage by 60-80% for directory exploration
+- ✅ Provide instant awareness of available files and patterns
+- ✅ Maintain consistency across agent interactions
+- ✅ Speed up development by eliminating redundant searches
+
+#### 4. Session Context (`.claude/` directory)
+- **`.claude/scratchpad.md`**: Active session context sharing between agents
+- **`.claude/agents/`**: Specialized agent definitions and capabilities
+- **`.claude/docs/translate-context.md`**: Context extraction workflow
+- **Purpose**: Real-time coordination and context preservation
+- **When to update**: During active development, before clearing conversations
 
 ### Context Preservation Protocol
 Before clearing conversations, use the context translation system:

@@ -16,25 +16,42 @@ Read `C:\Users\Rachel\Desktop\SmartPack\.claude\scratchpad.md` to understand:
 - Navigation friction points and usability concerns
 - Previous UX optimization attempts and results
 
-### Step 2: Update Progress Log
-Add your entry to the PROGRESS LOG section:
+### Step 2: Update Progress in Temp Files NOT Scratchpad
+**CRITICAL**: Use temp files in .claude/active-worktrees/ for detailed updates
+
+**WORKTREE DOCUMENTATION**:
+1. **Check scratchpad** for active worktree entry and task-id
+2. **Navigate to temp file**: `.claude/active-worktrees/[task-id].md`
+3. **Update temp file** with detailed UX optimization progress:
 ```markdown
-### [TIMESTAMP] - UX Flow Optimizer [In Progress/Complete]
-**AGENT**: UXFlowOptimizer
+## UX Flow Optimization Log
+### [TIMESTAMP] - UX Flow Optimizer
 **STATUS**: [ANALYZING/MAPPING/OPTIMIZING/COMPLETE]
-**ACTIONS TAKEN**: [User journey analysis and workflow optimization actions]
-**CURRENT PROGRESS**: [UX improvements implemented and workflow enhancements]
+**ACTIONS TAKEN**: [Detailed user journey analysis and optimizations]
+**WORKFLOWS IMPROVED**: [List of enhanced user flows]
+**CURRENT PROGRESS**: [Specific UX improvement status]
 ```
+
+**SCRATCHPAD UPDATES** (minimal, tracking only):
+- ✅ **Only update status field** in worktree entry
+- ❌ **DON'T add detailed logs** to scratchpad
+- ✅ **Keep scratchpad under 200 lines**
 
 ### Step 3: Execute UX Optimization
 Analyze and optimize user workflows, remove friction, and enhance interaction patterns.
 
-### Step 4: Update Scratchpad with Results
-Update these sections:
-- PROGRESS LOG: Add UX optimization completion status and workflow improvements
-- COMPLETED TASKS: Mark user journey optimization tasks as done
-- PENDING TASKS: Add remaining UX improvements and interaction refinements
-- AGENT NOTES: Add UX optimization documentation and workflow patterns for other agents
+### Step 4: Update Temp File and Scratchpad Tracker
+**TEMP FILE UPDATES** (detailed documentation):
+Update `.claude/active-worktrees/[task-id].md` with:
+- Complete UX flow analysis and improvements
+- User journey optimization details
+- Friction points resolved
+- Workflow enhancement documentation
+
+**SCRATCHPAD UPDATES** (minimal tracking only):
+- Update worktree status field only
+- Add one-line summary to worktree entry
+- Keep entry under 5 lines total
 
 ### Step 5: Provide UX Analysis
 Deliver comprehensive user experience optimization report with improved workflows and interaction patterns.

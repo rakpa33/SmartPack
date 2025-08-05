@@ -51,6 +51,8 @@ function reducer(state: TripFormState, action: TripFormAction): TripFormState {
       return { ...state, step: Math.max(0, state.step - 1) };
     case 'RESET_FORM':
       return { ...initialState, step: 2 }; // Reset to first-time user state
+    case 'SET_GENERATED_PACKING_LIST':
+      return { ...state, generatedPackingList: action.value };
     default:
       return state;
   }

@@ -16,15 +16,27 @@ Read `C:\Users\Rachel\Desktop\SmartPack\.claude\scratchpad.md` to understand:
 - Critical functional issues blocking ship
 - User-reported problems and symptoms
 
-### Step 2: Update Progress Log
-Add your entry to the PROGRESS LOG section:
+### Step 2: Update Progress in Temp Files NOT Scratchpad
+**CRITICAL**: Use temp files in .claude/active-worktrees/ for detailed updates
+
+**WORKTREE DOCUMENTATION**:
+1. **Check scratchpad** for active worktree entry and task-id
+2. **Create/update temp file**: `.claude/active-worktrees/[task-id].md`
+3. **Update temp file** with detailed findings:
 ```markdown
-### [TIMESTAMP] - Bug Crusher Analysis [In Progress/Complete]
-**AGENT**: BugCrusher
+## Bug Investigation Log
+### [TIMESTAMP] - Bug Crusher Analysis
 **STATUS**: [INVESTIGATING/REPRODUCING/DOCUMENTING/COMPLETE]
-**ACTIONS TAKEN**: [Bug investigation and documentation actions]
-**CRITICAL FINDINGS**: [Ship-blocking bugs identified]
+**ACTIONS TAKEN**: [Detailed bug investigation actions]
+**CRITICAL FINDINGS**: [Ship-blocking bugs with full details]
+**ROOT CAUSE**: [Detailed analysis]
+**REPRODUCTION STEPS**: [Complete steps]
 ```
+
+**SCRATCHPAD UPDATES** (minimal, tracking only):
+- ✅ **Only update status field** in worktree entry
+- ❌ **DON'T add detailed logs** to scratchpad
+- ✅ **Keep scratchpad under 200 lines**
 
 ### Step 3: Execute Bug Investigation
 Perform systematic bug hunting, reproduction, and documentation based on shipping priorities.
@@ -66,13 +78,18 @@ npm run dev
 - All testing MUST happen in worktree
 - Working on main branch invalidates the entire investigation
 
-### Step 5: Update Scratchpad with Results
-Update these sections:
-- PROGRESS LOG: Add bug analysis completion status and critical findings
-- COMPLETED TASKS: Mark bug investigation tasks as done
-- PENDING TASKS: Add specific bug fixes for code-fixer agent
-- AGENT NOTES: Add detailed bug reports and reproduction steps for other agents
-- ACTIVE WORKTREES: Document new worktree with status and assignment
+### Step 5: Update Temp File and Scratchpad Tracker
+**TEMP FILE UPDATES** (detailed documentation):
+Update `.claude/active-worktrees/[task-id].md` with:
+- Full bug analysis and root cause
+- Complete reproduction steps
+- Detailed fix recommendations
+- Testing results and validation status
+
+**SCRATCHPAD UPDATES** (minimal tracking only):
+- Update worktree status field only
+- Add one-line summary to worktree entry
+- Keep entry under 5 lines total
 
 Example Active Worktrees entry:
 ```markdown

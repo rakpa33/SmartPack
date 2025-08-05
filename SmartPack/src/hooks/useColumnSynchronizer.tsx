@@ -7,7 +7,7 @@ import { useTripForm } from './useTripForm';
  * This ensures columns update when form data changes
  */
 export function useColumnSynchronizer() {
-  const { updateColumnVisibilityFromTrip } = useColumnLayout();
+  const { resetLayout } = useColumnLayout();
   const { state } = useTripForm();
 
   // Check if user has meaningful trip data (not first-time user)
@@ -20,10 +20,10 @@ export function useColumnSynchronizer() {
   // Synchronize column visibility when trip data changes
   useEffect(() => {
     if (hasTrip) {
-      // User has trip data, show all columns
-      updateColumnVisibilityFromTrip();
+      // User has trip data, reset to default layout (shows all columns)
+      resetLayout();
     }
-  }, [hasTrip, updateColumnVisibilityFromTrip]);
+  }, [hasTrip, resetLayout]);
 
   return { hasTrip };
 }

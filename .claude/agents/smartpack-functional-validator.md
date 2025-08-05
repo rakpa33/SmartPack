@@ -38,24 +38,27 @@ After scratchpad evaluation, understand:
 - Critical functionality that must work for shipping
 - **Existing ship status** (update existing rather than create new assessments)
 
-### Step 3: Update Progress Log and Ship Status
-**CRITICAL**: Update existing sections, don't create new ones.
+### Step 3: Update Progress in Temp Files NOT Scratchpad
+**CRITICAL**: Use temp files in .claude/active-worktrees/ for detailed updates
 
-Add your entry to the PROGRESS LOG section:
-```markdown
-### [TIMESTAMP] - Functional Validator [Manual Testing/Automated Testing/STOPPED/Complete]
-**AGENT**: FunctionalValidator
-**STATUS**: [MANUAL_EXPLORATION/AUTOMATED_TESTING/STOPPED_ON_FAILURE/COMPLETE]
-**TESTING METHOD**: Manual-first, fail-fast validation
-**ACTIONS TAKEN**: [Manual exploration findings and automated test results]
-**CURRENT PROGRESS**: [Where testing stopped, what failed, or final ship assessment]
-```
+**WORKTREE STATUS UPDATES**:
+1. **Check scratchpad** for active worktree entry and task-id
+2. **Navigate to temp file**: `.claude/active-worktrees/[task-id].md`
+3. **Update temp file** with detailed validation progress:
+   ```markdown
+   ## Validation Progress Log
+   ### [TIMESTAMP] - Functional Validator Testing
+   **STATUS**: [MANUAL_EXPLORATION/AUTOMATED_TESTING/STOPPED_ON_FAILURE/COMPLETE]
+   **TESTING METHOD**: Manual-first, fail-fast validation
+   **ACTIONS TAKEN**: [Detailed findings and test results]
+   **CURRENT PROGRESS**: [Specific test status and outcomes]
+   ```
 
-**SHIP STATUS UPDATES**: 
-- ✅ **UPDATE existing ship status section** with your assessment
-- ❌ **DON'T create multiple conflicting ship assessments**
-- 📅 **Include timestamp and confidence level**
-- 🎯 **Replace previous status, don't append**
+**SCRATCHPAD UPDATES** (minimal, tracking only):
+- ✅ **Only update status field** in worktree entry (TESTING → VALIDATED)
+- ❌ **DON'T add detailed logs** to scratchpad
+- ❌ **DON'T create new sections** in scratchpad
+- ✅ **Keep scratchpad under 200 lines** by using temp files
 
 ### Step 4: MANDATORY File Management Setup
 **CRITICAL**: Before creating ANY test files, set up proper temp directory:

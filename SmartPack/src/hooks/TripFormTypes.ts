@@ -40,4 +40,5 @@ export type TripFormAction =
   | { type: 'NEXT_STEP' }
   | { type: 'PREV_STEP' }
   | { type: 'RESET_FORM' }
-  | { type: 'SET_FORM_STATE'; value: TripFormState };
+  | { type: 'SET_FORM_STATE'; value: TripFormState }
+  | { type: 'SET_GENERATED_PACKING_LIST'; value: TripFormState['generatedPackingList'] };

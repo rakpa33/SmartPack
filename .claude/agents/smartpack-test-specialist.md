@@ -16,15 +16,25 @@ Read `C:\Users\Rachel\Desktop\SmartPack\.claude\scratchpad.md` to understand:
 - Specific components or tests that need attention
 - Pending tasks assigned to you
 
-### Step 2: Update Progress Log
-Add your entry to the PROGRESS LOG section:
+### Step 2: Update Progress in Temp Files NOT Scratchpad
+**CRITICAL**: Use temp files in .claude/active-worktrees/ for detailed updates
+
+**WORKTREE DOCUMENTATION**:
+1. **Check scratchpad** for active worktree entry and task-id
+2. **Navigate to temp file**: `.claude/active-worktrees/[task-id].md`
+3. **Update temp file** with detailed progress:
 ```markdown
-### [TIMESTAMP] - Test Specialist Analysis [In Progress/Complete]
-**AGENT**: TestSpecialist
-**STATUS**: [ANALYZING/FIXING/TESTING/COMPLETE]
-**ACTIONS TAKEN**: [Specific actions performed]
-**CURRENT FINDINGS**: [Key discoveries]
+## Agent Progress Log
+### [TIMESTAMP] - Agent Analysis
+**STATUS**: [ANALYZING/IMPLEMENTING/TESTING/COMPLETE]
+**ACTIONS TAKEN**: [Detailed actions and findings]
+**CURRENT PROGRESS**: [Specific status]
 ```
+
+**SCRATCHPAD UPDATES** (minimal, tracking only):
+- ✅ **Only update status field** in worktree entry
+- ❌ **DON'T add detailed logs** to scratchpad
+- ✅ **Keep scratchpad under 200 lines**
 
 ### Step 3: MANDATORY File Management Setup
 **CRITICAL**: Before creating ANY test files, set up proper temp directory:
@@ -46,13 +56,18 @@ mkdir -p SmartPack/temp-test-artifacts
 ### Step 4: Execute Specialized Testing Work
 Perform focused testing based on session context and requirements.
 
-### Step 5: Update Scratchpad with Results
-Update these sections:
-- PROGRESS LOG: Add completion status and results
-- COMPLETED TASKS: Mark your tasks as done
-- PENDING TASKS: Add any new issues discovered
-- AGENT NOTES: Add technical findings for other agents
+### Step 5: Update Temp File and Scratchpad Tracker
+**TEMP FILE UPDATES** (detailed documentation):
+Update `.claude/active-worktrees/[task-id].md` with:
+- Complete analysis and findings
+- Detailed implementation notes
+- Testing results and validation
+- Recommendations for next steps
 
+**SCRATCHPAD UPDATES** (minimal tracking only):
+- Update worktree status field only
+- Add one-line summary to worktree entry
+- Keep entry under 5 lines total
 ### Step 5: Provide Summary
 Give a concise summary of what was accomplished and any next steps needed.
 

@@ -16,15 +16,25 @@ Read `C:\Users\Rachel\Desktop\SmartPack\.claude\scratchpad.md` to understand:
 - System-wide testing requirements
 - Coverage analysis needs
 
-### Step 2: Update Progress Log
-Add your entry to the PROGRESS LOG section:
+### Step 2: Update Progress in Temp Files NOT Scratchpad
+**CRITICAL**: Use temp files in .claude/active-worktrees/ for detailed updates
+
+**WORKTREE DOCUMENTATION**:
+1. **Check scratchpad** for active worktree entry and task-id
+2. **Navigate to temp file**: `.claude/active-worktrees/[task-id].md`
+3. **Update temp file** with detailed progress:
 ```markdown
-### [TIMESTAMP] - Test Auditor Analysis [In Progress/Complete]
-**AGENT**: TestAuditor
-**STATUS**: [AUDITING/ANALYZING/REPORTING/COMPLETE]
-**ACTIONS TAKEN**: [Comprehensive audit actions]
-**CURRENT FINDINGS**: [System-wide test status]
+## Agent Progress Log
+### [TIMESTAMP] - Agent Analysis
+**STATUS**: [ANALYZING/IMPLEMENTING/TESTING/COMPLETE]
+**ACTIONS TAKEN**: [Detailed actions and findings]
+**CURRENT PROGRESS**: [Specific status]
 ```
+
+**SCRATCHPAD UPDATES** (minimal, tracking only):
+- ✅ **Only update status field** in worktree entry
+- ❌ **DON'T add detailed logs** to scratchpad
+- ✅ **Keep scratchpad under 200 lines**
 
 ### Step 3: MANDATORY File Management Setup
 **CRITICAL**: Before creating ANY test files, set up proper temp directory:
@@ -46,13 +56,18 @@ mkdir -p SmartPack/temp-test-artifacts
 ### Step 4: Execute Comprehensive Audit
 Perform system-wide test analysis and reporting based on session requirements.
 
-### Step 5: Update Scratchpad with Results
-Update these sections:
-- PROGRESS LOG: Add audit completion status and comprehensive results
-- COMPLETED TASKS: Mark audit tasks as done
-- PENDING TASKS: Add system-wide issues that need specialist attention
-- AGENT NOTES: Add comprehensive audit findings for other agents
+### Step 5: Update Temp File and Scratchpad Tracker
+**TEMP FILE UPDATES** (detailed documentation):
+Update `.claude/active-worktrees/[task-id].md` with:
+- Complete analysis and findings
+- Detailed implementation notes
+- Testing results and validation
+- Recommendations for next steps
 
+**SCRATCHPAD UPDATES** (minimal tracking only):
+- Update worktree status field only
+- Add one-line summary to worktree entry
+- Keep entry under 5 lines total
 ### Step 6: Provide Comprehensive Report
 Deliver detailed test suite status, coverage analysis, and system-wide recommendations.
 

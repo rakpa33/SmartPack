@@ -406,7 +406,7 @@ export function ColumnLayoutProvider({
           // Only update if currently showing just one column (first-time user state)
           if (currentVisibleCount === 1 && columnVisibility.tripDetails) {
             console.log('🔄 User transition detected: first-time → experienced, showing all columns');
-            setColumnVisibility(prev => enforceVisibilityRules(DEFAULT_VISIBILITY, deviceType));
+            setColumnVisibility(() => enforceVisibilityRules(DEFAULT_VISIBILITY, deviceType));
           }
         }
       } catch (error) {

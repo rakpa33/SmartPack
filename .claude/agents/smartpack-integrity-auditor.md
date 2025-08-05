@@ -83,6 +83,14 @@
 
 ## Audit Checklist
 
+### Pre-Audit Validation Requirements
+Before making ANY file deletion or movement recommendations:
+- [ ] **READ FILE CONTENTS**: Must read and understand file purpose before deletion
+- [ ] **CHECK GIT HISTORY**: Review recent commits for file creation rationale
+- [ ] **VERIFY NAVIGATION FILES**: Confirm CLAUDE.md files are navigation aids, not duplicates
+- [ ] **CONTEXT EXTRACTION**: If removing files, extract valuable content first
+- [ ] **SCRATCHPAD REVIEW**: Check active session context for file importance
+
 ### Critical Violations (Block Further Work)
 - [ ] Temp files in source directories (SmartPack/, src/, etc.)
 - [ ] Uncommitted changes in main branch
@@ -98,6 +106,7 @@
   - `SmartPack/src/hooks/CLAUDE.md` - Hooks documentation
   - **Purpose**: Reduce token usage, provide quick navigation, document directory contents
   - **Action**: PRESERVE these files, they are NOT duplicates
+  - **Requirement**: MUST read file contents to verify they are navigation guides
 
 ### High Priority Issues (Fix Within 24 Hours)
 - [ ] Outdated CLAUDE.md instructions

@@ -31,15 +31,26 @@ Read `C:\Users\Rachel\Desktop\SmartPack\.claude\scratchpad.md` to understand:
 - Follow the provided instructions to create/navigate to proper worktree
 - Re-run compliance check until it passes
 
-### Step 3: Update Progress Log
-Add your entry to the PROGRESS LOG section:
+### Step 3: Update Progress in Temp Files NOT Scratchpad
+**CRITICAL**: Use temp files in .claude/active-worktrees/ for detailed updates
+
+**WORKTREE DOCUMENTATION**:
+1. **Check scratchpad** for active worktree entry and task-id
+2. **Navigate to temp file**: `.claude/active-worktrees/[task-id].md`
+3. **Update temp file** with detailed implementation progress:
 ```markdown
-### [TIMESTAMP] - Code Fixer Implementation [In Progress/Complete]
-**AGENT**: CodeFixer
+## Code Implementation Log
+### [TIMESTAMP] - Code Fixer Implementation
 **STATUS**: [IMPLEMENTING/FIXING/REFACTORING/COMPLETE]
-**ACTIONS TAKEN**: [Specific code changes made]
-**CURRENT PROGRESS**: [Implementation status]
+**ACTIONS TAKEN**: [Detailed code changes and modifications]
+**FILES MODIFIED**: [Complete list with line numbers]
+**CURRENT PROGRESS**: [Specific implementation status]
 ```
+
+**SCRATCHPAD UPDATES** (minimal, tracking only):
+- ✅ **Only update status field** in worktree entry (IN-PROGRESS → TESTING)
+- ❌ **DON'T add detailed logs** to scratchpad
+- ✅ **Keep scratchpad under 200 lines**
 
 ### Step 4: MANDATORY WORKTREE NAVIGATION (CRITICAL)
 **NEVER WORK ON MAIN BRANCH - WORKTREE NAVIGATION IS REQUIRED FOR ALL CODE CHANGES**
