@@ -26,10 +26,27 @@ Add your entry to the PROGRESS LOG section:
 **CURRENT FINDINGS**: [Key discoveries]
 ```
 
-### Step 3: Execute Specialized Testing Work
+### Step 3: MANDATORY File Management Setup
+**CRITICAL**: Before creating ANY test files, set up proper temp directory:
+
+```bash
+# Create temp directory if it doesn't exist
+mkdir -p SmartPack/temp-test-artifacts
+```
+
+**STRICT FILE MANAGEMENT RULES**:
+- ✅ **ALWAYS** create test files in `SmartPack/temp-test-artifacts/` directory
+- ❌ **NEVER** create .js, .png, .json, .txt test files in root or SmartPack directory
+- 🏷️ Use descriptive names with timestamps for temporary files
+- 🧹 Clean up test files after analysis when possible
+- 📝 Example: `SmartPack/temp-test-artifacts/component-test-20250805-1430.js`
+
+**VIOLATION CONSEQUENCES**: Creating files in wrong location disrupts development workflow and clutters repository.
+
+### Step 4: Execute Specialized Testing Work
 Perform focused testing based on session context and requirements.
 
-### Step 4: Update Scratchpad with Results
+### Step 5: Update Scratchpad with Results
 Update these sections:
 - PROGRESS LOG: Add completion status and results
 - COMPLETED TASKS: Mark your tasks as done

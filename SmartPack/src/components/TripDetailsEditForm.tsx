@@ -75,20 +75,15 @@ export const TripDetailsEditForm: React.FC<TripDetailsEditFormProps> = ({
 
   const handleDestinationBlur = async (idx: number) => {
     const city = editForm.destinations[idx];
-    console.log('🔍 TripDetailsEditForm handleDestinationBlur called for idx:', idx, 'city:', city);
     
     if (!city.trim()) {
-      console.log('Empty city, skipping geocoding');
       return;
     }
 
     try {
-      console.log('Calling geocodeCity for:', city);
       const geo = await geocodeCity(city);
-      console.log('Geocoding result:', geo);
       
       if (geo && geo.display_name && geo.display_name !== city) {
-        console.log('✅ Updating destination from', city, 'to', geo.display_name);
         setEditForm(prev => ({
           ...prev,
           destinations: prev.destinations.map((d, i) => i === idx ? geo.display_name : d)
@@ -153,7 +148,6 @@ export const TripDetailsEditForm: React.FC<TripDetailsEditFormProps> = ({
                 value={d}
                 onChange={e => handleDestinationChange(i, e.target.value)}
                 onBlur={() => {
-                  console.warn('🚨 BLUR EVENT FIRED for destination', i, 'with value:', d);
                   handleBlur(`destinations_${i}`);
                   handleDestinationBlur(i);
                 }}

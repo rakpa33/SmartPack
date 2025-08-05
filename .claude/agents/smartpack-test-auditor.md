@@ -26,17 +26,34 @@ Add your entry to the PROGRESS LOG section:
 **CURRENT FINDINGS**: [System-wide test status]
 ```
 
-### Step 3: Execute Comprehensive Audit
+### Step 3: MANDATORY File Management Setup
+**CRITICAL**: Before creating ANY test files, set up proper temp directory:
+
+```bash
+# Create temp directory if it doesn't exist
+mkdir -p SmartPack/temp-test-artifacts
+```
+
+**STRICT FILE MANAGEMENT RULES**:
+- ✅ **ALWAYS** create test files in `SmartPack/temp-test-artifacts/` directory
+- ❌ **NEVER** create .js, .png, .json, .txt test files in root or SmartPack directory
+- 🏷️ Use descriptive names with timestamps for temporary files
+- 🧹 Clean up test files after analysis when possible
+- 📝 Example: `SmartPack/temp-test-artifacts/audit-report-20250805-1430.js`
+
+**VIOLATION CONSEQUENCES**: Creating files in wrong location disrupts development workflow and clutters repository.
+
+### Step 4: Execute Comprehensive Audit
 Perform system-wide test analysis and reporting based on session requirements.
 
-### Step 4: Update Scratchpad with Results
+### Step 5: Update Scratchpad with Results
 Update these sections:
 - PROGRESS LOG: Add audit completion status and comprehensive results
 - COMPLETED TASKS: Mark audit tasks as done
 - PENDING TASKS: Add system-wide issues that need specialist attention
 - AGENT NOTES: Add comprehensive audit findings for other agents
 
-### Step 5: Provide Comprehensive Report
+### Step 6: Provide Comprehensive Report
 Deliver detailed test suite status, coverage analysis, and system-wide recommendations.
 
 ---

@@ -1,0 +1,471 @@
+<testsuites id="" name="" tests="16" failures="8" skipped="0" errors="0" time="43.188224">
+<testsuite name="final-validation-20250805.spec.js" timestamp="2025-08-05T01:20:24.948Z" hostname="chromium" tests="4" failures="2" skipped="0" time="80.523" errors="0">
+<testcase name="SHIP-CRITICAL: Location Autocomplete Manual Context" classname="final-validation-20250805.spec.js" time="13.566">
+<system-out>
+<![CDATA[🔍 MANUAL VALIDATION: Starting firsthand exploration of SmartPack app
+✅ MANUAL STEP 1: Navigated to SmartPack application
+✅ MANUAL STEP 2: Application loaded completely
+🔍 MANUAL STEP 3: Looking for destination input field...
+✅ MANUAL STEP 4: Found destination input field
+🧪 MANUAL STEP 5: Testing critical Osaka autocomplete behavior...
+✅ MANUAL STEP 6: Entered "Osaka" in destination field
+🔍 MANUAL STEP 7: Triggering blur event (clicking away from field)...
+⏳ MANUAL STEP 8: Waited 3 seconds for potential geocoding
+🔍 MANUAL OBSERVATION: Input value after blur: "Osaka, Osaka Prefecture, Japan"
+✅ MANUAL FINDING: Autocomplete WORKED - value changed to: Osaka, Osaka Prefecture, Japan
+🚀 SHIP READY: Location autocomplete is functional
+🧪 MANUAL STEP 9: Testing additional cities for pattern confirmation...
+🔍 Testing Tokyo...
+📍 Tokyo result: "Tokyo, Japan"
+🔍 Testing Paris...
+📍 Paris result: "Paris, Ile-de-France, Metropolitan France, France"
+🔍 Testing London...
+📍 London result: "London"
+✅ MANUAL CONTEXT BUILDING COMPLETE
+]]>
+</system-out>
+</testcase>
+<testcase name="SHIP-CRITICAL: Application Launch Test" classname="final-validation-20250805.spec.js" time="3.662">
+<system-out>
+<![CDATA[🚀 AUTOMATED TEST 1: Application Launch
+✅ TEST 1 PASSED: Application launches successfully
+]]>
+</system-out>
+</testcase>
+<testcase name="SHIP-CRITICAL: Trip Form Creation Test" classname="final-validation-20250805.spec.js" time="31.66">
+<failure message="final-validation-20250805.spec.js:97:1 SHIP-CRITICAL: Trip Form Creation Test" type="FAILURE">
+<![CDATA[  [chromium] › final-validation-20250805.spec.js:97:1 › SHIP-CRITICAL: Trip Form Creation Test ─────
+
+    Test timeout of 30000ms exceeded.
+
+    Error: page.fill: Test timeout of 30000ms exceeded.
+    Call log:
+      - waiting for locator('input[name="tripName"]')
+
+
+      102 |   
+      103 |   // Fill out basic trip form
+    > 104 |   await page.fill('input[name="tripName"]', 'Test Trip to Tokyo');
+          |              ^
+      105 |   await page.fill('input[data-testid="destination-input-0"]', 'Tokyo');
+      106 |   await page.fill('input[name="startDate"]', '2025-08-10');
+      107 |   await page.fill('input[name="endDate"]', '2025-08-15');
+        at C:\Users\Rachel\Desktop\SmartPack\SmartPack\playwright\final-validation-20250805.spec.js:104:14
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\test-results\final-validation-20250805--35c05-CAL-Trip-Form-Creation-Test-chromium\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ..\test-results\final-validation-20250805--35c05-CAL-Trip-Form-Creation-Test-chromium\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\test-results\final-validation-20250805--35c05-CAL-Trip-Form-Creation-Test-chromium\error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[🚀 AUTOMATED TEST 2: Trip Form Creation
+
+[[ATTACHMENT|test-results\final-validation-20250805--35c05-CAL-Trip-Form-Creation-Test-chromium\test-failed-1.png]]
+
+[[ATTACHMENT|test-results\final-validation-20250805--35c05-CAL-Trip-Form-Creation-Test-chromium\video.webm]]
+
+[[ATTACHMENT|test-results\final-validation-20250805--35c05-CAL-Trip-Form-Creation-Test-chromium\error-context.md]]
+]]>
+</system-out>
+</testcase>
+<testcase name="SHIP-CRITICAL: Data Persistence Test" classname="final-validation-20250805.spec.js" time="31.635">
+<failure message="final-validation-20250805.spec.js:115:1 SHIP-CRITICAL: Data Persistence Test" type="FAILURE">
+<![CDATA[  [chromium] › final-validation-20250805.spec.js:115:1 › SHIP-CRITICAL: Data Persistence Test ──────
+
+    Test timeout of 30000ms exceeded.
+
+    Error: page.fill: Test timeout of 30000ms exceeded.
+    Call log:
+      - waiting for locator('input[name="tripName"]')
+
+
+      120 |   
+      121 |   // Fill form data
+    > 122 |   await page.fill('input[name="tripName"]', 'Persistence Test Trip');
+          |              ^
+      123 |   await page.fill('input[data-testid="destination-input-0"]', 'London');
+      124 |   
+      125 |   // Save form
+        at C:\Users\Rachel\Desktop\SmartPack\SmartPack\playwright\final-validation-20250805.spec.js:122:14
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\test-results\final-validation-20250805--e0605-TICAL-Data-Persistence-Test-chromium\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ..\test-results\final-validation-20250805--e0605-TICAL-Data-Persistence-Test-chromium\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\test-results\final-validation-20250805--e0605-TICAL-Data-Persistence-Test-chromium\error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[🚀 AUTOMATED TEST 3: Data Persistence
+
+[[ATTACHMENT|test-results\final-validation-20250805--e0605-TICAL-Data-Persistence-Test-chromium\test-failed-1.png]]
+
+[[ATTACHMENT|test-results\final-validation-20250805--e0605-TICAL-Data-Persistence-Test-chromium\video.webm]]
+
+[[ATTACHMENT|test-results\final-validation-20250805--e0605-TICAL-Data-Persistence-Test-chromium\error-context.md]]
+]]>
+</system-out>
+</testcase>
+</testsuite>
+<testsuite name="final-validation-20250805.spec.js" timestamp="2025-08-05T01:20:24.948Z" hostname="firefox" tests="4" failures="2" skipped="0" time="82.464" errors="0">
+<testcase name="SHIP-CRITICAL: Location Autocomplete Manual Context" classname="final-validation-20250805.spec.js" time="15.963">
+<system-out>
+<![CDATA[🔍 MANUAL VALIDATION: Starting firsthand exploration of SmartPack app
+✅ MANUAL STEP 1: Navigated to SmartPack application
+✅ MANUAL STEP 2: Application loaded completely
+🔍 MANUAL STEP 3: Looking for destination input field...
+✅ MANUAL STEP 4: Found destination input field
+🧪 MANUAL STEP 5: Testing critical Osaka autocomplete behavior...
+✅ MANUAL STEP 6: Entered "Osaka" in destination field
+🔍 MANUAL STEP 7: Triggering blur event (clicking away from field)...
+⏳ MANUAL STEP 8: Waited 3 seconds for potential geocoding
+🔍 MANUAL OBSERVATION: Input value after blur: "Osaka, Osaka Prefecture, Japan"
+✅ MANUAL FINDING: Autocomplete WORKED - value changed to: Osaka, Osaka Prefecture, Japan
+🚀 SHIP READY: Location autocomplete is functional
+🧪 MANUAL STEP 9: Testing additional cities for pattern confirmation...
+🔍 Testing Tokyo...
+📍 Tokyo result: "Tokyo"
+🔍 Testing Paris...
+📍 Paris result: "Tokyo, Japan"
+🔍 Testing London...
+📍 London result: "Paris, Ile-de-France, Metropolitan France, France"
+✅ MANUAL CONTEXT BUILDING COMPLETE
+]]>
+</system-out>
+</testcase>
+<testcase name="SHIP-CRITICAL: Application Launch Test" classname="final-validation-20250805.spec.js" time="6.146">
+<system-out>
+<![CDATA[🚀 AUTOMATED TEST 1: Application Launch
+✅ TEST 1 PASSED: Application launches successfully
+]]>
+</system-out>
+</testcase>
+<testcase name="SHIP-CRITICAL: Trip Form Creation Test" classname="final-validation-20250805.spec.js" time="30.197">
+<failure message="final-validation-20250805.spec.js:97:1 SHIP-CRITICAL: Trip Form Creation Test" type="FAILURE">
+<![CDATA[  [firefox] › final-validation-20250805.spec.js:97:1 › SHIP-CRITICAL: Trip Form Creation Test ──────
+
+    Test timeout of 30000ms exceeded.
+
+    Error: page.waitForLoadState: Test timeout of 30000ms exceeded.
+
+       99 |   
+      100 |   await page.goto('http://localhost:5174');
+    > 101 |   await page.waitForLoadState('networkidle');
+          |              ^
+      102 |   
+      103 |   // Fill out basic trip form
+      104 |   await page.fill('input[name="tripName"]', 'Test Trip to Tokyo');
+        at C:\Users\Rachel\Desktop\SmartPack\SmartPack\playwright\final-validation-20250805.spec.js:101:14
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\test-results\final-validation-20250805--35c05-CAL-Trip-Form-Creation-Test-firefox\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ..\test-results\final-validation-20250805--35c05-CAL-Trip-Form-Creation-Test-firefox\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\test-results\final-validation-20250805--35c05-CAL-Trip-Form-Creation-Test-firefox\error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[🚀 AUTOMATED TEST 2: Trip Form Creation
+
+[[ATTACHMENT|test-results\final-validation-20250805--35c05-CAL-Trip-Form-Creation-Test-firefox\test-failed-1.png]]
+
+[[ATTACHMENT|test-results\final-validation-20250805--35c05-CAL-Trip-Form-Creation-Test-firefox\video.webm]]
+
+[[ATTACHMENT|test-results\final-validation-20250805--35c05-CAL-Trip-Form-Creation-Test-firefox\error-context.md]]
+]]>
+</system-out>
+</testcase>
+<testcase name="SHIP-CRITICAL: Data Persistence Test" classname="final-validation-20250805.spec.js" time="30.158">
+<failure message="final-validation-20250805.spec.js:115:1 SHIP-CRITICAL: Data Persistence Test" type="FAILURE">
+<![CDATA[  [firefox] › final-validation-20250805.spec.js:115:1 › SHIP-CRITICAL: Data Persistence Test ───────
+
+    Test timeout of 30000ms exceeded.
+
+    Error: page.fill: Test timeout of 30000ms exceeded.
+    Call log:
+      - waiting for locator('input[name="tripName"]')
+
+
+      120 |   
+      121 |   // Fill form data
+    > 122 |   await page.fill('input[name="tripName"]', 'Persistence Test Trip');
+          |              ^
+      123 |   await page.fill('input[data-testid="destination-input-0"]', 'London');
+      124 |   
+      125 |   // Save form
+        at C:\Users\Rachel\Desktop\SmartPack\SmartPack\playwright\final-validation-20250805.spec.js:122:14
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\test-results\final-validation-20250805--e0605-TICAL-Data-Persistence-Test-firefox\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ..\test-results\final-validation-20250805--e0605-TICAL-Data-Persistence-Test-firefox\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\test-results\final-validation-20250805--e0605-TICAL-Data-Persistence-Test-firefox\error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[🚀 AUTOMATED TEST 3: Data Persistence
+
+[[ATTACHMENT|test-results\final-validation-20250805--e0605-TICAL-Data-Persistence-Test-firefox\test-failed-1.png]]
+
+[[ATTACHMENT|test-results\final-validation-20250805--e0605-TICAL-Data-Persistence-Test-firefox\video.webm]]
+
+[[ATTACHMENT|test-results\final-validation-20250805--e0605-TICAL-Data-Persistence-Test-firefox\error-context.md]]
+]]>
+</system-out>
+</testcase>
+</testsuite>
+<testsuite name="final-validation-20250805.spec.js" timestamp="2025-08-05T01:20:24.948Z" hostname="webkit" tests="4" failures="2" skipped="0" time="86.806" errors="0">
+<testcase name="SHIP-CRITICAL: Location Autocomplete Manual Context" classname="final-validation-20250805.spec.js" time="18.671">
+<system-out>
+<![CDATA[🔍 MANUAL VALIDATION: Starting firsthand exploration of SmartPack app
+✅ MANUAL STEP 1: Navigated to SmartPack application
+✅ MANUAL STEP 2: Application loaded completely
+🔍 MANUAL STEP 3: Looking for destination input field...
+✅ MANUAL STEP 4: Found destination input field
+🧪 MANUAL STEP 5: Testing critical Osaka autocomplete behavior...
+✅ MANUAL STEP 6: Entered "Osaka" in destination field
+🔍 MANUAL STEP 7: Triggering blur event (clicking away from field)...
+⏳ MANUAL STEP 8: Waited 3 seconds for potential geocoding
+🔍 MANUAL OBSERVATION: Input value after blur: "Osaka, Osaka Prefecture, Japan"
+✅ MANUAL FINDING: Autocomplete WORKED - value changed to: Osaka, Osaka Prefecture, Japan
+🚀 SHIP READY: Location autocomplete is functional
+🧪 MANUAL STEP 9: Testing additional cities for pattern confirmation...
+🔍 Testing Tokyo...
+📍 Tokyo result: "Tokyo, Japan"
+🔍 Testing Paris...
+📍 Paris result: "Paris"
+🔍 Testing London...
+📍 London result: "Paris, Ile-de-France, Metropolitan France, France"
+✅ MANUAL CONTEXT BUILDING COMPLETE
+]]>
+</system-out>
+</testcase>
+<testcase name="SHIP-CRITICAL: Application Launch Test" classname="final-validation-20250805.spec.js" time="4.728">
+<system-out>
+<![CDATA[🚀 AUTOMATED TEST 1: Application Launch
+✅ TEST 1 PASSED: Application launches successfully
+]]>
+</system-out>
+</testcase>
+<testcase name="SHIP-CRITICAL: Trip Form Creation Test" classname="final-validation-20250805.spec.js" time="31.683">
+<failure message="final-validation-20250805.spec.js:97:1 SHIP-CRITICAL: Trip Form Creation Test" type="FAILURE">
+<![CDATA[  [webkit] › final-validation-20250805.spec.js:97:1 › SHIP-CRITICAL: Trip Form Creation Test ───────
+
+    Test timeout of 30000ms exceeded.
+
+    Error: page.fill: Test timeout of 30000ms exceeded.
+    Call log:
+      - waiting for locator('input[name="tripName"]')
+
+
+      102 |   
+      103 |   // Fill out basic trip form
+    > 104 |   await page.fill('input[name="tripName"]', 'Test Trip to Tokyo');
+          |              ^
+      105 |   await page.fill('input[data-testid="destination-input-0"]', 'Tokyo');
+      106 |   await page.fill('input[name="startDate"]', '2025-08-10');
+      107 |   await page.fill('input[name="endDate"]', '2025-08-15');
+        at C:\Users\Rachel\Desktop\SmartPack\SmartPack\playwright\final-validation-20250805.spec.js:104:14
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\test-results\final-validation-20250805--35c05-CAL-Trip-Form-Creation-Test-webkit\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ..\test-results\final-validation-20250805--35c05-CAL-Trip-Form-Creation-Test-webkit\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\test-results\final-validation-20250805--35c05-CAL-Trip-Form-Creation-Test-webkit\error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[🚀 AUTOMATED TEST 2: Trip Form Creation
+
+[[ATTACHMENT|test-results\final-validation-20250805--35c05-CAL-Trip-Form-Creation-Test-webkit\test-failed-1.png]]
+
+[[ATTACHMENT|test-results\final-validation-20250805--35c05-CAL-Trip-Form-Creation-Test-webkit\video.webm]]
+
+[[ATTACHMENT|test-results\final-validation-20250805--35c05-CAL-Trip-Form-Creation-Test-webkit\error-context.md]]
+]]>
+</system-out>
+</testcase>
+<testcase name="SHIP-CRITICAL: Data Persistence Test" classname="final-validation-20250805.spec.js" time="31.724">
+<failure message="final-validation-20250805.spec.js:115:1 SHIP-CRITICAL: Data Persistence Test" type="FAILURE">
+<![CDATA[  [webkit] › final-validation-20250805.spec.js:115:1 › SHIP-CRITICAL: Data Persistence Test ────────
+
+    Test timeout of 30000ms exceeded.
+
+    Error: page.fill: Test timeout of 30000ms exceeded.
+    Call log:
+      - waiting for locator('input[name="tripName"]')
+
+
+      120 |   
+      121 |   // Fill form data
+    > 122 |   await page.fill('input[name="tripName"]', 'Persistence Test Trip');
+          |              ^
+      123 |   await page.fill('input[data-testid="destination-input-0"]', 'London');
+      124 |   
+      125 |   // Save form
+        at C:\Users\Rachel\Desktop\SmartPack\SmartPack\playwright\final-validation-20250805.spec.js:122:14
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\test-results\final-validation-20250805--e0605-TICAL-Data-Persistence-Test-webkit\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ..\test-results\final-validation-20250805--e0605-TICAL-Data-Persistence-Test-webkit\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\test-results\final-validation-20250805--e0605-TICAL-Data-Persistence-Test-webkit\error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[🚀 AUTOMATED TEST 3: Data Persistence
+
+[[ATTACHMENT|test-results\final-validation-20250805--e0605-TICAL-Data-Persistence-Test-webkit\test-failed-1.png]]
+
+[[ATTACHMENT|test-results\final-validation-20250805--e0605-TICAL-Data-Persistence-Test-webkit\video.webm]]
+
+[[ATTACHMENT|test-results\final-validation-20250805--e0605-TICAL-Data-Persistence-Test-webkit\error-context.md]]
+]]>
+</system-out>
+</testcase>
+</testsuite>
+<testsuite name="final-validation-20250805.spec.js" timestamp="2025-08-05T01:20:24.948Z" hostname="Mobile Chrome" tests="4" failures="2" skipped="0" time="75.184" errors="0">
+<testcase name="SHIP-CRITICAL: Location Autocomplete Manual Context" classname="final-validation-20250805.spec.js" time="11.434">
+<system-out>
+<![CDATA[🔍 MANUAL VALIDATION: Starting firsthand exploration of SmartPack app
+✅ MANUAL STEP 1: Navigated to SmartPack application
+✅ MANUAL STEP 2: Application loaded completely
+🔍 MANUAL STEP 3: Looking for destination input field...
+✅ MANUAL STEP 4: Found destination input field
+🧪 MANUAL STEP 5: Testing critical Osaka autocomplete behavior...
+✅ MANUAL STEP 6: Entered "Osaka" in destination field
+🔍 MANUAL STEP 7: Triggering blur event (clicking away from field)...
+⏳ MANUAL STEP 8: Waited 3 seconds for potential geocoding
+🔍 MANUAL OBSERVATION: Input value after blur: "Osaka, Osaka Prefecture, Japan"
+✅ MANUAL FINDING: Autocomplete WORKED - value changed to: Osaka, Osaka Prefecture, Japan
+🚀 SHIP READY: Location autocomplete is functional
+🧪 MANUAL STEP 9: Testing additional cities for pattern confirmation...
+🔍 Testing Tokyo...
+📍 Tokyo result: "Tokyo, Japan"
+🔍 Testing Paris...
+📍 Paris result: "Paris, Ile-de-France, Metropolitan France, France"
+🔍 Testing London...
+📍 London result: "London"
+✅ MANUAL CONTEXT BUILDING COMPLETE
+]]>
+</system-out>
+</testcase>
+<testcase name="SHIP-CRITICAL: Application Launch Test" classname="final-validation-20250805.spec.js" time="1.754">
+<system-out>
+<![CDATA[🚀 AUTOMATED TEST 1: Application Launch
+✅ TEST 1 PASSED: Application launches successfully
+]]>
+</system-out>
+</testcase>
+<testcase name="SHIP-CRITICAL: Trip Form Creation Test" classname="final-validation-20250805.spec.js" time="31.024">
+<failure message="final-validation-20250805.spec.js:97:1 SHIP-CRITICAL: Trip Form Creation Test" type="FAILURE">
+<![CDATA[  [Mobile Chrome] › final-validation-20250805.spec.js:97:1 › SHIP-CRITICAL: Trip Form Creation Test 
+
+    Test timeout of 30000ms exceeded.
+
+    Error: page.fill: Test timeout of 30000ms exceeded.
+    Call log:
+      - waiting for locator('input[name="tripName"]')
+
+
+      102 |   
+      103 |   // Fill out basic trip form
+    > 104 |   await page.fill('input[name="tripName"]', 'Test Trip to Tokyo');
+          |              ^
+      105 |   await page.fill('input[data-testid="destination-input-0"]', 'Tokyo');
+      106 |   await page.fill('input[name="startDate"]', '2025-08-10');
+      107 |   await page.fill('input[name="endDate"]', '2025-08-15');
+        at C:\Users\Rachel\Desktop\SmartPack\SmartPack\playwright\final-validation-20250805.spec.js:104:14
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\test-results\final-validation-20250805--35c05-CAL-Trip-Form-Creation-Test-Mobile-Chrome\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ..\test-results\final-validation-20250805--35c05-CAL-Trip-Form-Creation-Test-Mobile-Chrome\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\test-results\final-validation-20250805--35c05-CAL-Trip-Form-Creation-Test-Mobile-Chrome\error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[🚀 AUTOMATED TEST 2: Trip Form Creation
+
+[[ATTACHMENT|test-results\final-validation-20250805--35c05-CAL-Trip-Form-Creation-Test-Mobile-Chrome\test-failed-1.png]]
+
+[[ATTACHMENT|test-results\final-validation-20250805--35c05-CAL-Trip-Form-Creation-Test-Mobile-Chrome\video.webm]]
+
+[[ATTACHMENT|test-results\final-validation-20250805--35c05-CAL-Trip-Form-Creation-Test-Mobile-Chrome\error-context.md]]
+]]>
+</system-out>
+</testcase>
+<testcase name="SHIP-CRITICAL: Data Persistence Test" classname="final-validation-20250805.spec.js" time="30.972">
+<failure message="final-validation-20250805.spec.js:115:1 SHIP-CRITICAL: Data Persistence Test" type="FAILURE">
+<![CDATA[  [Mobile Chrome] › final-validation-20250805.spec.js:115:1 › SHIP-CRITICAL: Data Persistence Test ─
+
+    Test timeout of 30000ms exceeded.
+
+    Error: page.fill: Test timeout of 30000ms exceeded.
+    Call log:
+      - waiting for locator('input[name="tripName"]')
+
+
+      120 |   
+      121 |   // Fill form data
+    > 122 |   await page.fill('input[name="tripName"]', 'Persistence Test Trip');
+          |              ^
+      123 |   await page.fill('input[data-testid="destination-input-0"]', 'London');
+      124 |   
+      125 |   // Save form
+        at C:\Users\Rachel\Desktop\SmartPack\SmartPack\playwright\final-validation-20250805.spec.js:122:14
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\test-results\final-validation-20250805--e0605-TICAL-Data-Persistence-Test-Mobile-Chrome\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ..\test-results\final-validation-20250805--e0605-TICAL-Data-Persistence-Test-Mobile-Chrome\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\test-results\final-validation-20250805--e0605-TICAL-Data-Persistence-Test-Mobile-Chrome\error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[🚀 AUTOMATED TEST 3: Data Persistence
+
+[[ATTACHMENT|test-results\final-validation-20250805--e0605-TICAL-Data-Persistence-Test-Mobile-Chrome\test-failed-1.png]]
+
+[[ATTACHMENT|test-results\final-validation-20250805--e0605-TICAL-Data-Persistence-Test-Mobile-Chrome\video.webm]]
+
+[[ATTACHMENT|test-results\final-validation-20250805--e0605-TICAL-Data-Persistence-Test-Mobile-Chrome\error-context.md]]
+]]>
+</system-out>
+</testcase>
+</testsuite>
+</testsuites>

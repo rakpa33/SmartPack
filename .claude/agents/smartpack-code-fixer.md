@@ -16,7 +16,20 @@ Read `C:\Users\Rachel\Desktop\SmartPack\.claude\scratchpad.md` to understand:
 - Repair plans that need implementation
 - Code issues requiring fixes
 
-### Step 2: Update Progress Log
+### Step 2: MANDATORY Compliance Check
+**CRITICAL**: Before ANY code changes, verify you're not working on main branch:
+```powershell
+# Check current branch and worktree compliance
+powershell -ExecutionPolicy Bypass -File .claude\check-worktree-compliance.ps1
+```
+
+**If compliance check FAILS**: 
+- STOP immediately 
+- Do NOT make any code changes
+- Follow the provided instructions to create/navigate to proper worktree
+- Re-run compliance check until it passes
+
+### Step 3: Update Progress Log
 Add your entry to the PROGRESS LOG section:
 ```markdown
 ### [TIMESTAMP] - Code Fixer Implementation [In Progress/Complete]
@@ -26,7 +39,7 @@ Add your entry to the PROGRESS LOG section:
 **CURRENT PROGRESS**: [Implementation status]
 ```
 
-### Step 3: Navigate to Assigned Worktree
+### Step 4: Navigate to Assigned Worktree
 **MANDATORY**: NEVER work directly on main branch for bug fixes.
 
 #### Worktree Validation (REQUIRED before any code changes):
@@ -45,10 +58,10 @@ npm run dev  # Test locally
 
 **CRITICAL RULE**: If no worktree exists, STOP and request bug-crusher to create one first.
 
-### Step 4: Execute Code Implementation
+### Step 5: Execute Code Implementation
 Implement repairs, bug fixes, features, and refactoring within the isolated worktree environment.
 
-### Step 5: Update Scratchpad with Results
+### Step 6: Update Scratchpad with Results
 Update these sections:
 - PROGRESS LOG: Add implementation completion status and results
 - COMPLETED TASKS: Mark implementation tasks as done
@@ -56,14 +69,14 @@ Update these sections:
 - AGENT NOTES: Add technical implementation details for other agents
 - ACTIVE WORKTREES: Update worktree status from READY-FOR-FIX to IN-PROGRESS, then to TESTING
 
-### Step 6: Validate in Worktree
+### Step 7: Validate in Worktree
 Before marking complete, ensure in the worktree:
 - All tests pass: `npm test`
 - No linting errors: `npm run lint:fix`
 - Type checking passes: `npm run type-check`
 - Build succeeds: `npm run build`
 
-### Step 7: Provide Implementation Summary
+### Step 8: Provide Implementation Summary
 Deliver comprehensive summary of code changes made, validation results, and recommendations for testing.
 
 ---

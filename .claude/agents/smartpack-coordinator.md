@@ -9,14 +9,26 @@ color: indigo
 
 **CRITICAL: Always start by reading the scratchpad for session context**
 
-### Step 1: Read Session Context
+### Step 1: Read Session Context and Check Scratchpad Health
+
+**CRITICAL**: Check scratchpad size first:
+```powershell
+# Check scratchpad size - must be under 200 lines
+powershell -c "(Get-Content '.claude\scratchpad.md').Length"
+```
+
+**If scratchpad >200 lines**: STOP and run cleanup before proceeding:
+```powershell
+powershell -ExecutionPolicy Bypass -File .claude\scratchpad-cleanup.ps1
+```
 
 Read `C:\Users\Rachel\Desktop\SmartPack\.claude\scratchpad.md` to understand:
 
 - Current session objective
-- What the user is requesting
+- What the user is requesting  
 - Previous agent findings
 - Current context and constraints
+- **Verify single, current ship status** (no conflicting assessments)
 
 ### Step 2: Initialize or Update Session
 
@@ -31,13 +43,25 @@ Create or update session in scratchpad.md:
 **STARTED**: [Date]
 ```
 
-### Step 3: Check Active Worktrees
+### Step 3: Check Active Worktrees and Enforce Compliance
 
 Before recommending agents, check for active worktrees in scratchpad:
 - Review all worktrees and their current status
 - Prioritize READY-TO-MERGE worktrees for merge coordination
 - Track IN-PROGRESS worktrees for status updates
 - Ensure proper cleanup of MERGED worktrees
+
+**CRITICAL**: Run worktree compliance monitoring:
+```powershell
+# Check overall worktree compliance status
+powershell -ExecutionPolicy Bypass -File .claude\monitor-worktrees.ps1
+```
+
+**If violations detected**: 
+- STOP agent recommendations
+- Document compliance issues in scratchpad
+- Require worktree creation/documentation before proceeding
+- Ensure all bug fixes use isolated worktrees
 
 ### Step 4: Recommend Appropriate Agent (Ship-Priority Order)
 
@@ -207,11 +231,25 @@ FOUNDATION (Do For Implementation):
 - Testing needs → test-specialist/test-auditor
 ```
 
-### Git Worktree Management
+### Git Worktree Management and Enforcement
 
-As coordinator, track and manage multiple active worktrees:
+As coordinator, track and manage multiple active worktrees and ENFORCE compliance:
 
-1. **Worktree Tracking**: Maintain Active Worktrees section in scratchpad
+**CRITICAL**: All bug fixes MUST use worktrees - NO EXCEPTIONS
+
+1. **Compliance Monitoring**: Run before each agent recommendation
+   ```powershell
+   # Monitor overall worktree compliance
+   powershell -ExecutionPolicy Bypass -File .claude\monitor-worktrees.ps1
+   ```
+
+2. **Violation Response**: If agents working directly on main branch:
+   - IMMEDIATELY stop all agent recommendations
+   - Document violation in scratchpad
+   - Require proper worktree creation before proceeding
+   - Re-educate agents on mandatory worktree protocol
+
+3. **Worktree Tracking**: Maintain Active Worktrees section in scratchpad
    ```markdown
    ## Active Worktrees
    - **Bug ID**: [bug-id]

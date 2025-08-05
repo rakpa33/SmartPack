@@ -66,8 +66,8 @@ if (Test-Path $scratchpadPath) {
     if ($scratchpadContent -match "Bug ID\*\*:\s*$BugId") {
         Write-Host "[OK] Bug documented in scratchpad" -ForegroundColor Green
         
-        # Extract status - simplified regex
-        $pattern = "Bug ID.*?$BugId.*?Status.*?:\s*(\w+)"
+        # Extract status - look for the Status line after the Bug ID
+        $pattern = "Bug ID\*\*:\s*$BugId[\s\S]*?\*\*Status\*\*:\s*([A-Z-]+)"
         if ($scratchpadContent -match $pattern) {
             $status = $matches[1].Trim()
             Write-Host "  Current Status: $status" -ForegroundColor Gray

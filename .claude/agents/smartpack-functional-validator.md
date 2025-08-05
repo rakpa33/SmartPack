@@ -22,14 +22,25 @@ Read `C:\Users\Rachel\Desktop\SmartPack\.claude\scratchpad.md` and evaluate:
 3. Move validation patterns to permanent documentation
 4. Reset scratchpad to current session template
 
-### Step 2: Read Current Session Context
+### Step 2: Read Current Session Context and Check Scratchpad Health
+**CRITICAL**: Verify scratchpad is manageable size:
+```powershell
+# Check scratchpad size - should be under 200 lines
+powershell -c "(Get-Content '.claude\scratchpad.md').Length"
+```
+
+**If scratchpad >200 lines**: Clean before proceeding with validation work.
+
 After scratchpad evaluation, understand:
 - Current session objective and shipping timeline
 - Feature completion status and validation requirements
 - Previous validation attempts and results
 - Critical functionality that must work for shipping
+- **Existing ship status** (update existing rather than create new assessments)
 
-### Step 3: Update Progress Log
+### Step 3: Update Progress Log and Ship Status
+**CRITICAL**: Update existing sections, don't create new ones.
+
 Add your entry to the PROGRESS LOG section:
 ```markdown
 ### [TIMESTAMP] - Functional Validator [Manual Testing/Automated Testing/STOPPED/Complete]
@@ -40,13 +51,36 @@ Add your entry to the PROGRESS LOG section:
 **CURRENT PROGRESS**: [Where testing stopped, what failed, or final ship assessment]
 ```
 
-### Step 4: Check for Active Worktrees
+**SHIP STATUS UPDATES**: 
+- ✅ **UPDATE existing ship status section** with your assessment
+- ❌ **DON'T create multiple conflicting ship assessments**
+- 📅 **Include timestamp and confidence level**
+- 🎯 **Replace previous status, don't append**
+
+### Step 4: MANDATORY File Management Setup
+**CRITICAL**: Before creating ANY test files, set up proper temp directory:
+
+```bash
+# Create temp directory if it doesn't exist
+mkdir -p SmartPack/temp-test-artifacts
+```
+
+**STRICT FILE MANAGEMENT RULES**:
+- ✅ **ALWAYS** create test files in `SmartPack/temp-test-artifacts/` directory
+- ❌ **NEVER** create .js, .png, .json, .txt test files in root or SmartPack directory
+- 🏷️ Use descriptive names with timestamps for temporary files
+- 🧹 Clean up test files after analysis when possible
+- 📝 Example: `SmartPack/temp-test-artifacts/validation-test-20250805-1430.js`
+
+**VIOLATION CONSEQUENCES**: Creating files in wrong location disrupts development workflow and clutters repository.
+
+### Step 5: Check for Active Worktrees
 Before validation, check scratchpad for any worktrees in TESTING status:
 - If worktree exists with TESTING status, validate the fix in that worktree first
 - Navigate to worktree: `cd ../SmartPack-fix-[bug-id]/SmartPack`
 - Run validation in isolated environment before approving merge
 
-### Step 5: Execute Manual-First, Fail-Fast Validation
+### Step 6: Execute Manual-First, Fail-Fast Validation
 **Phase 1**: 30-45 minutes manual exploration to build context
 **Phase 2**: Sequential automated testing, STOP immediately on any failure
 **Phase 3**: Ship assessment only if ALL tests pass
