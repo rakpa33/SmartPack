@@ -1,0 +1,25 @@
+{
+  "shipBlockers": [
+    {
+      "id": "SB005",
+      "title": "Destination Field Missing",
+      "severity": "CRITICAL",
+      "description": "Cannot find destination input field in trip form",
+      "reproduction": "Access trip form and look for destination field",
+      "impact": "Core form functionality missing"
+    }
+  ],
+  "highPriority": [],
+  "mediumPriority": [],
+  "lowPriority": [],
+  "jsErrors": [],
+  "consoleMessages": [
+    "debug: [vite] connecting...",
+    "debug: [vite] connected.",
+    "info: %cDownload the React DevTools for a better development experience: https://reactjs.org/link/react-devtools font-weight:bold",
+    "debug: [vite] connecting...",
+    "debug: [vite] connected.",
+    "info: %cDownload the React DevTools for a better development experience: https://reactjs.org/link/react-devtools font-weight:bold"
+  ],
+  "testResults": {}
+}

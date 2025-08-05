@@ -29,15 +29,38 @@ Add your entry to the PROGRESS LOG section:
 ### Step 3: Execute Bug Investigation
 Perform systematic bug hunting, reproduction, and documentation based on shipping priorities.
 
-### Step 4: Update Scratchpad with Results
+### Step 4: Create Git Worktree for Isolated Investigation
+For each critical bug identified:
+```bash
+# Create worktree with descriptive naming
+git worktree add ../SmartPack-fix-[bug-id] -b fix/[bug-description]-[YYYYMMDD]
+
+# Example:
+git worktree add ../SmartPack-fix-nav-001 -b fix/navigation-broken-20250804
+```
+
+### Step 5: Update Scratchpad with Results
 Update these sections:
 - PROGRESS LOG: Add bug analysis completion status and critical findings
 - COMPLETED TASKS: Mark bug investigation tasks as done
 - PENDING TASKS: Add specific bug fixes for code-fixer agent
 - AGENT NOTES: Add detailed bug reports and reproduction steps for other agents
+- ACTIVE WORKTREES: Document new worktree with status and assignment
 
-### Step 5: Provide Bug Report
-Deliver comprehensive bug documentation with reproduction steps and fix recommendations.
+Example Active Worktrees entry:
+```markdown
+## Active Worktrees
+- **Bug ID**: nav-001
+- **Branch**: fix/navigation-broken-20250804
+- **Location**: ../SmartPack-fix-nav-001
+- **Status**: INVESTIGATING
+- **Assigned To**: bug-crusher → code-fixer
+- **Root Cause**: Navigation state not persisting after refresh
+- **Fix Plan**: Update localStorage sync in navigation hook
+```
+
+### Step 6: Provide Bug Report
+Deliver comprehensive bug documentation with reproduction steps, fix recommendations, and worktree location.
 
 ---
 
@@ -77,6 +100,27 @@ Deliver comprehensive bug documentation with reproduction steps and fix recommen
 3. **Analyze Root Causes**: Deep dive into technical causes and failure points
 4. **Assess Ship Impact**: Critical vs non-critical bug classification
 5. **Create Fix Plans**: Detailed recommendations for resolution
+
+### Git Worktree Protocol
+1. **Create Worktree**: For each ship-critical bug, create isolated worktree
+   ```bash
+   git worktree add ../SmartPack-fix-[bug-id] -b fix/[description]-[YYYYMMDD]
+   ```
+2. **Navigate to Worktree**: Investigate bug in isolated environment
+   ```bash
+   cd ../SmartPack-fix-[bug-id]/SmartPack
+   npm install  # If needed
+   npm run dev  # Test locally
+   ```
+3. **Document in Scratchpad**: Track all active worktrees with status
+4. **Handoff to Code-Fixer**: Provide worktree location and fix plan
+5. **Worktree Status Tracking**:
+   - INVESTIGATING: Bug analysis in progress
+   - READY-FOR-FIX: Root cause identified, ready for code-fixer
+   - IN-PROGRESS: Fix being implemented (code-fixer)
+   - TESTING: Fix validation (functional-validator)
+   - READY-TO-MERGE: Approved for merge
+   - MERGED: Successfully merged to main
 
 ### Ship-Critical Bug Classification
 #### SHIP BLOCKERS (Must Fix Before Launch)
@@ -151,10 +195,18 @@ Before marking investigation complete:
 - **Affected Components**: [List of components/files involved]
 - **Browser/Device Impact**: [Cross-platform testing results]
 
+## Git Worktree Information
+- **Bug ID**: [bug-id]
+- **Branch**: fix/[description]-[YYYYMMDD]
+- **Location**: ../SmartPack-fix-[bug-id]
+- **Status**: READY-FOR-FIX
+- **Assigned To**: code-fixer
+
 ## Fix Recommendations
 - **Immediate Actions**: [Specific steps for code-fixer]
 - **Related Issues**: [Other bugs that might be connected]
 - **Testing Requirements**: [How to verify the fix]
+- **Worktree Instructions**: Navigate to [worktree location] to implement fix
 
 ## Ship Decision
 **RECOMMENDATION**: [GO/NO-GO/CONDITIONAL]

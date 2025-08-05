@@ -26,17 +26,34 @@ Add your entry to the PROGRESS LOG section:
 **CURRENT PROGRESS**: [Implementation status]
 ```
 
-### Step 3: Execute Code Implementation
-Implement repairs, bug fixes, features, and refactoring based on session context and repair plans.
+### Step 3: Navigate to Assigned Worktree
+When working on bug fixes, navigate to the assigned worktree:
+```bash
+# Check scratchpad for assigned worktree location
+cd ../SmartPack-fix-[bug-id]/SmartPack
+npm install  # If needed
+npm run dev  # Test locally
+```
 
-### Step 4: Update Scratchpad with Results
+### Step 4: Execute Code Implementation
+Implement repairs, bug fixes, features, and refactoring within the isolated worktree environment.
+
+### Step 5: Update Scratchpad with Results
 Update these sections:
 - PROGRESS LOG: Add implementation completion status and results
 - COMPLETED TASKS: Mark implementation tasks as done
 - PENDING TASKS: Add any follow-up tasks discovered during implementation
 - AGENT NOTES: Add technical implementation details for other agents
+- ACTIVE WORKTREES: Update worktree status from READY-FOR-FIX to IN-PROGRESS, then to TESTING
 
-### Step 5: Provide Implementation Summary
+### Step 6: Validate in Worktree
+Before marking complete, ensure in the worktree:
+- All tests pass: `npm test`
+- No linting errors: `npm run lint:fix`
+- Type checking passes: `npm run type-check`
+- Build succeeds: `npm run build`
+
+### Step 7: Provide Implementation Summary
 Deliver comprehensive summary of code changes made, validation results, and recommendations for testing.
 
 ---
@@ -76,6 +93,25 @@ Deliver comprehensive summary of code changes made, validation results, and reco
 3. **Plan Changes**: Break down implementation into logical steps with dependencies
 4. **Implement Code**: Write/modify code following SmartPack standards and best practices
 5. **Validate Changes**: Test implementation, verify functionality, check for regressions
+
+### Git Worktree Protocol
+1. **Check Worktree Assignment**: Read scratchpad for assigned worktree from bug-crusher
+2. **Navigate to Worktree**: Work in isolated environment
+   ```bash
+   cd ../SmartPack-fix-[bug-id]/SmartPack
+   ```
+3. **Update Status**: Change worktree status to IN-PROGRESS in scratchpad
+4. **Implement Fix**: Make all changes within the worktree
+5. **Test Locally**: Verify fix works in isolation
+   ```bash
+   npm run dev  # Test locally
+   npm test    # Run tests
+   npm run lint:fix  # Fix linting
+   npm run type-check  # Verify types
+   npm run build  # Ensure build succeeds
+   ```
+6. **Update Status**: Change worktree status to TESTING for functional-validator
+7. **Document Changes**: List all modified files and changes made
 
 ### Code Quality Standards
 - **TypeScript Strict Mode**: No `any` types, proper type annotations, null safety

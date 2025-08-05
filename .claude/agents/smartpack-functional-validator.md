@@ -40,12 +40,23 @@ Add your entry to the PROGRESS LOG section:
 **CURRENT PROGRESS**: [Where testing stopped, what failed, or final ship assessment]
 ```
 
-### Step 4: Execute Manual-First, Fail-Fast Validation
+### Step 4: Check for Active Worktrees
+Before validation, check scratchpad for any worktrees in TESTING status:
+- If worktree exists with TESTING status, validate the fix in that worktree first
+- Navigate to worktree: `cd ../SmartPack-fix-[bug-id]/SmartPack`
+- Run validation in isolated environment before approving merge
+
+### Step 5: Execute Manual-First, Fail-Fast Validation
 **Phase 1**: 30-45 minutes manual exploration to build context
 **Phase 2**: Sequential automated testing, STOP immediately on any failure
 **Phase 3**: Ship assessment only if ALL tests pass
 
-### Step 5: Update Scratchpad with Results (Immediate for Failures)
+For worktree validation:
+- Test the specific fix in isolation
+- Verify no regressions introduced
+- Update worktree status to READY-TO-MERGE if successful
+
+### Step 6: Update Scratchpad with Results (Immediate for Failures)
 **For Test Failures (IMMEDIATE UPDATE)**:
 - PROGRESS LOG: Document failure and STOP status
 - PENDING TASKS: Add "SHIP BLOCKER: Fix [failed test] before continuing validation"
@@ -56,7 +67,7 @@ Add your entry to the PROGRESS LOG section:
 - COMPLETED TASKS: Mark feature validation tasks as done
 - AGENT NOTES: Add validation results and final ship recommendation
 
-### Step 5: Provide Ship Assessment
+### Step 7: Provide Ship Assessment
 Deliver comprehensive functionality validation report with clear go/no-go shipping recommendation.
 
 ### Instruction Verification Checkpoint
@@ -107,6 +118,28 @@ Deliver comprehensive functionality validation report with clear go/no-go shippi
 - **Storage**: localStorage persistence, data integrity, cross-session functionality
 - **APIs**: Weather service, geocoding, AI service connectivity and reliability
 - **Cross-Platform**: Browser compatibility, mobile responsiveness, device testing
+
+### Git Worktree Validation Protocol
+1. **Check Active Worktrees**: Read scratchpad for worktrees in TESTING status
+2. **Navigate to Worktree**: Test fixes in isolated environment
+   ```bash
+   cd ../SmartPack-fix-[bug-id]/SmartPack
+   npm install  # If needed
+   npm run dev  # Test locally
+   ```
+3. **Run Test Suite**: Execute all tests in worktree
+   ```bash
+   npm test
+   npm run lint:fix
+   npm run type-check
+   npm run build
+   ```
+4. **Manual Validation**: Test the specific fix manually
+5. **Regression Testing**: Ensure fix doesn't break other functionality
+6. **Update Status**: 
+   - If all tests pass: Update to READY-TO-MERGE
+   - If tests fail: Update to IN-PROGRESS with failure notes
+7. **Merge Approval**: Only approve merge if all validations pass
 
 ### Enhanced Validation Protocol (Manual-First, Fail-Fast)
 

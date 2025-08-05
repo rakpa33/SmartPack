@@ -31,7 +31,15 @@ Create or update session in scratchpad.md:
 **STARTED**: [Date]
 ```
 
-### Step 3: Recommend Appropriate Agent (Ship-Priority Order)
+### Step 3: Check Active Worktrees
+
+Before recommending agents, check for active worktrees in scratchpad:
+- Review all worktrees and their current status
+- Prioritize READY-TO-MERGE worktrees for merge coordination
+- Track IN-PROGRESS worktrees for status updates
+- Ensure proper cleanup of MERGED worktrees
+
+### Step 4: Recommend Appropriate Agent (Ship-Priority Order)
 
 **SHIP-CRITICAL AGENTS (Use First for 2-Day Timeline):**
 
@@ -55,9 +63,9 @@ Create or update session in scratchpad.md:
 - **smartpack-test-auditor**: System-wide test analysis, comprehensive validation
 - **smartpack-context-extractor**: Conversation context preservation before session cleanup
 
-### Step 4: Update Scratchpad
+### Step 5: Update Scratchpad
 
-Add specific task to PENDING TASKS and provide context for the recommended agent.
+Add specific task to PENDING TASKS, provide context for the recommended agent, and track worktree assignments.
 
 ---
 
@@ -199,12 +207,53 @@ FOUNDATION (Do For Implementation):
 - Testing needs → test-specialist/test-auditor
 ```
 
+### Git Worktree Management
+
+As coordinator, track and manage multiple active worktrees:
+
+1. **Worktree Tracking**: Maintain Active Worktrees section in scratchpad
+   ```markdown
+   ## Active Worktrees
+   - **Bug ID**: [bug-id]
+   - **Branch**: fix/[description]-[YYYYMMDD]
+   - **Location**: ../SmartPack-fix-[bug-id]
+   - **Status**: [INVESTIGATING/READY-FOR-FIX/IN-PROGRESS/TESTING/READY-TO-MERGE/MERGED]
+   - **Assigned To**: [current agent]
+   - **Priority**: [SHIP-BLOCKER/HIGH/LOW]
+   ```
+
+2. **Status Management**:
+   - INVESTIGATING: bug-crusher analyzing issue
+   - READY-FOR-FIX: Ready for code-fixer implementation
+   - IN-PROGRESS: code-fixer implementing fix
+   - TESTING: functional-validator validating fix
+   - READY-TO-MERGE: Approved for merge to main
+   - MERGED: Successfully merged, ready for cleanup
+
+3. **Merge Coordination**:
+   ```bash
+   # After functional-validator approves
+   cd ../../SmartPack
+   git checkout main
+   git merge fix/[description]-[YYYYMMDD]
+   
+   # Cleanup after merge
+   git worktree remove ../SmartPack-fix-[bug-id]
+   git branch -d fix/[description]-[YYYYMMDD]
+   ```
+
+4. **Priority Management**:
+   - SHIP-BLOCKER worktrees get immediate attention
+   - Multiple worktrees can exist for parallel bug fixing
+   - Ensure proper cleanup after merges
+
 ### Handoff Protocol Management
 
 1. **Information First**: Always use information-gathering agents before execution agents
 2. **Clear Handoffs**: Document findings in scratchpad before next agent
 3. **Validation Loop**: Include functional-validator in major change workflows
 4. **Ship Readiness**: Regular check-ins with functional-validator on timeline
+5. **Worktree Handoffs**: Track worktree assignments between agents
 
 ## SHIP-FOCUSED QUALITY STANDARDS
 

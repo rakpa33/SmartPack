@@ -38,7 +38,9 @@
       "Bash(git rm:*)",
       "WebFetch(domain:docs.anthropic.com)",
       "Bash(npx vite:*)",
-      "Bash(set)"
+      "Bash(set)",
+      "Bash(pkill:*)",
+      "Bash(true)"
     ],
     "deny": []
   }
