@@ -1,0 +1,7 @@
+
+> smartpack@0.0.0 test
+> vitest run 2
+
+
+[1m[46m RUN [49m[22m [36mv3.2.4 [39m[90mC:/Users/Rachel/Desktop/SmartPack/SmartPack[39m
+
