@@ -1,7 +1,0 @@
-
-> smartpack@0.0.0 test
-> vitest run --no-color 2
-
-
- RUN  v3.2.4 C:/Users/Rachel/Desktop/SmartPack/SmartPack
-
