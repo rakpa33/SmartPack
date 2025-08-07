@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  
+  <!-- Root document element -->
+  <xs:element name="document">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="metadata" type="metadataType" minOccurs="0"/>
+        <xs:element name="title" type="xs:string"/>
+        <xs:element name="document-info" type="documentInfoType"/>
+        <xs:element name="cross-references" type="crossReferencesType" minOccurs="0"/>
+        <xs:element name="content" type="contentType"/>
+        <xs:element name="navigation" type="navigationType" minOccurs="0"/>
+      </xs:sequence>
+      <xs:attribute name="id" type="xs:string" use="required"/>
+      <xs:attribute name="type" type="documentTypeEnum" use="required"/>
+      <xs:attribute name="version" type="xs:string" use="required"/>
+      <xs:attribute name="last-updated" type="xs:date" use="required"/>
+    </xs:complexType>
+  </xs:element>
+
+  <!-- Document type enumeration -->
+  <xs:simpleType name="documentTypeEnum">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="worktree-management"/>
+      <xs:enumeration value="scratchpad-management"/>
+      <xs:enumeration value="context-management"/>
+      <xs:enumeration value="documentation"/>
+      <xs:enumeration value="agent"/>
+      <xs:enumeration value="agent-auditor"/>
+      <xs:enumeration value="agent-descriptions"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <!-- Metadata type -->
+  <xs:complexType name="metadataType">
+    <xs:sequence>
+      <xs:any minOccurs="0" maxOccurs="unbounded" processContents="lax"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <!-- Document info type -->
+  <xs:complexType name="documentInfoType">
+    <xs:sequence>
+      <xs:element name="type" type="xs:string"/>
+      <xs:element name="parsing-instructions" type="parsingInstructionsType"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <!-- Parsing instructions type -->
+  <xs:complexType name="parsingInstructionsType">
+    <xs:sequence>
+      <xs:element name="instruction" type="xs:string" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <!-- Cross references type -->
+  <xs:complexType name="crossReferencesType">
+    <xs:sequence>
+      <xs:element name="reference" maxOccurs="unbounded">
+        <xs:complexType>
+          <xs:attribute name="type" type="xs:string" use="required"/>
+          <xs:attribute name="target" type="xs:string" use="required"/>
+          <xs:attribute name="id" type="xs:string" use="required"/>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <!-- Content type -->
+  <xs:complexType name="contentType" mixed="true">
+    <xs:sequence>
+      <xs:element name="section" type="sectionType" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <!-- Section type -->
+  <xs:complexType name="sectionType" mixed="true">
+    <xs:sequence>
+      <xs:element name="title" type="xs:string" minOccurs="0"/>
+      <xs:element name="text" type="xs:string" minOccurs="0"/>
+      <xs:element name="list" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="code-block" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="subsection" type="sectionType" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute name="id" type="xs:string"/>
+    <xs:attribute name="level" type="xs:integer"/>
+  </xs:complexType>
+
+  <!-- Navigation type -->
+  <xs:complexType name="navigationType">
+    <xs:sequence>
+      <xs:element name="related-documents">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="document" maxOccurs="unbounded">
+              <xs:complexType>
+                <xs:simpleContent>
+                  <xs:extension base="xs:string">
+                    <xs:attribute name="href" type="xs:string" use="required"/>
+                  </xs:extension>
+                </xs:simpleContent>
+              </xs:complexType>
+            </xs:element>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+</xs:schema>

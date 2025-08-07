@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document id="smartpack-integrity-auditor" type="agent-auditor" version="1.0" last-updated="2025-08-07">
+  <metadata>
+    <agentId>smartpack-integrity-auditor</agentId>
+    <specialization>Codebase integrity, quality assurance, and workflow optimization</specialization>
+  </metadata>
+  <title>SmartPack Integrity Auditor Agent</title>
+  <document-info>
+    <type>agent-auditor</type>
+    <parsing-instructions>
+      <instruction>Use section tags to navigate document structure</instruction>
+      <instruction>Check cross-references for related documents</instruction>
+      <instruction>Code blocks contain executable examples</instruction>
+      <instruction>Lists contain actionable items or requirements</instruction>
+    </parsing-instructions>
+  </document-info>
+  <cross-references>
+    <reference type="file" target="CLAUDE.xml" id="claude"/>
+    <reference type="file" target="SmartPack/CLAUDE.xml" id="smartpack-claude"/>
+    <reference type="file" target="SmartPack/src/CLAUDE.xml" id="smartpack-src-claude"/>
+    <reference type="file" target="SmartPack/src/components/CLAUDE.xml" id="smartpack-src-components-claude"/>
+    <reference type="file" target="SmartPack/src/hooks/CLAUDE.xml" id="smartpack-src-hooks-claude"/>
+    <reference type="agent" target="smartpack-integrity-auditor.xml" id="smartpack-integrity-auditor"/>
+  </cross-references>
+  <content>
+  </content>
+  <navigation>
+    <related-documents>
+    </related-documents>
+  </navigation>
+</document>

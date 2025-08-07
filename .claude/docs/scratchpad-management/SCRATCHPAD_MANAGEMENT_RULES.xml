@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document id="scratchpad-management-rules" type="scratchpad-management" version="1.0" last-updated="2025-08-07">
+  <metadata>
+    <status>[INVESTIGATING/READY-FOR-FIX/IN-PROGRESS/TESTING/READY-TO-MERGE]</status>
+    <priority>[SHIP-BLOCKER/HIGH/LOW]</priority>
+  </metadata>
+  <title>SmartPack Scratchpad Management Rules</title>
+  <document-info>
+    <type>scratchpad-management</type>
+    <parsing-instructions>
+      <instruction>Use section tags to navigate document structure</instruction>
+      <instruction>Check cross-references for related documents</instruction>
+      <instruction>Code blocks contain executable examples</instruction>
+      <instruction>Lists contain actionable items or requirements</instruction>
+    </parsing-instructions>
+  </document-info>
+  <content>
+  </content>
+  <navigation>
+    <related-documents>
+      <document href=".claude/scratchpad.xml">Active Scratchpad</document>
+    </related-documents>
+  </navigation>
+</document>

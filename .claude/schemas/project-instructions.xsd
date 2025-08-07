@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  
+  <!-- Root project-instructions element -->
+  <xs:element name="project-instructions">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="metadata" type="metadataType"/>
+        <xs:element name="project-overview" type="projectOverviewType"/>
+        <xs:element name="critical-protocols" type="protocolsType"/>
+        <xs:element name="agent-system" type="agentSystemType"/>
+        <xs:element name="quality-standards" type="qualityStandardsType"/>
+        <xs:element name="documentation-hierarchy" type="documentationHierarchyType" minOccurs="0"/>
+        <xs:element name="technology-stack" type="technologyStackType" minOccurs="0"/>
+        <xs:element name="recent-session-summary" type="xs:string" minOccurs="0"/>
+      </xs:sequence>
+      <xs:attribute name="version" type="xs:string" use="required"/>
+      <xs:attribute name="last-updated" type="xs:date" use="required"/>
+    </xs:complexType>
+  </xs:element>
+
+  <!-- Metadata type -->
+  <xs:complexType name="metadataType">
+    <xs:sequence>
+      <xs:element name="name" type="xs:string"/>
+      <xs:element name="type" type="xs:string"/>
+      <xs:element name="ship-status">
+        <xs:complexType>
+          <xs:attribute name="deadline" type="xs:string" use="required"/>
+          <xs:attribute name="priority" type="xs:string" use="required"/>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <!-- Project overview type -->
+  <xs:complexType name="projectOverviewType">
+    <xs:sequence>
+      <xs:element name="description" type="xs:string"/>
+      <xs:element name="tech-stack" type="techStackType"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <!-- Tech stack type -->
+  <xs:complexType name="techStackType">
+    <xs:sequence>
+      <xs:element name="frontend" type="xs:string"/>
+      <xs:element name="testing" type="xs:string"/>
+      <xs:element name="ai-integration" type="xs:string"/>
+      <xs:element name="persistence" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <!-- Protocols type -->
+  <xs:complexType name="protocolsType">
+    <xs:sequence>
+      <xs:element name="protocol" maxOccurs="unbounded">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="title" type="xs:string"/>
+            <xs:element name="violation-history" type="xs:string" minOccurs="0"/>
+            <xs:element name="steps">
+              <xs:complexType>
+                <xs:sequence>
+                  <xs:element name="step" maxOccurs="unbounded">
+                    <xs:complexType>
+                      <xs:simpleContent>
+                        <xs:extension base="xs:string">
+                          <xs:attribute name="order" type="xs:integer" use="required"/>
+                          <xs:attribute name="action" type="xs:string" use="required"/>
+                        </xs:extension>
+                      </xs:simpleContent>
+                    </xs:complexType>
+                  </xs:element>
+                </xs:sequence>
+              </xs:complexType>
+            </xs:element>
+            <xs:element name="enforcement" type="xs:string" minOccurs="0"/>
+          </xs:sequence>
+          <xs:attribute name="id" type="xs:string" use="required"/>
+          <xs:attribute name="priority" type="xs:string" use="required"/>
+          <xs:attribute name="violation-count" type="xs:integer"/>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <!-- Agent system type -->
+  <xs:complexType name="agentSystemType">
+    <xs:sequence>
+      <xs:element name="ship-critical-agents" type="agentListType"/>
+      <xs:element name="ship-quality-agents" type="agentListType"/>
+      <xs:element name="foundation-agents" type="agentListType"/>
+      <xs:element name="workflow-patterns" type="xs:string" minOccurs="0"/>
+      <xs:element name="handoff-protocols" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <!-- Agent list type -->
+  <xs:complexType name="agentListType">
+    <xs:sequence>
+      <xs:element name="agent" maxOccurs="unbounded">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="name" type="xs:string"/>
+            <xs:element name="description" type="xs:string"/>
+            <xs:element name="priority" type="xs:string" minOccurs="0"/>
+          </xs:sequence>
+          <xs:attribute name="id" type="xs:string" use="required"/>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <!-- Quality standards type -->
+  <xs:complexType name="qualityStandardsType">
+    <xs:sequence>
+      <xs:element name="ship-critical" type="standardsListType"/>
+      <xs:element name="ship-quality" type="standardsListType"/>
+      <xs:element name="foundation" type="standardsListType"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <!-- Standards list type -->
+  <xs:complexType name="standardsListType">
+    <xs:sequence>
+      <xs:element name="standard" type="xs:string" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <!-- Documentation hierarchy type -->
+  <xs:complexType name="documentationHierarchyType">
+    <xs:sequence>
+      <xs:element name="level" maxOccurs="unbounded">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="name" type="xs:string"/>
+            <xs:element name="files" type="xs:string"/>
+            <xs:element name="purpose" type="xs:string"/>
+            <xs:element name="update-frequency" type="xs:string" minOccurs="0"/>
+          </xs:sequence>
+          <xs:attribute name="priority" type="xs:integer"/>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <!-- Technology stack type (detailed) -->
+  <xs:complexType name="technologyStackType">
+    <xs:sequence>
+      <xs:element name="frontend" type="techDetailType"/>
+      <xs:element name="backend" type="techDetailType" minOccurs="0"/>
+      <xs:element name="testing" type="techDetailType"/>
+      <xs:element name="deployment" type="techDetailType" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <!-- Tech detail type -->
+  <xs:complexType name="techDetailType">
+    <xs:sequence>
+      <xs:element name="technology" type="xs:string" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+</xs:schema>

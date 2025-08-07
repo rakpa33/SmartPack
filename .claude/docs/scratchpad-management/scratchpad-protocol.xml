@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document id="scratchpad-protocol" type="scratchpad-management" version="1.0" last-updated="2025-08-07">
+  <metadata>
+    <status>[Progress indicator]</status>
+  </metadata>
+  <title>Scratchpad Management Protocol</title>
+  <document-info>
+    <type>scratchpad-management</type>
+    <parsing-instructions>
+      <instruction>Use section tags to navigate document structure</instruction>
+      <instruction>Check cross-references for related documents</instruction>
+      <instruction>Code blocks contain executable examples</instruction>
+      <instruction>Lists contain actionable items or requirements</instruction>
+    </parsing-instructions>
+  </document-info>
+  <cross-references>
+    <reference type="file" target="CLAUDE.xml" id="claude"/>
+    <reference type="agent" target="smartpack-context-extractor.xml" id="smartpack-context-extractor"/>
+  </cross-references>
+  <content>
+  </content>
+  <navigation>
+    <related-documents>
+      <document href=".claude/scratchpad.xml">Active Scratchpad</document>
+    </related-documents>
+  </navigation>
+</document>

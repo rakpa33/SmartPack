@@ -1,0 +1,410 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-instructions version="1.0" last-updated="2025-08-07">
+  <metadata>
+    <name>SmartPack</name>
+    <type>Travel Packing Application</type>
+    <ship-status deadline="2-days" priority="functional-over-perfect"/>
+  </metadata>
+
+  <project-overview>
+    <description>
+      SmartPack is a travel packing application built with React 18 + TypeScript + Vite + Tailwind CSS. 
+      It features AI-powered packing suggestions via Ollama integration, localStorage-based data persistence, 
+      and comprehensive accessibility compliance.
+    </description>
+    <tech-stack>
+      <frontend>React 18, TypeScript (strict mode), Vite, Tailwind CSS, Headless UI</frontend>
+      <testing>Vitest, React Testing Library, Playwright, jest-axe</testing>
+      <ai-integration>Ollama service for local AI suggestions</ai-integration>
+      <persistence>localStorage (no cloud sync)</persistence>
+    </tech-stack>
+  </project-overview>
+
+  <critical-protocols>
+    <protocol id="file-deletion" priority="mandatory" violation-count="2">
+      <title>File Deletion Workflow</title>
+      <violation-history date="2025-08-05">Deleted worktree MD files without reading (2 incidents)</violation-history>
+      <steps>
+        <step order="1" action="READ_FIRST">Always use Read tool on file before deletion</step>
+        <step order="2" action="ASSESS_VALUE">Determine if content needs preservation</step>
+        <step order="3" action="EXTRACT_CONTEXT">If valuable, preserve in CLAUDE.xml or appropriate docs</step>
+        <step order="4" action="CONFIRM_UNDERSTANDING">Verify what will be lost</step>
+        <step order="5" action="DELETE_ONLY_AFTER">All above steps are complete</step>
+      </steps>
+      <enforcement>Rushing to delete without review is a critical failure pattern that has occurred multiple times. ALWAYS follow this protocol.</enforcement>
+    </protocol>
+
+    <protocol id="worktree-completion" priority="mandatory">
+      <title>Worktree Completion Protocol</title>
+      <steps>
+        <step order="1" action="DEVELOPMENT_COMPLETE">Code changes implemented and tested</step>
+        <step order="2" action="UX_VALIDATION_REQUIRED">
+          <validator>smartpack-ux-flow-optimizer</validator>
+          <requirements>
+            <requirement>Tests actual user workflows end-to-end</requirement>
+            <requirement>Confirms fix resolves the original issue</requirement>
+            <requirement>Verifies no regression in user experience</requirement>
+          </requirements>
+        </step>
+        <step order="3" action="COORDINATOR_APPROVAL">Only after UX validation can coordinator close worktree</step>
+        <step order="4" action="DOCUMENTATION">Update DEVLOG.xml with validation confirmation</step>
+        <step order="5" action="BRANCH_CLEANUP">Execute git worktree remove and branch deletion</step>
+      </steps>
+      <violation-consequences>
+        <consequence>Unverified fixes that may not work for users</consequence>
+        <consequence>False positive resolutions</consequence>
+        <consequence>Regression of user experience issues</consequence>
+      </violation-consequences>
+    </protocol>
+
+    <protocol id="worktree-implementation" priority="mandatory" date="2025-08-05">
+      <title>Worktree Implementation Protocol</title>
+      <critical-rule>Never edit main branch when worktree exists</critical-rule>
+      <steps>
+        <step order="1" command="cd ../SmartPack-[worktree-name]">SWITCH TO WORKTREE FIRST</step>
+        <step order="2" command="git branch">VERIFY CORRECT BRANCH - should show worktree branch</step>
+        <step order="3">IMPLEMENT ALL CHANGES IN WORKTREE - Never edit main branch files</step>
+        <step order="4">COMMIT CHANGES TO WORKTREE - All fixes must be committed to worktree branch</step>
+        <step order="5">UX VALIDATION ON WORKTREE - Test the actual worktree implementation</step>
+        <step order="6">MERGE ONLY AFTER VALIDATION - Merge to main only after UX approval</step>
+      </steps>
+      <checkpoints>
+        <checkpoint status="required" command="pwd">Working directory is worktree: shows ../SmartPack-[name]</checkpoint>
+        <checkpoint status="required" command="git branch">Current branch is worktree branch: shows fix branch</checkpoint>
+        <checkpoint status="required" command="git log">Changes committed to worktree: shows fix commits</checkpoint>
+        <checkpoint status="required">UX validation passes on worktree code</checkpoint>
+      </checkpoints>
+      <failure-patterns>
+        <pattern type="avoid">Analyzing in main branch, editing main branch, documenting fix without implementation</pattern>
+        <pattern type="correct">Switch to worktree, implement in worktree, commit to worktree, validate worktree</pattern>
+      </failure-patterns>
+    </protocol>
+  </critical-protocols>
+
+  <documentation-best-practices>
+    <title>Documentation Standards and Best Practices</title>
+    
+    <standard id="no-emoji" priority="critical">
+      <rule>NO EMOJI in documentation files</rule>
+      <rationale>Claude Code preference - emoji slow down parsing and reduce professionalism</rationale>
+      <enforcement>All emoji must be removed from MD and XML files</enforcement>
+    </standard>
+    
+    <standard id="xml-structure" priority="high">
+      <rule>Use semantic XML tags for all agent and system documentation</rule>
+      <elements>
+        <element>Use descriptive tag names (agent, protocol, step)</element>
+        <element>Include metadata attributes (id, version, priority)</element>
+        <element>Provide cross-references between related documents</element>
+        <element>Include parsing instructions for agents</element>
+      </elements>
+    </standard>
+    
+    <standard id="schema-validation" priority="high">
+      <rule>All XML files must reference appropriate XSD schema</rule>
+      <schemas>
+        <schema type="agent" location=".claude/schemas/agent.xsd"/>
+        <schema type="document" location=".claude/schemas/document.xsd"/>
+        <schema type="project-instructions" location=".claude/schemas/project-instructions.xsd"/>
+      </schemas>
+    </standard>
+    
+    <standard id="markdown-formatting" priority="medium">
+      <rule>Consistent markdown formatting across all MD files</rule>
+      <guidelines>
+        <guideline>Use consistent header hierarchy (H1 to H6)</guideline>
+        <guideline>Use hyphens (-) for bullet points consistently</guideline>
+        <guideline>Include table of contents for files over 100 lines</guideline>
+        <guideline>Use code blocks with language identifiers</guideline>
+        <guideline>Keep line length under 120 characters where possible</guideline>
+      </guidelines>
+    </standard>
+    
+    <standard id="file-organization" priority="high">
+      <rule>Proper file organization and separation</rule>
+      <structure>
+        <location type="permanent-docs">docs/ - permanent documentation</location>
+        <location type="agent-definitions">.claude/agents/ - agent XML definitions</location>
+        <location type="schemas">.claude/schemas/ - XSD validation schemas</location>
+        <location type="temp-work">.claude/active-worktrees/ - temporary work files (gitignored)</location>
+        <location type="audits">.claude/audits/ - audit reports</location>
+      </structure>
+    </standard>
+    
+    <standard id="content-requirements" priority="critical">
+      <rule>No empty content sections in XML files</rule>
+      <requirement>All XML content tags must contain actual content or be removed</requirement>
+      <requirement>Use CDATA sections for code blocks in XML</requirement>
+      <requirement>Escape special characters properly (&lt; &gt; &amp; &quot; &apos;)</requirement>
+    </standard>
+    
+    <standard id="performance-optimization" priority="medium">
+      <rule>Optimize documents for fast parsing</rule>
+      <guidelines>
+        <guideline>Keep individual files under 500KB</guideline>
+        <guideline>Split large documents into modular components</guideline>
+        <guideline>Use cross-references instead of duplicating content</guideline>
+        <guideline>Consider lazy loading for large documentation sets</guideline>
+      </guidelines>
+    </standard>
+    
+    <standard id="claude-code-compliance" priority="critical">
+      <rule>Follow Claude Code memory management best practices</rule>
+      <requirements>
+        <requirement>Use specific, actionable instructions</requirement>
+        <requirement>Organize with structured sections and clear headings</requirement>
+        <requirement>Keep scratchpad under 200 lines</requirement>
+        <requirement>Use hierarchical memory (project vs session context)</requirement>
+        <requirement>Avoid verbose preambles and postambles</requirement>
+      </requirements>
+    </standard>
+    
+    <validation-checklist>
+      <item>All emoji removed from documentation</item>
+      <item>XML files have proper schema references</item>
+      <item>No empty content sections in XML</item>
+      <item>Markdown files follow consistent formatting</item>
+      <item>Temp files properly gitignored</item>
+      <item>File sizes optimized for parsing</item>
+      <item>Cross-references properly established</item>
+    </validation-checklist>
+  </documentation-best-practices>
+
+  <agent-system>
+    <agent-categories>
+      <category priority="1" name="SHIP-CRITICAL" description="Must Work for Launch">
+        <agent id="smartpack-bug-crusher">Critical bug identification and ship-blocker resolution</agent>
+        <agent id="smartpack-functional-validator">End-to-end functionality validation and ship readiness assessment</agent>
+        <agent id="smartpack-ui-polish-specialist">Beautiful animations, transitions, and visual polish implementation</agent>
+        <agent id="smartpack-ux-flow-optimizer">User experience flow optimization and workflow enhancement</agent>
+      </category>
+
+      <category priority="2" name="SHIP-QUALITY" description="Enhance User Experience">
+        <agent id="smartpack-visual-designer">Professional design system and visual consistency</agent>
+        <agent id="smartpack-mobile-ux-specialist">Mobile-first experience optimization and touch interactions</agent>
+        <agent id="smartpack-integration-fixer">API integration reliability and service connection optimization</agent>
+        <agent id="smartpack-performance-enhancer">Application performance optimization and speed enhancement</agent>
+      </category>
+
+      <category priority="3" name="FOUNDATION" description="Implementation Support">
+        <agent id="smartpack-coordinator">SHIP-FOCUSED workflow orchestration and agent coordination</agent>
+        <agent id="smartpack-code-fixer">Code implementation, bug fixes, and feature development</agent>
+        <agent id="smartpack-architecture-analyzer">System analysis, dependency issues, and repair planning</agent>
+        <agent id="smartpack-test-specialist">Focused component testing and test fixes (reduced priority for shipping)</agent>
+        <agent id="smartpack-test-auditor">Comprehensive system-wide test analysis (reduced priority for shipping)</agent>
+        <agent id="smartpack-context-extractor">Conversation context extraction for file preservation</agent>
+      </category>
+    </agent-categories>
+
+    <workflow-patterns>
+      <pattern id="information-execution-validation">
+        <step>Information Gathering: Always use information-gathering agents before execution agents</step>
+        <step>Priority Assessment: Ship-critical agents get immediate attention</step>
+        <step>Scratchpad Integration: All agents read C:\Users\Rachel\Desktop\SmartPack\.claude\scratchpad.xml</step>
+        <step>Progress Tracking: Agents update progress logs via scratchpad</step>
+        <step>Ship Readiness: functional-validator makes final go/no-go decisions</step>
+      </pattern>
+    </workflow-patterns>
+
+    <coordination-patterns date="2025-08-05">
+      <pattern name="Bug Resolution Flow">bug-crusher (identify) → code-fixer (implement) → functional-validator (verify)</pattern>
+      <pattern name="Critical Fix Example">Save button bug resolved through systematic agent handoffs</pattern>
+      <pattern name="Testing Priority">Manual-first validation proved more reliable than automated tests</pattern>
+      <pattern name="Complete Validation">Ensure ALL form fields tested (5 required: name, destinations, modes, dates)</pattern>
+      <pattern name="Zero Duplicate Work">Backend/frontend concern separation with clean division</pattern>
+      <pattern name="Optimal Coordination">Information-gathering agents complete full analysis before execution</pattern>
+      <pattern name="Ship-Critical Sequencing">visual-designer → ui-polish-specialist → functional-validator</pattern>
+    </coordination-patterns>
+
+    <handoff-protocols>
+      <protocol type="bug-fix">bug-crusher identifies → code-fixer implements → functional-validator verifies</protocol>
+      <protocol type="ux-enhancement">ux-flow-optimizer designs → ui-polish-specialist implements → mobile-ux-specialist optimizes</protocol>
+      <protocol type="design-implementation">visual-designer creates specs → ui-polish-specialist implements → performance-enhancer optimizes</protocol>
+      <protocol type="worktree-cleanup">work completion → information extraction → git cleanup → documentation update → verification</protocol>
+    </handoff-protocols>
+  </agent-system>
+
+  <quality-standards>
+    <tier level="1" name="SHIP-CRITICAL" description="Must Have for Launch">
+      <requirement id="functional-workflows">All core user journeys work end-to-end</requirement>
+      <requirement id="no-ship-blockers">No critical bugs preventing core functionality</requirement>
+      <requirement id="visual-functionality">All components properly styled</requirement>
+      <requirement id="mobile-responsive">App works on mobile devices with basic touch</requirement>
+      <requirement id="data-persistence">User data saves and loads reliably via localStorage</requirement>
+      <requirement id="service-integration">AI and weather services work with proper fallback</requirement>
+    </tier>
+
+    <tier level="2" name="SHIP-QUALITY" description="Enhance If Time Permits">
+      <requirement id="beautiful-ui">Professional visual design with smooth animations</requirement>
+      <requirement id="mobile-optimization">44px touch targets, optimized mobile interactions</requirement>
+      <requirement id="performance">Fast loading (LCP ≤ 3s for shipping), smooth 60fps</requirement>
+      <requirement id="error-handling">Graceful degradation and user-friendly messages</requirement>
+      <requirement id="accessibility">Basic screen reader support and keyboard navigation</requirement>
+    </tier>
+
+    <tier level="3" name="FOUNDATION" description="Post-Ship Implementation">
+      <requirement id="typescript-strict">No any types, proper type annotations, null safety</requirement>
+      <requirement id="wcag-compliance">Full WCAG 2.1 AA compliance with automated testing</requirement>
+      <requirement id="advanced-performance">LCP ≤ 2.5s, optimized bundles</requirement>
+      <requirement id="comprehensive-testing">Full test coverage across all frameworks</requirement>
+      <requirement id="advanced-features">Complex animations, advanced mobile gestures, PWA</requirement>
+    </tier>
+  </quality-standards>
+
+  <documentation-hierarchy>
+    <level type="project-memory" location="root">
+      <file path="CLAUDE.xml">Project-wide memory, agent system, quality standards</file>
+      <purpose>Central source of truth for project guidelines and patterns</purpose>
+      <update-when>Major architectural decisions, new agent patterns, quality standards</update-when>
+    </level>
+
+    <level type="technical-documentation" location="docs/">
+      <file path="docs/development/DEVLOG.xml">Chronological development history</file>
+      <file path="docs/development/TROUBLESHOOTING.md">Issue resolution database</file>
+      <purpose>Detailed technical history and problem-solving patterns</purpose>
+      <update-when>After completing features, resolving bugs, discovering patterns</update-when>
+    </level>
+
+    <level type="navigation-files" location="directory-specific" critical="DO_NOT_DELETE">
+      <file path="SmartPack/CLAUDE.xml">Main project navigation, commands, architecture</file>
+      <file path="SmartPack/src/CLAUDE.xml">Source directory structure and file purposes</file>
+      <file path="SmartPack/src/components/CLAUDE.xml">Component inventory and patterns</file>
+      <file path="SmartPack/src/hooks/CLAUDE.xml">Hooks documentation and usage patterns</file>
+      <benefits>
+        <benefit>Reduce token usage by 60-80% for directory exploration</benefit>
+        <benefit>Provide instant awareness of available files and patterns</benefit>
+        <benefit>Maintain consistency across agent interactions</benefit>
+        <benefit>Speed up development by eliminating redundant searches</benefit>
+      </benefits>
+    </level>
+
+    <level type="session-context" location=".claude/">
+      <file path=".claude/scratchpad.xml">Active session context sharing between agents</file>
+      <file path=".claude/agents/">Specialized agent definitions and capabilities</file>
+      <file path=".claude/docs/translate-context.xml">Context extraction workflow</file>
+      <purpose>Real-time coordination and context preservation</purpose>
+      <update-when>During active development, before clearing conversations</update-when>
+    </level>
+  </documentation-hierarchy>
+
+  <context-preservation-protocol>
+    <step order="1" action="extract">Use smartpack-context-extractor agent to analyze conversation</step>
+    <step order="2" action="update">
+      <target file="CLAUDE.xml">New patterns, guidelines, quality standards</target>
+      <target file="DEVLOG.xml">Technical changes and implementation history</target>
+      <target file="TROUBLESHOOTING.md">New issue patterns and resolutions</target>
+      <target file="agent-docs">Refined specializations and usage patterns</target>
+    </step>
+    <step order="3" action="clean">Reset scratchpad.xml for next session</step>
+    <step order="4" action="validate">Ensure all valuable insights are preserved</step>
+    <reference>See .claude/translate-context.md for detailed workflow instructions</reference>
+  </context-preservation-protocol>
+
+  <development-patterns>
+    <pattern type="component-architecture">Functional components with proper TypeScript interfaces</pattern>
+    <pattern type="state-management">React Context + custom hooks + localStorage persistence</pattern>
+    <pattern type="error-handling">Comprehensive error boundaries with user-friendly messaging</pattern>
+    <pattern type="api-integration">Proper error handling, loading states, timeout management</pattern>
+  </development-patterns>
+
+  <agent-usage-guidelines>
+    <priority-order>
+      <tier priority="1" name="SHIP-CRITICAL" description="Use First">
+        <usage agent="bug-crusher">Any broken functionality, navigation issues, workflow problems</usage>
+        <usage agent="functional-validator">Ship readiness assessment, end-to-end validation</usage>
+        <usage agent="ui-polish-specialist">Visual enhancement, animation implementation</usage>
+        <usage agent="ux-flow-optimizer">Confusing workflows, navigation friction</usage>
+      </tier>
+
+      <tier priority="2" name="SHIP-QUALITY" description="Use After Critical Issues">
+        <usage agent="visual-designer">Design inconsistencies, professional appearance</usage>
+        <usage agent="mobile-ux-specialist">Mobile experience, touch interaction issues</usage>
+        <usage agent="integration-fixer">API failures, service reliability issues</usage>
+        <usage agent="performance-enhancer">Slow performance, loading issues, optimization</usage>
+      </tier>
+
+      <tier priority="3" name="FOUNDATION" description="Implementation Support">
+        <usage agent="coordinator">Multi-agent coordination, complex workflows</usage>
+        <usage agent="code-fixer">Execute repair plans, implement features</usage>
+        <usage agent="architecture-analyzer">System analysis, dependency issues</usage>
+        <usage agent="test-specialist">Testing needs (reduced priority for shipping)</usage>
+        <usage agent="context-extractor">Pre-conversation-clear context preservation</usage>
+      </tier>
+    </priority-order>
+
+    <validation-requirements timeline="2-days">
+      <requirement>Assess Ship Impact: Is this ship-critical, ship-quality, or foundation work?</requirement>
+      <requirement>Read Scratchpad Context: Understand current session objective and timeline</requirement>
+      <requirement>Follow Information → Execution Pattern: Information-gathering before execution</requirement>
+      <requirement>Update Progress Clearly: Specific actions taken, ship-impact assessment</requirement>
+      <requirement>Validate Against Timeline: Can this be completed within 2-day deadline?</requirement>
+      <requirement>Escalate Blockers: Immediately flag issues preventing shipping</requirement>
+    </validation-requirements>
+  </agent-usage-guidelines>
+
+  <workflow-patterns>
+    <workflow id="ship-critical-bug-resolution" priority="1">
+      <step agent="bug-crusher">Identify and document ship-blocking bugs with reproduction steps</step>
+      <step agent="code-fixer">Implement fixes based on bug-crusher findings</step>
+      <step agent="functional-validator">Verify fixes work and assess remaining ship risks</step>
+      <step agent="coordinator">Track progress and escalate timeline concerns</step>
+    </workflow>
+
+    <workflow id="ux-ui-enhancement" priority="1">
+      <step agent="ux-flow-optimizer">Analyze user workflows and identify friction points</step>
+      <step agent="ui-polish-specialist">Implement smooth interactions and visual enhancements</step>
+      <step agent="mobile-ux-specialist">Optimize touch interactions and mobile experience</step>
+      <step agent="functional-validator">Validate enhanced UX works across devices</step>
+    </workflow>
+
+    <workflow id="professional-polish" priority="2">
+      <step agent="visual-designer">Create professional design system and visual specifications</step>
+      <step agent="ui-polish-specialist">Implement design system with animations and transitions</step>
+      <step agent="performance-enhancer">Optimize visual enhancements for smooth performance</step>
+      <step agent="functional-validator">Ensure polish doesn't break core functionality</step>
+    </workflow>
+
+    <workflow id="service-reliability" priority="2">
+      <step agent="integration-fixer">Diagnose API reliability issues and implement error handling</step>
+      <step agent="code-fixer">Implement integration improvements and fallback mechanisms</step>
+      <step agent="performance-enhancer">Optimize API calls and caching strategies</step>
+      <step agent="functional-validator">Verify service reliability across failure scenarios</step>
+    </workflow>
+
+    <workflow id="emergency-ship-blocker" priority="emergency">
+      <step agent="bug-crusher">Immediate triage and impact assessment of critical issues</step>
+      <step agent="architecture-analyzer">Root cause analysis if complex system issue</step>
+      <step agent="code-fixer">Rapid implementation of minimal viable fix</step>
+      <step agent="functional-validator">Emergency validation and ship decision update</step>
+    </workflow>
+  </workflow-patterns>
+
+  <session-summary date="2025-08-05">
+    <achievements>
+      <achievement>Backend/Frontend Separation Success: Zero duplicate work through clean division</achievement>
+      <achievement>Ship-Blocker Resolution: Backend server discovered and functional</achievement>
+      <achievement>Visual Design Audit Complete: Ship-critical undefined CSS class issues identified</achievement>
+      <achievement>UX Flow Audit Complete: User journey analysis confirming ship-readiness</achievement>
+      <achievement>Optimal Coordination Patterns: Established information → execution → validation workflow</achievement>
+      <achievement>Critical Issue Documentation: Ship-blocker visual bugs documented for resolution</achievement>
+    </achievements>
+
+    <timeline>
+      <deadline>Maximum 2 days to ship functional, beautiful SmartPack application</deadline>
+      <priority>Ship-critical agents first, quality enhancements second, foundation work post-ship</priority>
+    </timeline>
+
+    <agent-status>
+      <category name="Ship-Critical">4/4 created and ready</category>
+      <category name="Ship-Quality">4/4 created and ready</category>
+      <category name="Foundation">6/6 updated for ship-focus</category>
+    </agent-status>
+
+    <next-steps>
+      <step priority="immediate">Use bug-crusher to identify current ship-blocking issues</step>
+      <step priority="high">Use functional-validator to assess current ship readiness</step>
+      <step priority="enhancement">Use ui-polish-specialist and ux-flow-optimizer for beauty</step>
+      <step priority="quality">Apply ship-quality agents as time permits within deadline</step>
+    </next-steps>
+  </session-summary>
+</project-instructions>

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document id="detailed-descriptions" type="agent-descriptions" version="1.0" last-updated="2025-08-07">
+  <title>SmartPack Agent Detailed Descriptions</title>
+  <document-info>
+    <type>agent-descriptions</type>
+    <parsing-instructions>
+      <instruction>Use section tags to navigate document structure</instruction>
+      <instruction>Check cross-references for related documents</instruction>
+      <instruction>Code blocks contain executable examples</instruction>
+      <instruction>Lists contain actionable items or requirements</instruction>
+    </parsing-instructions>
+  </document-info>
+  <cross-references>
+    <reference type="agent" target="smartpack-bug-crusher.xml" id="smartpack-bug-crusher"/>
+    <reference type="agent" target="smartpack-functional-validator.xml" id="smartpack-functional-validator"/>
+    <reference type="agent" target="smartpack-ui-polish-specialist.xml" id="smartpack-ui-polish-specialist"/>
+    <reference type="agent" target="smartpack-ux-flow-optimizer.xml" id="smartpack-ux-flow-optimizer"/>
+    <reference type="agent" target="smartpack-visual-designer.xml" id="smartpack-visual-designer"/>
+    <reference type="agent" target="smartpack-mobile-ux-specialist.xml" id="smartpack-mobile-ux-specialist"/>
+    <reference type="agent" target="smartpack-integration-fixer.xml" id="smartpack-integration-fixer"/>
+    <reference type="agent" target="smartpack-performance-enhancer.xml" id="smartpack-performance-enhancer"/>
+    <reference type="agent" target="smartpack-coordinator.xml" id="smartpack-coordinator"/>
+    <reference type="agent" target="smartpack-code-fixer.xml" id="smartpack-code-fixer"/>
+    <reference type="agent" target="smartpack-architecture-analyzer.xml" id="smartpack-architecture-analyzer"/>
+    <reference type="agent" target="smartpack-test-specialist.xml" id="smartpack-test-specialist"/>
+    <reference type="agent" target="smartpack-test-auditor.xml" id="smartpack-test-auditor"/>
+    <reference type="agent" target="smartpack-context-extractor.xml" id="smartpack-context-extractor"/>
+  </cross-references>
+  <content>
+  </content>
+  <navigation>
+    <related-documents>
+    </related-documents>
+  </navigation>
+</document>

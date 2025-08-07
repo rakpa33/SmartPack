@@ -1,0 +1,276 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ACTIVE WORKTREES (5 total):
+  1. backend-investigation (fix/backend-integration-20250805)
+     - Location: SmartPack/SmartPack/backend-investigation
+     - Status: FIX-NOT-MERGED - Critical fix for MainLayout.tsx component
+  
+  2. form-validation-fix (fix/form-validation-blocking-20250805)
+     - Location: SmartPack/SmartPack/form-validation-fix
+     - Status: UX-VALIDATION-PASSED - Ready to merge
+  
+  3. loading-states-fix (fix/loading-states-feedback-20250805)
+     - Location: C:/Users/Rachel/Desktop/SmartPack-loading-states-fix
+     - Status: READY-FOR-FIX - Awaiting implementation
+  
+  4. touch-targets-fix (fix/touch-target-compliance-20250805)
+     - Location: C:/Users/Rachel/Desktop/SmartPack-touch-targets-fix
+     - Status: READY-FOR-FIX - Awaiting mobile UX specialist
+  
+  5. undefined-css-fix (fix/undefined-css-classes-20250805)
+     - Location: C:/Users/Rachel/Desktop/SmartPack-undefined-css-fix
+     - Status: READY-FOR-FIX - Awaiting code fixer
+
+LAST UPDATE (2025-08-07):
+  We discovered the root cause of missing AI functionality: MainLayout.tsx in main branch
+  imports wrong component (TripDetails instead of TripDetailsWithGeneration). The fix exists
+  in the backend-investigation worktree but hasn't been merged to main. Users running from
+  main directory see no "Generate" button and can't access AI features.
+-->
+<scratchpad version="1.0" last-updated="2025-08-07" type="active-session-tracker">
+  
+  <update-instructions for="Claude">
+    <rules>
+      <rule priority="critical">Keep file UNDER 200 LINES total (current session context only)</rule>
+      <rule priority="critical">Update last-updated attribute when making changes</rule>
+      <rule priority="high">DO NOT add detailed logs - use .claude/active-worktrees/[task-id].md for details</rule>
+      <rule priority="high">Only track ACTIVE work - archive completed items to DEVLOG.xml</rule>
+    </rules>
+    
+    <sections>
+      <section name="active-session">
+        <description>Current main focus/issue being worked on</description>
+        <update-when>Status changes, new findings, objective updates</update-when>
+        <keep>Only most relevant, current information</keep>
+      </section>
+      
+      <section name="active-worktrees">
+        <description>Git worktrees currently in use</description>
+        <on-create>Add branch, location, status</on-create>
+        <status-flow>INVESTIGATING -> FIX-APPLIED -> TESTING -> READY-TO-MERGE</status-flow>
+        <on-merge>Remove after successful merge and cleanup</on-merge>
+      </section>
+      
+      <section name="progress-log">
+        <description>Brief one-line entries for major milestones</description>
+        <format>[TIMESTAMP] - Agent - Brief action/finding</format>
+        <limit>Keep only last 10-15 entries</limit>
+      </section>
+      
+      <section name="pending-tasks">
+        <description>What needs to be done next</description>
+        <priority-order>SHIP-BLOCKER -> SHIP-CRITICAL -> SHIP-QUALITY</priority-order>
+        <maintenance>Remove completed tasks immediately</maintenance>
+      </section>
+      
+      <section name="completed-tasks">
+        <description>Recently finished work</description>
+        <limit>Keep maximum 5 items</limit>
+        <archive-to>DEVLOG.xml after session</archive-to>
+      </section>
+    </sections>
+    
+    <cleanup-triggers>
+      <trigger>At session start - archive old content to appropriate docs</trigger>
+      <trigger>When switching major focus - move details to active-worktrees/</trigger>
+      <trigger>Before agent handoffs - ensure current context is clear</trigger>
+      <trigger>If approaching 200 lines - aggressive cleanup required</trigger>
+    </cleanup-triggers>
+  </update-instructions>
+  
+  <active-session id="backend-integration">
+    <status priority="SHIP-BLOCKER">IN PROGRESS - Frontend Integration Issues Discovered</status>
+    <objective>Resolve frontend-backend data flow preventing AI/weather display</objective>
+    <started>2025-08-05</started>
+    <updated>2025-08-05 - Backend working but frontend not consuming data</updated>
+    
+    <critical-findings>
+      <backend-status verified="true">
+        <item status="success">Server Running: Express.js server at SmartPack/lambda/server.js on port 3000</item>
+        <item status="success">Ollama Working: Connected to llama3.1:8b model, generating real AI content</item>
+        <item status="success">API Endpoints: All endpoints tested and returning proper AI-generated data</item>
+        <item status="success">Health Check: Returns {"status":"ok","message":"SmartPack API is running"}</item>
+      </backend-status>
+      
+      <frontend-issues type="ship-blocker">
+        <item status="failure">Placeholder Data: Checklist shows mock data instead of AI-generated content</item>
+        <item status="failure">Weather Missing: Weather section empty despite Open-Meteo API being accessible</item>
+        <item status="failure">No AI Suggestions: Suggestions panel not populated with backend data</item>
+        <item status="failure">Status Indicators: Ollama connection status not visible to users</item>
+      </frontend-issues>
+      
+      <root-cause status="FIXED">
+        <issue>MainLayout.tsx using wrong component (TripDetails instead of TripDetailsWithGeneration)</issue>
+        <impact>No "Generate Smart Packing List" button visible to users</impact>
+        <fix>Updated MainLayout.tsx to use TripDetailsWithGeneration component</fix>
+        <result>Users now have access to AI generation functionality</result>
+      </root-cause>
+    </critical-findings>
+  </active-session>
+
+  <active-worktrees>
+    <worktree id="backend-investigation" status="FIX-NOT-MERGED">
+      <branch>fix/backend-integration-20250805</branch>
+      <location>SmartPack/SmartPack/backend-investigation</location>
+      <priority>SHIP-BLOCKER</priority>
+      <status>REQUIRES IMMEDIATE MERGE</status>
+      <details>.claude/active-worktrees/backend-investigation.md</details>
+      <debug-report>.claude/active-worktrees/backend-debug-investigation.md</debug-report>
+      <bug-discovery date="2025-08-07">
+        <root-cause>Component fix applied in worktree never merged to main branch</root-cause>
+        <impact>Users running from main directory have no Generate button (uses old TripDetails component)</impact>
+        <solution>Apply MainLayout.tsx fix to main directory (import TripDetailsWithGeneration)</solution>
+      </bug-discovery>
+      <validation>
+        <backend-verified date="2025-08-07" status="WORKING">
+          <ollama-service>Running on port 11434 with llama3.1:8b model</ollama-service>
+          <api-endpoints>Generating real AI content successfully</api-endpoints>
+          <server-status>Express.js running on port 3000</server-status>
+        </backend-verified>
+      </validation>
+    </worktree>
+
+    <worktree id="undefined-css-fix" status="READY-FOR-FIX">
+      <branch>fix/undefined-css-classes-20250805</branch>
+      <location>../SmartPack-undefined-css-fix</location>
+      <priority>SHIP-CRITICAL</priority>
+      <assigned>Ready for smartpack-code-fixer</assigned>
+      <summary>Fix undefined CSS classes causing visual functionality to break</summary>
+    </worktree>
+
+    <worktree id="form-validation-fix" status="UX-VALIDATION-PASSED">
+      <branch>fix/form-validation-blocking-20250805</branch>
+      <location>../SmartPack-form-validation-fix</location>
+      <priority>SHIP-CRITICAL</priority>
+      <validation>
+        <ux-validation date="2025-08-05" status="PASSED">
+          <commit>6afc3d0 - "fix: resolve form validation blocking submit button"</commit>
+          <summary>Destination initialization and validation logic fixes restore user workflows</summary>
+        </ux-validation>
+      </validation>
+    </worktree>
+
+    <worktree id="touch-targets-fix" status="READY-FOR-FIX">
+      <branch>fix/touch-target-compliance-20250805</branch>
+      <location>../SmartPack-touch-targets-fix</location>
+      <priority>SHIP-CRITICAL</priority>
+      <assigned>Ready for smartpack-mobile-ux-specialist + smartpack-code-fixer</assigned>
+      <summary>Fix touch target violations preventing reliable mobile interactions</summary>
+    </worktree>
+
+    <worktree id="loading-states-fix" status="READY-FOR-FIX">
+      <branch>fix/loading-states-feedback-20250805</branch>
+      <location>../SmartPack-loading-states-fix</location>
+      <priority>SHIP-CRITICAL</priority>
+      <assigned>Ready for smartpack-ui-polish-specialist + smartpack-ux-flow-optimizer</assigned>
+      <summary>Add visual loading states and user feedback for async operations</summary>
+    </worktree>
+  </active-worktrees>
+
+  <implementation-priorities timeline="2-days">
+    <day number="1" priority="ship-critical">
+      <task id="form-validation" duration="2h" agent="bug-crusher,code-fixer">
+        <description>Users cannot submit forms - complete functionality blocker</description>
+        <dependency>None - can start immediately</dependency>
+      </task>
+      
+      <task id="undefined-css" duration="2h" agent="code-fixer">
+        <description>Visual functionality broken across desktop and mobile</description>
+        <dependency>None - parallel with form validation</dependency>
+      </task>
+      
+      <task id="touch-targets" duration="2h" agent="mobile-ux-specialist,code-fixer">
+        <description>Mobile users cannot interact reliably</description>
+        <dependency>undefined-css-fix completion recommended</dependency>
+      </task>
+      
+      <task id="loading-states" duration="2h" agent="ui-polish-specialist,ux-flow-optimizer">
+        <description>Users think app is broken during processing</description>
+        <dependency>form-validation-fix completion</dependency>
+      </task>
+    </day>
+
+    <coordination-strategy>
+      <parallel>form-validation-fix + undefined-css-fix can run simultaneously</parallel>
+      <sequential>loading-states after form-validation, touch-targets after css-fix</sequential>
+      <testing>Each worktree requires UX validation before closure</testing>
+      <decision>After all 4 fixes complete, assess ship readiness</decision>
+    </coordination-strategy>
+
+    <success-criteria>
+      <criterion status="pending">Users can submit completed forms</criterion>
+      <criterion status="pending">All visual elements display properly</criterion>
+      <criterion status="pending">Mobile users can interact with all elements</criterion>
+      <criterion status="pending">Users get feedback during all operations</criterion>
+    </success-criteria>
+  </implementation-priorities>
+
+  <consolidated-audit-findings>
+    <ship-critical-issues priority="day-1">
+      <issue id="undefined-css" impact="universal">
+        <components>ChecklistItem.tsx, TripDetailsEditForm.tsx</components>
+        <missing-classes>form-checkbox, btn, btn-sm, btn-primary, btn-error, input-bordered</missing-classes>
+        <impact>Core visual functionality broken across all devices</impact>
+        <time-estimate>1-2 hours</time-estimate>
+      </issue>
+
+      <issue id="touch-targets" impact="mobile">
+        <problem>All buttons using btn-sm are below 44px requirement</problem>
+        <impact>Mobile users cannot reliably interact</impact>
+        <time-estimate>2 hours</time-estimate>
+      </issue>
+
+      <issue id="loading-states" impact="ux">
+        <problem>No visual feedback during async operations</problem>
+        <impact>Complete loss of user confidence</impact>
+        <time-estimate>2 hours</time-estimate>
+      </issue>
+
+      <issue id="form-validation" impact="core-functionality">
+        <problem>Submit button disabled even with filled form</problem>
+        <impact>Users cannot submit trips</impact>
+        <time-estimate>1 hour</time-estimate>
+      </issue>
+    </ship-critical-issues>
+
+    <risk-assessment>
+      <high-risk>
+        <risk>Form validation logic may have additional edge cases</risk>
+        <risk>Undefined CSS classes could have wider impact than identified</risk>
+        <risk>Mobile testing may reveal additional touch target issues</risk>
+        <risk>Animation performance on low-end devices unknown</risk>
+      </high-risk>
+      
+      <mitigation>
+        <strategy>Fix form validation first (highest impact blocker)</strategy>
+        <strategy>Fix CSS classes second (highest risk item)</strategy>
+        <strategy>Test on real mobile devices early</strategy>
+        <strategy>Keep animations simple and performant</strategy>
+        <strategy>Have fallback plan to ship without Day 2 polish if needed</strategy>
+      </mitigation>
+    </risk-assessment>
+  </consolidated-audit-findings>
+
+  <management-protocols>
+    <scratchpad-rules>
+      <rule type="active-only">This document is for ACTIVE, IN-PROGRESS work only</rule>
+      <rule type="add">Current session context, active worktrees, in-progress tasks</rule>
+      <rule type="remove">Completed work, historical context, resolved issues</rule>
+      <rule type="move-to">Completed work goes to DEVLOG.md or TROUBLESHOOTING.md</rule>
+      <rule type="clean">Remove completed sections immediately after work is done</rule>
+    </scratchpad-rules>
+
+    <ux-validation-requirement mandatory="true">
+      <step order="1">Development Complete: Code changes implemented and tested</step>
+      <step order="2">UX Validation Required: smartpack-ux-flow-optimizer MUST validate fix</step>
+      <step order="3">Coordinator Approval: Only after UX confirmation can worktree be closed</step>
+      <step order="4">Documentation: Record UX validation results in DEVLOG.md</step>
+    </ux-validation-requirement>
+
+    <temp-file-policy>
+      <correct-location>.claude/active-worktrees/[task-id]/</correct-location>
+      <wrong-location>SmartPack/ or root-level temp files</wrong-location>
+      <reference>.claude/docs/worktree-management.xml</reference>
+    </temp-file-policy>
+  </management-protocols>
+</scratchpad>

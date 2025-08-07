@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  
+  <!-- Root agent element -->
+  <xs:element name="agent">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="metadata" type="metadataType"/>
+        <xs:element name="protocols" type="protocolsType" minOccurs="0"/>
+        <xs:element name="specialization" type="specializationType" minOccurs="0"/>
+        <xs:element name="section" type="sectionType" minOccurs="0" maxOccurs="unbounded"/>
+      </xs:sequence>
+      <xs:attribute name="id" type="xs:string" use="required"/>
+      <xs:attribute name="version" type="xs:string" use="required"/>
+      <xs:attribute name="model" type="xs:string"/>
+      <xs:attribute name="color" type="xs:string"/>
+    </xs:complexType>
+  </xs:element>
+
+  <!-- Metadata type -->
+  <xs:complexType name="metadataType">
+    <xs:sequence>
+      <xs:element name="name" type="xs:string"/>
+      <xs:element name="description" type="xs:string"/>
+      <xs:element name="priority" type="priorityType"/>
+      <xs:element name="status" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <!-- Priority enumeration -->
+  <xs:simpleType name="priorityType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="SHIP-CRITICAL"/>
+      <xs:enumeration value="SHIP-QUALITY"/>
+      <xs:enumeration value="FOUNDATION"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <!-- Protocols type -->
+  <xs:complexType name="protocolsType">
+    <xs:sequence>
+      <xs:element name="protocol" maxOccurs="unbounded">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="step" type="stepType" maxOccurs="unbounded"/>
+          </xs:sequence>
+          <xs:attribute name="id" type="xs:string" use="required"/>
+          <xs:attribute name="priority" type="xs:string"/>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <!-- Step type -->
+  <xs:complexType name="stepType">
+    <xs:sequence>
+      <xs:any minOccurs="0" maxOccurs="unbounded" processContents="lax"/>
+    </xs:sequence>
+    <xs:attribute name="order" type="xs:integer" use="required"/>
+    <xs:attribute name="action" type="xs:string" use="required"/>
+  </xs:complexType>
+
+  <!-- Specialization type -->
+  <xs:complexType name="specializationType">
+    <xs:sequence>
+      <xs:element name="expertise" minOccurs="0"/>
+      <xs:element name="inputs" minOccurs="0"/>
+      <xs:element name="outputs" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <!-- Section type for generic sections -->
+  <xs:complexType name="sectionType">
+    <xs:sequence>
+      <xs:element name="title" type="xs:string"/>
+      <xs:element name="content" type="xs:string" minOccurs="0"/>
+      <xs:element name="items" minOccurs="0"/>
+      <xs:element name="subsection" type="sectionType" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute name="id" type="xs:string" use="required"/>
+    <xs:attribute name="level" type="xs:integer" use="required"/>
+  </xs:complexType>
+
+</xs:schema>

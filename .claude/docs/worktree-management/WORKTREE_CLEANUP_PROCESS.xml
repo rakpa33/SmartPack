@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document id="worktree-cleanup-process" type="worktree-management" version="1.0" last-updated="2025-08-07">
+  <title>SmartPack Worktree Cleanup Process</title>
+  <document-info>
+    <type>worktree-management</type>
+    <parsing-instructions>
+      <instruction>Use section tags to navigate document structure</instruction>
+      <instruction>Check cross-references for related documents</instruction>
+      <instruction>Code blocks contain executable examples</instruction>
+      <instruction>Lists contain actionable items or requirements</instruction>
+    </parsing-instructions>
+  </document-info>
+  <cross-references>
+    <reference type="file" target="CLAUDE.xml" id="claude"/>
+  </cross-references>
+  <content>
+  </content>
+  <navigation>
+    <related-documents>
+      <document href=".claude/docs/worktree-management/WORKTREE_MANAGEMENT.xml">Worktree Guidelines</document>
+    </related-documents>
+  </navigation>
+</document>
