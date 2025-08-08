@@ -38,16 +38,36 @@ export const TripDetailsWithGeneration: React.FC<TripDetailsWithGenerationProps>
     state.endDate
   );
 
+  // Debug logging to track button visibility
+  React.useEffect(() => {
+    console.log('🔍 Generate Button Debug:', {
+      canGenerate,
+      tripName: state.tripName,
+      hasDestinations: state.destinations?.length > 0,
+      validDestinations: state.destinations?.some(d => d?.trim()),
+      destinations: state.destinations,
+      hasTravelModes: state.travelModes?.length > 0,
+      travelModes: state.travelModes,
+      startDate: state.startDate,
+      endDate: state.endDate,
+      fullState: state
+    });
+  }, [canGenerate, state]);
+
   // Check if we already have a generated packing list
   const hasGeneratedList = !!state.generatedPackingList;
 
   const handleGeneratePackingList = async () => {
+    console.log('🚀 Generate button clicked!', { canGenerate, isGenerating });
     if (!canGenerate || isGenerating) return;
 
     setIsGenerating(true);
     setGenerationError(null);
 
     try {
+      console.log('📡 Starting API call to generate packing list...');
+      console.log('Current state weather:', state.weather);
+      
       // Convert trip state to API format
       const tripData: TripFormData = {
         name: state.tripName,
@@ -65,6 +85,8 @@ export const TripDetailsWithGeneration: React.FC<TripDetailsWithGenerationProps>
         conditions: state.weather.summary || 'Clear',
         precipitation: 0
       }] : [];
+      
+      console.log('Sending to API:', { tripData, weatherData });
 
       // Call the API to generate the packing list
       const result = await generatePackingList(tripData, weatherData);
@@ -142,7 +164,7 @@ export const TripDetailsWithGeneration: React.FC<TripDetailsWithGenerationProps>
                 <strong>Error:</strong> {generationError}
               </p>
               <p className="text-xs text-red-600 dark:text-red-300 mt-1">
-                The app will use fallback suggestions if AI is unavailable.
+                Please ensure Ollama is running and try again.
               </p>
             </div>
           )}

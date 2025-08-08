@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document id="translate-context" type="context-management" version="1.0" last-updated="2025-08-07">
+  <title>Context Translation Script</title>
+  <document-info>
+    <type>context-management</type>
+    <parsing-instructions>
+      <instruction>Use section tags to navigate document structure</instruction>
+      <instruction>Check cross-references for related documents</instruction>
+      <instruction>Code blocks contain executable examples</instruction>
+      <instruction>Lists contain actionable items or requirements</instruction>
+    </parsing-instructions>
+  </document-info>
+  <cross-references>
+    <reference type="file" target="CLAUDE.xml" id="claude"/>
+    <reference type="file" target="CLAUDE.md/DEVLOG.md/TROUBLESHOOTING.xml" id="claude-md-devlog-md-troubleshooting"/>
+    <reference type="agent" target="smartpack-context-extractor.xml" id="smartpack-context-extractor"/>
+    <reference type="agent" target="smartpack-integrity-auditor.xml" id="smartpack-integrity-auditor"/>
+  </cross-references>
+  <content>
+  </content>
+  <navigation>
+    <related-documents>
+    </related-documents>
+  </navigation>
+</document>

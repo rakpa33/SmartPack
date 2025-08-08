@@ -1,0 +1,505 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document>
+  <metadata>
+    <title>COMMANDS for SmartPack</title>
+    <purpose>Central command reference for development workflow</purpose>
+    <lastUpdated>2025-01-31</lastUpdated>
+    <documentType>command-reference</documentType>
+  </metadata>
+  
+  <documentation-header>
+    <comment>
+      This file provides a comprehensive reference of all commands, scripts, and CLI operations for SmartPack development, testing, and deployment.
+      Keep this comment at the top; do not overwrite or remove it when updating the document.
+      
+      DOCUMENT PURPOSE:
+      - Central command reference for development workflow
+      - Testing commands for unit, integration, and E2E test suites
+      - AI/Ollama integration and troubleshooting commands
+      - Backend/serverless deployment and debugging commands
+      - Environment setup and dependency management
+      - Troubleshooting guide for common development issues
+      
+      WHEN TO UPDATE:
+      1. NEW SCRIPTS: Package.json script additions or modifications
+      2. TOOL CHANGES: New testing frameworks, build tools, or CLI utilities
+      3. DEPLOYMENT UPDATES: New deployment targets, environment configurations
+      4. AI INTEGRATION: Ollama model updates, API endpoint changes
+      5. TROUBLESHOOTING: New common issues and their resolution commands
+      6. ENVIRONMENT CHANGES: Node.js version updates, dependency changes
+      
+      UPDATE GUIDELINES:
+      - Organize by logical workflow: Development → Testing → Deployment → Troubleshooting
+      - Include both basic and advanced usage examples for each command
+      - Provide context for when to use specific commands (development vs. production)
+      - Add curl examples for API testing with realistic payload data
+      - Include expected outputs or success indicators where helpful
+      - Cross-reference with TROUBLESHOOTING.md for complex issues
+      
+      COMMAND CATEGORIES:
+      - Development: Setup, servers, build processes
+      - Testing: Unit, integration, E2E, coverage, debugging
+      - AI Integration: Ollama setup, model management, API testing
+      - Backend: Lambda development, serverless deployment
+      - Troubleshooting: Common issues, port conflicts, dependency problems
+      
+      MAINTENANCE NOTES:
+      - Verify commands actually work before documenting them
+      - Update version numbers and compatibility requirements when dependencies change
+      - Remove deprecated commands and mark legacy approaches clearly
+      - Keep troubleshooting section current with recently discovered issues
+      - Reference specific file paths and configuration for context
+      
+      HOW TO USE FOR AI ASSISTANCE:
+      - Reference this document before suggesting commands to ensure accuracy
+      - Use established patterns for new command documentation
+      - Check troubleshooting section before proposing solutions to common issues
+      - Validate that suggested commands align with current project setup and dependencies
+    </comment>
+  </documentation-header>
+
+  <section name="Development">
+    <subsection name="Installation &amp; Setup">
+      <command>
+        <description>Install dependencies</description>
+        <syntax>npm install --legacy-peer-deps</syntax>
+      </command>
+      <command>
+        <description>Verify Node version</description>
+        <syntax>node --version</syntax>
+        <note>Should be v20.14.0+</note>
+      </command>
+      <command>
+        <description>Check npm version</description>
+        <syntax>npm --version</syntax>
+        <note>Should be 10.7.0+</note>
+      </command>
+    </subsection>
+    
+    <subsection name="Development Servers">
+      <command>
+        <description>Start backend with AI</description>
+        <syntax>npm run lambda:dev</syntax>
+      </command>
+      <command>
+        <description>Start frontend</description>
+        <syntax>npm run dev</syntax>
+      </command>
+      <command>
+        <description>Build for production</description>
+        <syntax>npm run build</syntax>
+      </command>
+      <command>
+        <description>Lint code</description>
+        <syntax>npm run lint</syntax>
+      </command>
+    </subsection>
+  </section>
+
+  <section name="Ollama AI Integration">
+    <subsection name="Ollama Setup">
+      <command>
+        <description>Install Ollama</description>
+        <note>Download from https://ollama.ai/</note>
+      </command>
+      <command>
+        <description>Pull AI model</description>
+        <syntax>ollama pull llama3.1:8b</syntax>
+      </command>
+      <command>
+        <description>Start Ollama service</description>
+        <syntax>ollama serve</syntax>
+      </command>
+      <command>
+        <description>List available models</description>
+        <syntax>ollama list</syntax>
+      </command>
+      <command>
+        <description>Test AI directly</description>
+        <syntax>ollama run llama3.1:8b "test prompt"</syntax>
+      </command>
+    </subsection>
+    
+    <subsection name="AI Integration Testing">
+      <command>
+        <description>Test AI connection</description>
+        <syntax>curl http://localhost:11434/api/version</syntax>
+      </command>
+      <command>
+        <description>Test backend health</description>
+        <syntax>curl http://localhost:3000/health</syntax>
+      </command>
+      <command>
+        <description>Test AI checklist generation</description>
+        <syntax><![CDATA[
+curl -X POST http://localhost:3000/generate \
+  -H "Content-Type: application/json" \
+  -d '{"trip":{"name":"Test","startDate":"2024-01-15","endDate":"2024-01-18","destinations":["Tokyo"],"travelModes":["walking"],"tripDetails":"test"},"weather":[{"location":"Tokyo","temperature":15,"conditions":"clear","precipitation":0}]}'
+        ]]></syntax>
+      </command>
+      <command>
+        <description>Test AI suggestions</description>
+        <syntax><![CDATA[
+curl -X POST http://localhost:3000/suggestions \
+  -H "Content-Type: application-json" \
+  -d '{"customPrompt":"What to pack for photography?","trip":{"name":"Test","startDate":"2024-01-15","endDate":"2024-01-18","destinations":["Tokyo"],"travelModes":["walking"],"tripDetails":"test"},"weather":[{"location":"Tokyo","temperature":15,"conditions":"clear","precipitation":0}]}'
+        ]]></syntax>
+      </command>
+    </subsection>
+    
+    <subsection name="Category Optimization Testing">
+      <command>
+        <description>Test category naming fix</description>
+        <syntax>node test-category-fix.js</syntax>
+      </command>
+      <command>
+        <description>Test enhanced categories</description>
+        <syntax>node test-enhanced-categories.js</syntax>
+      </command>
+      <validation-notes>
+        <note>Categories should be like "Photography", "Winter", "Business" (not verbose phrases)</note>
+        <scenario type="Business trip">Should generate "Business", "Documents", "Electronics"</scenario>
+        <scenario type="Photography trip">Should generate "Photography", "Electronics", "Winter" (if cold)</scenario>
+        <scenario type="Beach vacation">Should generate "Beach", "Swimming", "Sun Protection"</scenario>
+      </validation-notes>
+    </subsection>
+  </section>
+
+  <section name="Testing">
+    <subsection name="Test Execution Best Practices">
+      <pattern name="Jest-Axe Accessibility Testing Pattern" date="Updated 2025-07-29">
+        <problem>Jest-axe expect.extend({ toHaveNoViolations }) causes type conflicts with Vitest</problem>
+        <solution><![CDATA[
+import { axe } from 'jest-axe';
+
+// Use this pattern instead of expect.extend()
+const expectNoA11yViolations = async (container: HTMLElement) => {
+  const results = await axe(container);
+  expect(results.violations).toEqual([]);
+};
+
+// In tests:
+await expectNoA11yViolations(document.body);
+        ]]></solution>
+        <status>Applied to all component tests for TypeScript compatibility</status>
+      </pattern>
+      
+      <protocol name="Safe Testing Protocol">
+        <step>Check for hanging processes first: tasklist | find "node.exe" (Windows) or ps aux | grep node (macOS/Linux)</step>
+        <step>Kill hanging processes if needed: taskkill /F /IM node.exe (Windows) or pkill node (macOS/Linux)</step>
+        <step>Start with build verification: npm run build (ensures no compilation errors)</step>
+      </protocol>
+      
+      <recommended-commands>
+        <category name="Quick Development Testing (Preferred)">
+          <command>
+            <description>Unit tests only - Fast feedback</description>
+            <syntax>npm test -- --run src/__tests__/unit</syntax>
+          </command>
+          <command>
+            <description>Specific component test</description>
+            <syntax>npm test -- --run ComponentName.test.tsx</syntax>
+          </command>
+          <command>
+            <description>Build check (no hanging risk)</description>
+            <syntax>npm run build</syntax>
+          </command>
+          <command>
+            <description>ESLint check (no hanging risk)</description>
+            <syntax>npm run lint</syntax>
+          </command>
+        </category>
+        
+        <category name="Targeted Integration Testing">
+          <command>
+            <description>Single integration test with timeout</description>
+            <syntax>npm test -- --run --timeout=30000 src/__tests__/integration/specific-test.tsx</syntax>
+          </command>
+          <command>
+            <description>Integration tests with verbose output and timeout</description>
+            <syntax>npm test -- --run --reporter=verbose --timeout=30000 src/__tests__/integration</syntax>
+          </command>
+        </category>
+        
+        <category name="Full Test Suite (Use with Caution)">
+          <command>
+            <description>Full suite with timeout protection</description>
+            <syntax>npm test -- --run --reporter=verbose --timeout=30000</syntax>
+          </command>
+          <command>
+            <description>With coverage (longer execution time)</description>
+            <syntax>npm test -- --run --coverage --timeout=30000</syntax>
+          </command>
+        </category>
+      </recommended-commands>
+      
+      <monitoring-protocol>
+        <guideline>Watch for Completion: Tests should show clear completion status ("X passed | Y failed")</guideline>
+        <guideline>Timeout Limits: Unit tests &lt;5 seconds, Integration tests &lt;30 seconds</guideline>
+        <guideline>Hanging Indicators: "queued" status lasting &gt;30 seconds indicates a problem</guideline>
+        <guideline>Error Analysis: Always read full error messages and stack traces before proceeding</guideline>
+      </monitoring-protocol>
+      
+      <debugging-commands>
+        <command>
+          <description>Verbose output for debugging</description>
+          <syntax>npm test -- --run --reporter=verbose ComponentName.test.tsx</syntax>
+        </command>
+        <command>
+          <description>Debug specific test with detailed output</description>
+          <syntax>npm test -- --run --reporter=verbose --timeout=10000 failing-test.tsx</syntax>
+        </command>
+        <command>
+          <description>Check test file syntax before running</description>
+          <syntax>npx tsc --noEmit src/__tests__/specific-test.tsx</syntax>
+        </command>
+      </debugging-commands>
+    </subsection>
+    
+    <subsection name="Enhanced AI Testing">
+      <command>
+        <description>Run all tests</description>
+        <syntax>npm test</syntax>
+        <alternative>npx vitest run</alternative>
+      </command>
+      <command>
+        <description>Run with coverage</description>
+        <syntax>npm test -- --coverage</syntax>
+      </command>
+      <command>
+        <description>Run specific test file</description>
+        <syntax>npx vitest run &lt;filepath&gt;</syntax>
+      </command>
+      <command>
+        <description>Watch mode</description>
+        <syntax>npm test -- --watch</syntax>
+        <note>Use --run for CI/final verification</note>
+      </command>
+      <command>
+        <description>Unit tests</description>
+        <syntax>npx vitest run src/__tests__/services/enhancedAI.unit.test.ts</syntax>
+      </command>
+      <command>
+        <description>Integration tests</description>
+        <syntax>npx vitest run src/__tests__/integration/enhancedAI.integration.test.tsx</syntax>
+      </command>
+      <command>
+        <description>E2E tests</description>
+        <syntax>npx playwright test src/__tests__/e2e/enhancedAI.e2e.test.ts</syntax>
+      </command>
+      <command>
+        <description>Complete AI test suite</description>
+        <syntax>npx vitest run src/__tests__/**/*enhancedAI*</syntax>
+      </command>
+    </subsection>
+    
+    <subsection name="Legacy Testing">
+      <command>
+        <description>Run E2E tests</description>
+        <syntax>npx playwright test</syntax>
+      </command>
+      <command>
+        <description>Run Playwright UI mode</description>
+        <syntax>npx playwright test --ui</syntax>
+        <note>Interactive test runner</note>
+      </command>
+      <command>
+        <description>Run Playwright with specific browser</description>
+        <syntax>npx playwright test --project=chromium</syntax>
+      </command>
+      <command>
+        <description>Run Playwright in debug mode</description>
+        <syntax>npx playwright test --debug</syntax>
+      </command>
+      <command>
+        <description>Run accessibility (axe) tests</description>
+        <syntax>npx vitest run src/__tests__/*.a11y.test.tsx</syntax>
+      </command>
+      <command>
+        <description>Run TripForm state tests</description>
+        <syntax>npx vitest run src/__tests__/useTripForm.test.tsx</syntax>
+      </command>
+      <command>
+        <description>Component tests</description>
+        <syntax>npx vitest run src/__tests__/components/</syntax>
+      </command>
+    </subsection>
+    
+    <subsection name="Playwright UI Testing">
+      <command>
+        <description>Launch Playwright UI</description>
+        <syntax>npx playwright test --ui</syntax>
+        <note>Graphical test runner</note>
+      </command>
+      <command>
+        <description>Playwright UI for specific project</description>
+        <syntax>npx playwright test --ui --project=chromium</syntax>
+      </command>
+      <command>
+        <description>Playwright UI for specific tests</description>
+        <syntax>npx playwright test --ui playwright/user-journey.spec.ts</syntax>
+      </command>
+      <command>
+        <description>Playwright UI with debug</description>
+        <syntax>npx playwright test --ui --debug</syntax>
+      </command>
+      <command>
+        <description>Install Playwright browsers</description>
+        <syntax>npx playwright install</syntax>
+      </command>
+    </subsection>
+    
+    <subsection name="Test Development">
+      <command>
+        <description>Update snapshots</description>
+        <syntax>npm test -- --update-snapshots</syntax>
+      </command>
+      <command>
+        <description>Debug failing tests</description>
+        <syntax>npm test -- --reporter=verbose</syntax>
+      </command>
+      <command>
+        <description>Test coverage report</description>
+        <syntax>npm test -- --coverage --reporter=html</syntax>
+      </command>
+    </subsection>
+  </section>
+
+  <section name="Backend/Serverless">
+    <subsection name="Enhanced AI Backend">
+      <command>
+        <description>Start enhanced AI backend</description>
+        <syntax>npm run lambda:dev</syntax>
+      </command>
+      <command>
+        <description>Test backend health</description>
+        <syntax>curl http://localhost:3000/health</syntax>
+        <alternative>Visit in browser</alternative>
+      </command>
+      <command>
+        <description>Test AI generation</description>
+        <syntax><![CDATA[
+curl -X POST http://localhost:3000/generate -H "Content-Type: application/json" -d '{"trip":{"name":"Test","startDate":"2025-08-01","endDate":"2025-08-04","destinations":["Paris"],"travelModes":["plane"]},"weather":[{"location":"Paris","temperature":20,"conditions":"Clear","precipitation":0}]}'
+        ]]></syntax>
+      </command>
+      <command>
+        <description>Check AI logs</description>
+        <note>Monitor console output from npm run lambda:dev for debugging</note>
+      </command>
+    </subsection>
+    
+    <subsection name="Deployment">
+      <command>
+        <description>Deploy backend to AWS Lambda</description>
+        <syntax>npx serverless deploy</syntax>
+      </command>
+      <command>
+        <description>Environment configuration</description>
+        <note>Update API URLs in src/services/apiService.ts for production</note>
+      </command>
+    </subsection>
+    
+    <subsection name="Backend Development">
+      <file>
+        <description>Enhanced AI file</description>
+        <path>lambda/app.ts</path>
+        <note>Main intelligent backend</note>
+      </file>
+      <file>
+        <description>Development file</description>
+        <path>lambda/server.js</path>
+        <note>Local development server</note>
+      </file>
+      <configuration>
+        <description>Backend port</description>
+        <value>3000</value>
+        <note>Ensure no conflicts with other services</note>
+      </configuration>
+    </subsection>
+  </section>
+
+  <section name="Troubleshooting">
+    <subsection name="Enhanced AI Issues">
+      <issue>
+        <symptom>Failed to get AI suggestions</symptom>
+        <solution>Ensure backend is running with npm run lambda:dev</solution>
+      </issue>
+      <issue>
+        <symptom>Repetitive suggestions</symptom>
+        <solution>Enhanced AI system now provides context-aware, intelligent recommendations</solution>
+      </issue>
+      <issue>
+        <symptom>Backend connectivity</symptom>
+        <solution>Test with fetch('http://localhost:3000/health') in browser console</solution>
+      </issue>
+      <issue>
+        <symptom>API errors</symptom>
+        <solution>Check backend console for detailed error messages and stack traces</solution>
+      </issue>
+    </subsection>
+    
+    <subsection name="Port Configuration">
+      <port>
+        <service>Frontend</service>
+        <url>http://localhost:5173</url>
+        <description>Vite development server</description>
+      </port>
+      <port>
+        <service>Backend</service>
+        <url>http://localhost:3000</url>
+        <description>Enhanced AI Lambda server</description>
+      </port>
+      <command>
+        <description>Check for port conflicts</description>
+        <syntax>netstat -ano | findstr :3000</syntax>
+      </command>
+    </subsection>
+    
+    <subsection name="Testing Issues">
+      <issue>
+        <symptom>Test hanging</symptom>
+        <solution>Use npm test -- --run instead of watch mode for final verification</solution>
+      </issue>
+      <issue>
+        <symptom>E2E test failures</symptom>
+        <solution>Ensure both frontend and backend are running during E2E tests</solution>
+      </issue>
+      <issue>
+        <symptom>Coverage reports</symptom>
+        <solution>Check test coverage with npm test -- --coverage</solution>
+      </issue>
+      <issue>
+        <symptom>Mock issues</symptom>
+        <solution>Clear test mocks with vi.clearAllMocks() in beforeEach blocks</solution>
+      </issue>
+    </subsection>
+    
+    <subsection name="Development Environment">
+      <issue>
+        <symptom>Node.js version</symptom>
+        <solution>Ensure compatible Node.js version (check package.json engines)</solution>
+      </issue>
+      <issue>
+        <symptom>Dependency issues</symptom>
+        <solution>Run npm ci for clean dependency installation</solution>
+      </issue>
+      <issue>
+        <symptom>TypeScript errors</symptom>
+        <solution>Run npm run type-check for TypeScript validation</solution>
+      </issue>
+      <issue>
+        <symptom>Build issues</symptom>
+        <solution>Clear build cache with rm -rf dist &amp;&amp; npm run build</solution>
+      </issue>
+    </subsection>
+  </section>
+
+  <section name="Other">
+    <note>Add any other project-specific commands here</note>
+  </section>
+
+  <footer>
+    <note>Update this file whenever you add, remove, or change a commonly used command or script.</note>
+    <note>Reference this file in onboarding, instructions, and prompts to ensure all contributors and AI agents use the correct commands.</note>
+  </footer>
+</document>

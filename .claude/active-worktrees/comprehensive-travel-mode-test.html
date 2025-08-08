@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Travel Mode Validation Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .test-section { border: 1px solid #ccc; margin: 10px 0; padding: 15px; }
+        .text-error { color: #dc2626; font-weight: 500; }
+        .text-success { color: #16a34a; font-weight: 500; }
+        button { margin: 5px; padding: 8px 15px; }
+        #results { background: #f5f5f5; padding: 10px; margin-top: 20px; font-family: monospace; }
+    </style>
+</head>
+<body>
+    <h1>Travel Mode Validation Test</h1>
+    <p>This test simulates the exact behavior described by the user</p>
+    
+    <div class="test-section">
+        <h3>Simulated Form State</h3>
+        <div>
+            <label>
+                <input type="checkbox" id="trainCheckbox"> Train
+            </label>
+        </div>
+        <div id="errorDisplay" style="display: none;" class="text-error">Select at least one travel mode.</div>
+        <div>
+            <button onclick="runTest()">Run User Scenario Test</button>
+            <button onclick="debugState()">Debug Current State</button>
+            <button onclick="reset()">Reset</button>
+        </div>
+    </div>
+
+    <div id="results"></div>
+
+    <script>
+        let state = {
+            travelModes: [],
+            touched: { travelModes: false },
+            hasStartedFilling: false
+        };
+
+        function log(message) {
+            const results = document.getElementById('results');
+            results.innerHTML += new Date().toISOString().substr(11, 12) + ': ' + message + '\n';
+        }
+
+        function updateHasStartedFilling() {
+            const hasAnyContent = state.travelModes.length > 0;
+            
+            log(`updateHasStartedFilling check - hasAnyContent: ${hasAnyContent}, current hasStartedFilling: ${state.hasStartedFilling}`);
+            
+            if (hasAnyContent && !state.hasStartedFilling) {
+                state.hasStartedFilling = true;
+                log('→ Setting hasStartedFilling to true');
+            }
+        }
+
+        function handleTravelModeChange(mode) {
+            const checkbox = document.getElementById('trainCheckbox');
+            const isChecked = checkbox.checked;
+            
+            log(`handleTravelModeChange - mode: ${mode}, checkbox checked: ${isChecked}`);
+            
+            if (isChecked) {
+                if (!state.travelModes.includes(mode)) {
+                    state.travelModes.push(mode);
+                }
+            } else {
+                state.travelModes = state.travelModes.filter(m => m !== mode);
+            }
+            
+            // Mark as touched
+            state.touched.travelModes = true;
+            log(`New travelModes: [${state.travelModes.join(', ')}], touched.travelModes: true`);
+            
+            // Update hasStartedFilling
+            updateHasStartedFilling();
+            
+            // Update error display
+            updateErrorDisplay();
+        }
+
+        function updateErrorDisplay() {
+            const errorDiv = document.getElementById('errorDisplay');
+            const hasError = state.travelModes.length === 0;
+            const shouldShowError = (state.touched.travelModes || state.hasStartedFilling) && hasError;
+            
+            log(`updateErrorDisplay - hasError: ${hasError}, touched: ${state.touched.travelModes}, hasStartedFilling: ${state.hasStartedFilling}, shouldShow: ${shouldShowError}`);
+            
+            if (shouldShowError) {
+                errorDiv.style.display = 'block';
+                log('✅ Error is now VISIBLE');
+            } else {
+                errorDiv.style.display = 'none';
+                log('❌ Error is now HIDDEN');
+            }
+        }
+
+        function runTest() {
+            log('=== STARTING USER SCENARIO TEST ===');
+            reset();
+            
+            setTimeout(() => {
+                log('Step 1: User selects Train');
+                document.getElementById('trainCheckbox').checked = true;
+                handleTravelModeChange('Train');
+                
+                setTimeout(() => {
+                    log('Step 2: User unselects Train');
+                    document.getElementById('trainCheckbox').checked = false;
+                    handleTravelModeChange('Train');
+                    
+                    setTimeout(() => {
+                        const errorDiv = document.getElementById('errorDisplay');
+                        const isVisible = errorDiv.style.display !== 'none';
+                        log('=== TEST RESULT ===');
+                        log(`Error message visible: ${isVisible}`);
+                        
+                        if (isVisible) {
+                            log('✅ SUCCESS: Error displays as expected');
+                        } else {
+                            log('❌ FAILURE: Error does not display (this matches user report)');
+                        }
+                    }, 100);
+                }, 500);
+            }, 100);
+        }
+
+        function debugState() {
+            log('=== CURRENT STATE DEBUG ===');
+            log(`state.travelModes: [${state.travelModes.join(', ')}]`);
+            log(`state.touched.travelModes: ${state.touched.travelModes}`);
+            log(`state.hasStartedFilling: ${state.hasStartedFilling}`);
+            
+            const errorDiv = document.getElementById('errorDisplay');
+            log(`Error div display: ${errorDiv.style.display}`);
+            log(`Error div visible: ${errorDiv.style.display !== 'none'}`);
+            
+            const hasError = state.travelModes.length === 0;
+            const shouldShowError = (state.touched.travelModes || state.hasStartedFilling) && hasError;
+            log(`Should show error: ${shouldShowError}`);
+        }
+
+        function reset() {
+            log('=== RESET ===');
+            state = {
+                travelModes: [],
+                touched: { travelModes: false },
+                hasStartedFilling: false
+            };
+            document.getElementById('trainCheckbox').checked = false;
+            document.getElementById('errorDisplay').style.display = 'none';
+            document.getElementById('results').innerHTML = '';
+        }
+
+        // Initialize
+        document.getElementById('trainCheckbox').addEventListener('change', function() {
+            handleTravelModeChange('Train');
+        });
+
+        log('Test page loaded. Click "Run User Scenario Test" to simulate the exact user behavior.');
+    </script>
+</body>
+</html>

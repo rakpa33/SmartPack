@@ -11,8 +11,8 @@
  *   npm run cleanup
  */
 
-const { exec, spawn } = require('child_process');
-const util = require('util');
+import { exec, spawn } from 'child_process';
+import util from 'util';
 const execAsync = util.promisify(exec);
 
 const REQUIRED_PORTS = [3000, 5173, 11434]; // Backend, Frontend, Ollama
@@ -226,12 +226,10 @@ class ProcessCleanup {
 }
 
 // Export for use in other scripts
-module.exports = ProcessCleanup;
+export default ProcessCleanup;
 
 // Run if called directly
-if (require.main === module) {
-  const cleanup = new ProcessCleanup();
-  cleanup.run().then(success => {
-    process.exit(success ? 0 : 1);
-  });
-}
+const cleanup = new ProcessCleanup();
+cleanup.run().then(success => {
+  process.exit(success ? 0 : 1);
+});

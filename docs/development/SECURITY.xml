@@ -1,0 +1,677 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document>
+  <metadata>
+    <title>SmartPack Security Guide</title>
+    <purpose>Define security standards and best practices for all components, document vulnerability reporting and response procedures, establish security testing and validation requirements, provide incident response and threat mitigation guidelines, and serve as security reference for development and operations teams</purpose>
+    <lastUpdated>2025-08-08</lastUpdated>
+    <documentType>security-guide</documentType>
+  </metadata>
+
+  <content>
+    <section id="clarifying-questions">
+      <title>⚠️ CLARIFYING QUESTIONS NEEDED</title>
+      <importance>IMPORTANT: This document contains fictional security infrastructure that needs to be revised based on actual implementation. The following questions need answers:</importance>
+      
+      <questions>
+        <question id="security-requirements">Security Requirements: What level of security is needed for an MVP vs full production?</question>
+        <question id="compliance-needs">Compliance Needs: Are GDPR, SOC 2, or other compliance frameworks actually required?</question>
+        <question id="user-data">User Data: What personal data does SmartPack actually collect and store?</question>
+        <question id="authentication-plans">Authentication Plans: Is user authentication planned for the immediate future?</question>
+        <question id="budget-for-security">Budget for Security: What security tools/services can be realistically implemented?</question>
+        <question id="risk-tolerance">Risk Tolerance: What are the actual security risks and threat levels for this application?</question>
+        <question id="security-contact">Security Contact: Do you need a formal security reporting process?</question>
+        <question id="third-party-integrations">Third-party Integrations: What are the security implications of Ollama and weather APIs?</question>
+      </questions>
+    </section>
+
+    <section id="current-status">
+      <title>Current Security Status</title>
+
+      <subsection id="basic-security">
+        <title>Basic Security Implemented</title>
+        <implementations>
+          <implementation>HTTPS in Development: Vite dev server supports HTTPS</implementation>
+          <implementation>Input Validation: Basic validation in React forms</implementation>
+          <implementation>CORS Configuration: Localhost origins configured for development</implementation>
+          <implementation>Environment Variables: Using dotenv for sensitive configuration</implementation>
+          <implementation>No Authentication: Intentionally open for MVP simplicity</implementation>
+        </implementations>
+      </subsection>
+
+      <subsection id="needs-assessment">
+        <title>Needs Assessment</title>
+        <needs>
+          <need>Production HTTPS: SSL/TLS for production deployment</need>
+          <need>API Security: Request validation and error handling</need>
+          <need>Data Privacy: Determine what data is actually collected</need>
+          <need>Dependency Security: Regular npm audit and updates</need>
+        </needs>
+      </subsection>
+
+      <subsection id="advanced-security-not-implemented">
+        <title>Advanced Security Not Implemented</title>
+        <gaps>
+          <gap>Authentication/Authorization: No user accounts or access control</gap>
+          <gap>Rate Limiting: No API throttling or DDoS protection</gap>
+          <gap>Security Monitoring: No logging or threat detection</gap>
+          <gap>Compliance Framework: No formal compliance structure</gap>
+          <gap>Incident Response: No security incident procedures</gap>
+        </gaps>
+      </subsection>
+    </section>
+
+    <section id="security-overview">
+      <title>Security Overview</title>
+      <description>SmartPack implements defense-in-depth security principles across all system components:</description>
+      
+      <principles>
+        <principle>Authentication: Multi-factor authentication for admin access</principle>
+        <principle>Authorization: Role-based access control (RBAC) for resources</principle>
+        <principle>Encryption: Data encryption in transit and at rest</principle>
+        <principle>Network Security: WAF, DDoS protection, and network isolation</principle>
+        <principle>Monitoring: Real-time security event monitoring and alerting</principle>
+        <principle>Compliance: SOC 2 Type II and GDPR compliance frameworks</principle>
+      </principles>
+    </section>
+
+    <section id="threat-model">
+      <title>Threat Model</title>
+
+      <subsection id="assets-and-data-classification">
+        <title>Assets and Data Classification</title>
+
+        <critical-assets>
+          <title>Critical Assets</title>
+          <asset>User Packing Data: Travel preferences and personal information</asset>
+          <asset>API Keys: External service authentication credentials</asset>
+          <asset>AI Models: Proprietary model configurations and training data</asset>
+          <asset>Infrastructure: AWS resources and configuration</asset>
+        </critical-assets>
+
+        <data-classification-table>
+          <classification level="Public">
+            <description>Freely sharable information</description>
+            <examples>Marketing content, documentation</examples>
+            <protection>Basic</protection>
+          </classification>
+          <classification level="Internal">
+            <description>Company-internal information</description>
+            <examples>Code repositories, architecture docs</examples>
+            <protection>Standard</protection>
+          </classification>
+          <classification level="Confidential">
+            <description>Sensitive business information</description>
+            <examples>API keys, user data analytics</examples>
+            <protection>High</protection>
+          </classification>
+          <classification level="Restricted">
+            <description>Highly sensitive information</description>
+            <examples>Security credentials, PII</examples>
+            <protection>Maximum</protection>
+          </classification>
+        </data-classification-table>
+      </subsection>
+
+      <subsection id="threat-actors">
+        <title>Threat Actors</title>
+        <actors>
+          <actor>External Attackers: Cybercriminals seeking data or system access</actor>
+          <actor>Malicious Insiders: Employees with privileged access</actor>
+          <actor>Nation-State Actors: Advanced persistent threats (APTs)</actor>
+          <actor>Script Kiddies: Opportunistic attackers using automated tools</actor>
+        </actors>
+      </subsection>
+
+      <subsection id="attack-vectors">
+        <title>Attack Vectors</title>
+        <vectors>
+          <vector>Web Application Attacks: OWASP Top 10 vulnerabilities</vector>
+          <vector>API Attacks: Authentication bypass, injection attacks</vector>
+          <vector>Infrastructure Attacks: Cloud misconfigurations, privilege escalation</vector>
+          <vector>Supply Chain Attacks: Compromised dependencies or third-party services</vector>
+          <vector>Social Engineering: Phishing, pretexting, business email compromise</vector>
+        </vectors>
+      </subsection>
+    </section>
+
+    <section id="security-architecture">
+      <title>Security Architecture</title>
+
+      <subsection id="defense-in-depth">
+        <title>Defense in Depth Layers</title>
+        <ascii-diagram>
+          <![CDATA[
+┌─────────────────────────────────────────────────────────────┐
+│ Layer 7: User Education & Awareness                        │
+├─────────────────────────────────────────────────────────────┤
+│ Layer 6: Application Security (OWASP Controls)             │
+├─────────────────────────────────────────────────────────────┤
+│ Layer 5: Data Security (Encryption, DLP)                   │
+├─────────────────────────────────────────────────────────────┤
+│ Layer 4: Network Security (WAF, DDoS Protection)           │
+├─────────────────────────────────────────────────────────────┤
+│ Layer 3: Infrastructure Security (IAM, VPC)                │
+├─────────────────────────────────────────────────────────────┤
+│ Layer 2: Host Security (Lambda Runtime, Container)         │
+├─────────────────────────────────────────────────────────────┤
+│ Layer 1: Physical Security (AWS Data Centers)              │
+└─────────────────────────────────────────────────────────────┘
+          ]]>
+        </ascii-diagram>
+      </subsection>
+
+      <subsection id="security-controls-matrix">
+        <title>Security Controls Matrix</title>
+        <controls-table>
+          <component name="Frontend">
+            <confidentiality>HTTPS, CSP</confidentiality>
+            <integrity>SRI, Code Signing</integrity>
+            <availability>CDN, DDoS Protection</availability>
+          </component>
+          <component name="API Gateway">
+            <confidentiality>TLS 1.3, JWT</confidentiality>
+            <integrity>Request Validation</integrity>
+            <availability>Rate Limiting, WAF</availability>
+          </component>
+          <component name="Lambda Functions">
+            <confidentiality>IAM Roles, Secrets</confidentiality>
+            <integrity>Input Validation</integrity>
+            <availability>Auto-scaling, Monitoring</availability>
+          </component>
+          <component name="Data Storage">
+            <confidentiality>Encryption at Rest</confidentiality>
+            <integrity>Checksums, Versioning</integrity>
+            <availability>Multi-AZ, Backups</availability>
+          </component>
+        </controls-table>
+      </subsection>
+    </section>
+
+    <section id="authentication-authorization">
+      <title>Authentication &amp; Authorization</title>
+
+      <subsection id="current-implementation">
+        <title>Current Implementation (MVP)</title>
+        <description>SmartPack currently operates without user authentication for MVP simplicity:</description>
+        
+        <codeblock language="javascript">
+          <![CDATA[
+// Current: No authentication required
+app.post('/generate', (req, res) => {
+  // Process request without user validation
+  generatePackingList(req.body);
+});
+          ]]>
+        </codeblock>
+      </subsection>
+
+      <subsection id="future-authentication">
+        <title>Future Authentication Implementation</title>
+
+        <jwt-authentication>
+          <title>JWT-Based Authentication</title>
+          <codeblock language="javascript">
+            <![CDATA[
+// Planned: JWT token validation
+const jwt = require('jsonwebtoken');
+
+function authenticateToken(req, res, next) {
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1];
+
+  if (!token) {
+    return res.status(401).json({ error: 'Access token required' });
+  }
+
+  jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
+    if (err) return res.status(403).json({ error: 'Invalid token' });
+    req.user = user;
+    next();
+  });
+}
+            ]]>
+          </codeblock>
+        </jwt-authentication>
+
+        <multi-factor-authentication>
+          <title>Multi-Factor Authentication</title>
+          <codeblock language="javascript">
+            <![CDATA[
+// Planned: TOTP-based MFA
+const speakeasy = require('speakeasy');
+
+function verifyMFA(secret, token) {
+  return speakeasy.totp.verify({
+    secret: secret,
+    encoding: 'base32',
+    token: token,
+    window: 2,
+  });
+}
+            ]]>
+          </codeblock>
+        </multi-factor-authentication>
+      </subsection>
+
+      <subsection id="authorization-model">
+        <title>Authorization Model</title>
+
+        <rbac-roles>
+          <title>Role-Based Access Control (RBAC)</title>
+          <codeblock language="json">
+            <![CDATA[
+{
+  "roles": {
+    "user": {
+      "permissions": ["generate:packing-list", "view:suggestions"]
+    },
+    "premium": {
+      "permissions": [
+        "generate:packing-list",
+        "view:suggestions",
+        "custom:ai-prompts"
+      ]
+    },
+    "admin": {
+      "permissions": ["*"]
+    }
+  }
+}
+            ]]>
+          </codeblock>
+        </rbac-roles>
+      </subsection>
+    </section>
+
+    <section id="data-protection">
+      <title>Data Protection</title>
+
+      <subsection id="encryption-standards">
+        <title>Encryption Standards</title>
+
+        <data-in-transit>
+          <title>Data in Transit</title>
+          <codeblock language="bash">
+            <![CDATA[
+# TLS 1.3 Configuration for API Gateway
+aws apigateway update-domain-name \
+  --domain-name api.smartpack.com \
+  --patch-ops op=replace,path=/securityPolicy,value=TLS_1_2
+            ]]>
+          </codeblock>
+        </data-in-transit>
+
+        <data-at-rest>
+          <title>Data at Rest</title>
+          <codeblock language="bash">
+            <![CDATA[
+# S3 Bucket Encryption
+aws s3api put-bucket-encryption \
+  --bucket smartpack-data-prod \
+  --server-side-encryption-configuration '{
+    "Rules": [{
+      "ApplyServerSideEncryptionByDefault": {
+        "SSEAlgorithm": "AES256"
+      }
+    }]
+  }'
+            ]]>
+          </codeblock>
+        </data-at-rest>
+      </subsection>
+
+      <subsection id="secrets-management">
+        <title>Secrets Management</title>
+
+        <aws-secrets-manager>
+          <title>AWS Secrets Manager Configuration</title>
+          <codeblock language="bash">
+            <![CDATA[
+# Store API keys securely
+aws secretsmanager create-secret \
+  --name smartpack/prod/api-keys \
+  --secret-string '{
+    "openai_api_key": "sk-...",
+    "weather_api_key": "abc123...",
+    "jwt_secret": "random-secure-string"
+  }'
+            ]]>
+          </codeblock>
+        </aws-secrets-manager>
+
+        <environment-variable-security>
+          <title>Environment Variable Security</title>
+          <codeblock language="javascript">
+            <![CDATA[
+// Secure environment variable handling
+const AWS = require('aws-sdk');
+const secretsManager = new AWS.SecretsManager();
+
+async function getSecret(secretName) {
+  try {
+    const result = await secretsManager.getSecretValue({
+      SecretId: secretName,
+    }).promise();
+    return JSON.parse(result.SecretString);
+  } catch (error) {
+    console.error('Failed to retrieve secret:', error);
+    throw new Error('Configuration error');
+  }
+}
+            ]]>
+          </codeblock>
+        </environment-variable-security>
+      </subsection>
+
+      <subsection id="data-privacy">
+        <title>Data Privacy</title>
+
+        <personal-data-handling>
+          <title>Personal Data Handling</title>
+          <codeblock language="javascript">
+            <![CDATA[
+// Data minimization principles
+function sanitizeUserData(userData) {
+  return {
+    tripName: userData.tripName,
+    destinations: userData.destinations,
+    dates: userData.dates,
+    // Exclude: IP addresses, detailed location data, device info
+  };
+}
+
+// Automatic data expiration
+function scheduleDataDeletion(userId, retentionDays = 90) {
+  const expirationDate = new Date();
+  expirationDate.setDate(expirationDate.getDate() + retentionDays);
+  
+  return {
+    userId,
+    expirationDate,
+    dataTypes: ['trip_history', 'preferences', 'generated_lists'],
+  };
+}
+            ]]>
+          </codeblock>
+        </personal-data-handling>
+      </subsection>
+    </section>
+
+    <section id="api-security">
+      <title>API Security</title>
+
+      <subsection id="input-validation">
+        <title>Input Validation</title>
+
+        <request-schema-validation>
+          <title>Request Schema Validation</title>
+          <codeblock language="javascript">
+            <![CDATA[
+const Joi = require('joi');
+
+const tripSchema = Joi.object({
+  name: Joi.string().max(100).required(),
+  startDate: Joi.date().iso().required(),
+  endDate: Joi.date().iso().min(Joi.ref('startDate')).required(),
+  destinations: Joi.array().items(Joi.string().max(200)).min(1).max(10).required(),
+  travelModes: Joi.array().items(
+    Joi.string().valid('plane', 'car', 'train', 'bus', 'boat')
+  ),
+  tripDetails: Joi.string().max(1000).optional(),
+});
+
+function validateTripData(req, res, next) {
+  const { error, value } = tripSchema.validate(req.body.trip);
+  if (error) {
+    return res.status(400).json({
+      success: false,
+      error: {
+        code: 'VALIDATION_ERROR',
+        message: error.details[0].message,
+      },
+    });
+  }
+  req.body.trip = value;
+  next();
+}
+            ]]>
+          </codeblock>
+        </request-schema-validation>
+
+        <sql-injection-prevention>
+          <title>SQL Injection Prevention</title>
+          <codeblock language="javascript">
+            <![CDATA[
+// Use parameterized queries (when database is added)
+const query = 'SELECT * FROM trips WHERE user_id = ? AND trip_id = ?';
+db.query(query, [userId, tripId], (err, results) => {
+  // Safe from SQL injection
+});
+            ]]>
+          </codeblock>
+        </sql-injection-prevention>
+      </subsection>
+
+      <subsection id="rate-limiting">
+        <title>Rate Limiting</title>
+
+        <api-gateway-rate-limiting>
+          <title>API Gateway Rate Limiting</title>
+          <codeblock language="bash">
+            <![CDATA[
+# Configure API Gateway throttling
+aws apigateway put-usage-plan \
+  --usage-plan-id <plan-id> \
+  --patch-ops '[
+    {
+      "op": "replace",
+      "path": "/throttle/rateLimit",
+      "value": "100"
+    },
+    {
+      "op": "replace",
+      "path": "/throttle/burstLimit",
+      "value": "200"
+    }
+  ]'
+            ]]>
+          </codeblock>
+        </api-gateway-rate-limiting>
+
+        <application-level-rate-limiting>
+          <title>Application-Level Rate Limiting</title>
+          <codeblock language="javascript">
+            <![CDATA[
+const rateLimit = require('express-rate-limit');
+
+const apiLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // limit each IP to 100 requests per windowMs
+  message: {
+    error: 'Too many requests, please try again later',
+    retryAfter: 900,
+  },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+app.use('/api/', apiLimiter);
+            ]]>
+          </codeblock>
+        </application-level-rate-limiting>
+      </subsection>
+
+      <subsection id="cors-configuration">
+        <title>CORS Configuration</title>
+        <codeblock language="javascript">
+          <![CDATA[
+const cors = require('cors');
+
+const corsOptions = {
+  origin: ['https://smartpack.com', 'https://www.smartpack.com'],
+  credentials: true,
+  methods: ['GET', 'POST'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  maxAge: 86400, // 24 hours
+};
+
+app.use(cors(corsOptions));
+          ]]>
+        </codeblock>
+      </subsection>
+    </section>
+
+    <section id="vulnerability-management">
+      <title>Vulnerability Management</title>
+
+      <subsection id="vulnerability-reporting">
+        <title>Vulnerability Reporting</title>
+
+        <security-contact>
+          <title>Security Contact Information</title>
+          <contact name="Security Email">security@smartpack.com</contact>
+          <contact name="PGP Key">Available at https://smartpack.com/.well-known/security.txt</contact>
+          <contact name="Response Time">24 hours for initial response, 7 days for resolution plan</contact>
+        </security-contact>
+
+        <responsible-disclosure>
+          <title>Responsible Disclosure Process</title>
+          <steps>
+            <step>Report Submission: Send details to security@smartpack.com</step>
+            <step>Acknowledgment: Receive confirmation within 24 hours</step>
+            <step>Investigation: Security team investigates and validates</step>
+            <step>Resolution: Fix deployed based on severity level</step>
+            <step>Disclosure: Coordinated public disclosure after fix</step>
+          </steps>
+        </responsible-disclosure>
+      </subsection>
+
+      <subsection id="severity-classification">
+        <title>Severity Classification</title>
+        <severity-table>
+          <severity level="Critical">
+            <response-time>4 hours</response-time>
+            <description>Immediate threat to user data or system integrity</description>
+            <examples>RCE, SQL injection with data access</examples>
+          </severity>
+          <severity level="High">
+            <response-time>24 hours</response-time>
+            <description>Significant security impact</description>
+            <examples>Authentication bypass, sensitive data exposure</examples>
+          </severity>
+          <severity level="Medium">
+            <response-time>72 hours</response-time>
+            <description>Moderate security risk</description>
+            <examples>XSS, information disclosure</examples>
+          </severity>
+          <severity level="Low">
+            <response-time>7 days</response-time>
+            <description>Minor security issue</description>
+            <examples>Security misconfigurations, low-impact vulnerabilities</examples>
+          </severity>
+        </severity-table>
+      </subsection>
+
+      <subsection id="patch-management">
+        <title>Patch Management</title>
+        <codeblock language="bash">
+          <![CDATA[
+# Automated dependency updates
+npm install -g npm-check-updates
+ncu -u
+npm audit fix
+
+# Security patch deployment
+./deploy-security-patch.sh <patch-version>
+          ]]>
+        </codeblock>
+      </subsection>
+    </section>
+
+    <section id="security-monitoring">
+      <title>Security Monitoring</title>
+
+      <subsection id="real-time-monitoring">
+        <title>Real-Time Monitoring</title>
+
+        <cloudwatch-metrics>
+          <title>CloudWatch Security Metrics</title>
+          <codeblock language="bash">
+            <![CDATA[
+# Create custom security dashboard
+aws cloudwatch put-dashboard \
+  --dashboard-name SmartPack-Security \
+  --dashboard-body file://security-dashboard.json
+            ]]>
+          </codeblock>
+        </cloudwatch-metrics>
+
+        <security-event-detection>
+          <title>Security Event Detection</title>
+          <codeblock language="javascript">
+            <![CDATA[
+// Lambda function for security event processing
+exports.securityEventHandler = async (event) => {
+  const securityEvents = [
+    'multiple-failed-auth',
+    'unusual-api-access',
+    'high-error-rate',
+    'suspicious-user-behavior',
+  ];
+
+  for (const record of event.Records) {
+    const logData = JSON.parse(record.body);
+    if (detectSecurityAnomaly(logData)) {
+      await sendSecurityAlert(logData);
+    }
+  }
+};
+            ]]>
+          </codeblock>
+        </security-event-detection>
+      </subsection>
+
+      <subsection id="security-alerting">
+        <title>Security Alerting</title>
+
+        <critical-alerts>
+          <title>Critical Alert Conditions</title>
+          <conditions>
+            <condition>Authentication Failures: >10 failed attempts from single IP</condition>
+            <condition>API Abuse: Rate limit exceeded by 500%</condition>
+            <condition>Data Access Anomalies: Unusual data access patterns</condition>
+            <condition>Infrastructure Changes: Unexpected AWS resource modifications</condition>
+          </conditions>
+        </critical-alerts>
+
+        <alert-integration>
+          <title>Alert Integration</title>
+          <codeblock language="bash">
+            <![CDATA[
+# SNS topic for security alerts
+aws sns create-topic --name smartpack-security-alerts
+
+# Lambda function to process and route alerts
+aws lambda create-function \
+  --function-name security-alert-processor \
+  --runtime nodejs18.x \
+  --handler index.processAlert \
+  --zip-file fileb://alert-processor.zip
+            ]]>
+          </codeblock>
+        </alert-integration>
+      </subsection>
+    </section>
+
+    <section id="see-also">
+      <title>See Also</title>
+      <references>
+        <reference file="ARCHITECTURE.md">System architecture and security controls</reference>
+        <reference file="DEPLOYMENT.md">Secure deployment procedures</reference>
+        <reference file="API.md">API security documentation</reference>
+        <reference file="TROUBLESHOOTING.md">Security issue resolution</reference>
+        <reference file="../CONTRIBUTING.md">Secure development practices</reference>
+      </references>
+    </section>
+  </content>
+</document>

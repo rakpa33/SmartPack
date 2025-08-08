@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>CORS Test</title>
+</head>
+<body>
+    <h1>Testing CORS from different ports</h1>
+    <button onclick="testAPI()">Test API</button>
+    <div id="result"></div>
+    
+    <script>
+        async function testAPI() {
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = 'Testing...';
+            
+            try {
+                // Test health endpoint
+                const healthResponse = await fetch('http://localhost:3000/health');
+                const health = await healthResponse.json();
+                
+                // Test generate endpoint
+                const testData = {
+                    trip: {
+                        name: "Test Trip",
+                        startDate: "2025-08-10",
+                        endDate: "2025-08-15",
+                        destinations: ["Paris"],
+                        travelModes: ["Plane"],
+                        tripDetails: "Test"
+                    },
+                    weather: [{
+                        location: "Paris",
+                        temperature: 22,
+                        conditions: "Clear",
+                        precipitation: 0
+                    }]
+                };
+                
+                const generateResponse = await fetch('http://localhost:3000/generate', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(testData)
+                });
+                
+                const generateData = await generateResponse.json();
+                
+                resultDiv.innerHTML = `
+                    <h2>✅ CORS Working!</h2>
+                    <p>Health: ${JSON.stringify(health)}</p>
+                    <p>Generate Response: ${generateData.checklist ? generateData.checklist.length + ' items' : 'Error'}</p>
+                    <p>Current page port: ${window.location.port || '80'}</p>
+                `;
+            } catch (error) {
+                resultDiv.innerHTML = `<h2>❌ CORS Error</h2><p>${error.message}</p>`;
+            }
+        }
+    </script>
+</body>
+</html>

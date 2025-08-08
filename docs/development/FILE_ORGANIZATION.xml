@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document>
+  <metadata>
+    <title>SmartPack File Organization Standards</title>
+    <type>development_documentation</type>
+    <purpose>
+      - Establish project directory structure and organization
+      - Define import path aliases and naming conventions
+      - Document component and file organization patterns
+      - Ensure consistency across development team
+      - Provide reference for new developers
+    </purpose>
+    <category>standards</category>
+    <last_updated>July 2025</last_updated>
+    <applies_to>SmartPack v2024/2025</applies_to>
+  </metadata>
+
+  <section name="directory_structure">
+    <title>Directory Structure</title>
+    <code_block format="text">
+      <![CDATA[
+SmartPack/
+├── docs/                    # All documentation
+│   ├── development/         # Developer guides
+│   ├── testing/            # Testing documentation
+│   └── api/                # API documentation
+├── src/
+│   ├── components/         # React components
+│   ├── hooks/              # Custom React hooks
+│   ├── pages/              # Page components
+│   ├── utils/              # Utility functions
+│   ├── types/              # TypeScript types
+│   ├── assets/             # Static assets
+│   ├── test-utils/         # Centralized test utilities
+│   └── __tests__/          # All test files
+├── .github/
+│   ├── prompts/            # AI prompts (GitHub convention)
+│   └── workflows/          # GitHub Actions
+├── lambda/                 # Backend functions
+├── playwright/             # E2E tests
+└── tests/                  # Legacy (to be deprecated)
+      ]]>
+    </code_block>
+  </section>
+
+  <section name="configuration_standards">
+    <title>Configuration Standards</title>
+    
+    <subsection name="single_configuration_files">
+      <title>Single Configuration Files</title>
+      <list>
+        <item><strong>Use `vite.config.ts`</strong> for both Vite and Vitest (not separate configs)</item>
+        <item><strong>Use `playwright.config.ts`</strong> for E2E testing only</item>
+        <item><strong>Avoid</strong> `vitest.config.ts`, `jest.config.js` when Vite handles testing</item>
+      </list>
+    </subsection>
+
+    <subsection name="path_aliases">
+      <title>Path Aliases</title>
+      <content>Always use path aliases for internal imports:</content>
+      
+      <code_block format="typescript">
+        <![CDATA[
+// Preferred
+import { Button } from '@components/Button';
+import { useTripForm } from '@hooks/useTripForm';
+import { renderWithProviders } from '@test-utils';
+
+// Avoid
+import { Button } from '../../components/Button';
+import { useTripForm } from '../../../hooks/useTripForm';
+        ]]>
+      </code_block>
+    </subsection>
+  </section>
+
+  <section name="test_organization">
+    <title>Test Organization</title>
+
+    <subsection name="centralized_test_utilities">
+      <title>Centralized Test Utilities</title>
+      <list>
+        <item><strong>Location</strong>: `src/test-utils/`</item>
+        <item><strong>Import</strong>: `import { renderWithProviders } from '@test-utils';`</item>
+        <item><strong>No deep relative paths</strong>: Max 2 levels (`../`)</item>
+      </list>
+    </subsection>
+
+    <subsection name="test_file_structure">
+      <title>Test File Structure</title>
+      <code_block format="text">
+        <![CDATA[
+src/__tests__/
+├── unit/            # Component/hook unit tests
+├── integration/     # Feature integration tests
+└── utils/           # Utility function tests
+        ]]>
+      </code_block>
+    </subsection>
+  </section>
+
+  <section name="documentation_standards">
+    <title>Documentation Standards</title>
+
+    <subsection name="unified_documentation">
+      <title>Unified Documentation</title>
+      <list>
+        <item><strong>All docs</strong> go in `docs/` directory</item>
+        <item><strong>Development guides</strong> in `docs/development/`</item>
+        <item><strong>Testing docs</strong> in `docs/testing/` (consolidated comprehensive testing guide)</item>
+        <item><strong>API docs</strong> in `docs/api/`</item>
+        <item><strong>AI prompts</strong> in `.github/prompts/` (GitHub convention)</item>
+      </list>
+    </subsection>
+
+    <subsection name="documentation_types">
+      <title>Documentation Types</title>
+      <list>
+        <item><strong>ARCHITECTURE.md</strong>: System design and component relationships</item>
+        <item><strong>ONBOARDING.md</strong>: Developer setup and getting started</item>
+        <item><strong>TESTING_GUIDE.md</strong>: Comprehensive testing documentation (consolidated)</item>
+        <item><strong>TEST_UTILITIES.md</strong>: Testing utility documentation</item>
+        <item><strong>OLLAMA_SETUP.md</strong>: AI integration setup guide</item>
+        <item><strong>OLLAMA_IMPLEMENTATION.md</strong>: AI implementation details</item>
+        <item><strong>HEROICONS_IMPLEMENTATION.md</strong>: UI icon implementation guide</item>
+        <item><strong>TROUBLESHOOTING.md</strong>: Common issues and solutions</item>
+      </list>
+    </subsection>
+  </section>
+
+  <section name="lambda_functions">
+    <title>Lambda Functions</title>
+
+    <subsection name="server_consolidation">
+      <title>Server Consolidation</title>
+      <list>
+        <item><strong>Use TypeScript</strong>: `app.ts` + `server.ts` pattern</item>
+        <item><strong>Avoid duplication</strong>: One server per environment, not per feature</item>
+        <item><strong>Environment-based switching</strong>: Use env vars instead of separate files</item>
+      </list>
+    </subsection>
+  </section>
+
+  <section name="import_conventions">
+    <title>Import Conventions</title>
+
+    <subsection name="import_order">
+      <title>Import Order</title>
+      <ordered_list>
+        <item>External libraries</item>
+        <item>Internal utilities (with aliases)</item>
+        <item>Relative imports (max 2 levels)</item>
+      </ordered_list>
+
+      <code_block format="typescript">
+        <![CDATA[
+// External
+import React from 'react';
+import { render } from '@testing-library/react';
+
+// Internal with aliases
+import { TripForm } from '@components/TripForm';
+import { useTripForm } from '@hooks/useTripForm';
+
+// Relative (limited)
+import './Component.css';
+        ]]>
+      </code_block>
+    </subsection>
+  </section>
+
+  <section name="enforcement">
+    <title>Enforcement</title>
+
+    <subsection name="eslint_rules">
+      <title>ESLint Rules</title>
+      <code_block format="javascript">
+        <![CDATA[
+rules: {
+  'import/no-relative-parent-imports': 'error',
+  'import/order': ['error', {
+    'newlines-between': 'always'
+  }]
+}
+        ]]>
+      </code_block>
+    </subsection>
+
+    <subsection name="pre_commit_hooks">
+      <title>Pre-commit Hooks</title>
+      <list>
+        <item>Validate file organization</item>
+        <item>Check import patterns</item>
+        <item>Enforce documentation standards</item>
+      </list>
+    </subsection>
+  </section>
+
+  <section name="benefits">
+    <title>Benefits</title>
+    <ordered_list>
+      <item><strong>Simplified Imports</strong>: `@test-utils` vs `../../../tests/testing-utils`</item>
+      <item><strong>Consistent Structure</strong>: Always know where to find things</item>
+      <item><strong>Easier Maintenance</strong>: Less duplication, centralized utilities</item>
+      <item><strong>Better DX</strong>: Faster navigation, clearer organization</item>
+      <item><strong>Standards Compliance</strong>: Modern React/TypeScript practices</item>
+    </ordered_list>
+  </section>
+
+  <section name="enforcement_automation">
+    <title>Enforcement & Automation</title>
+
+    <subsection name="eslint_configuration">
+      <title>ESLint Configuration</title>
+      <content>The project includes ESLint rules to enforce import standards:</content>
+      
+      <code_block format="bash">
+        <![CDATA[
+# Install required dependencies (if not already installed)
+npm install --save-dev eslint-plugin-import eslint-import-resolver-typescript
+        ]]>
+      </code_block>
+
+      <subsection name="configured_rules">
+        <title>Configured Rules:</title>
+        <list>
+          <item>`import/order`: Enforces consistent import ordering</item>
+          <item>`import/no-relative-parent-imports`: Prevents `../` imports</item>
+          <item>`import/no-useless-path-segments`: Removes unnecessary path segments</item>
+        </list>
+
+        <content><strong>Usage:</strong></content>
+        <code_block format="bash">
+          <![CDATA[
+npm run lint       # Check for violations
+npm run lint:fix   # Auto-fix violations where possible
+          ]]>
+        </code_block>
+      </subsection>
+    </subsection>
+
+    <subsection name="vscode_settings">
+      <title>VSCode Settings</title>
+      <content>Add to `.vscode/settings.json` for better TypeScript path support:</content>
+      
+      <code_block format="json">
+        <![CDATA[
+{
+  "typescript.preferences.includePackageJsonAutoImports": "on",
+  "typescript.suggest.autoImports": true,
+  "typescript.suggest.paths": true
+}
+        ]]>
+      </code_block>
+    </subsection>
+  </section>
+</document>

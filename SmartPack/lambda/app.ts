@@ -81,14 +81,11 @@ app.post('/generate', async (req: Request<object, object, GenerateRequest>, res:
   } catch (error) {
     console.error('Error generating packing list:', error);
     
-    // Fallback to mock data if AI fails
-    console.log('Falling back to mock data due to AI error');
-    const fallbackChecklist = generateMockChecklist(req.body.trip, req.body.weather);
-    
-    res.status(200).json({
-      ...fallbackChecklist,
-      aiGenerated: false,
-      fallbackReason: error instanceof Error ? error.message : 'AI service unavailable'
+    // Return error instead of fallback data
+    res.status(503).json({
+      error: 'AI service unavailable',
+      message: error instanceof Error ? error.message : 'Failed to generate AI packing list',
+      details: 'Ollama AI service is not responding with valid data. Please ensure Ollama is running and the model is properly configured.'
     });
   }
 });

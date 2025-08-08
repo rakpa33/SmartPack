@@ -3,7 +3,7 @@ import { PackingListProvider } from '../hooks/usePackingListContext';
 import { ColumnLayoutProvider, useColumnLayout } from '../hooks/useColumnLayout';
 import { useTripForm } from '../hooks/useTripForm';
 import { PackingList } from './PackingList';
-import { TripDetails } from './TripDetails';
+import { TripDetailsWithGeneration } from './TripDetailsWithGeneration';
 import SuggestionsPanel from './SuggestionsPanel';
 import BottomNavigation from './BottomNavigation';
 import DragHandle from './DragHandle';
@@ -81,13 +81,20 @@ const MainLayoutContent: React.FC<MainLayoutProps> = React.memo(({ children }) =
           >
             <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-4 h-full text-gray-900 dark:text-gray-100 border border-gray-200 dark:border-gray-700">
               <PackingListProvider>
-                <TripDetails
+                <TripDetailsWithGeneration
                   tripName={state.tripName}
                   startDate={state.startDate}
                   endDate={state.endDate}
                   destinations={state.destinations}
                   travelModes={state.travelModes}
                   preferences={state.preferences}
+                  weather={state.weather ? {
+                    weathercode: state.weather.weathercode,
+                    summary: state.weather.summary,
+                    temperatureMin: state.weather.temperatureMin ?? undefined,
+                    temperatureMax: state.weather.temperatureMax ?? undefined,
+                    averageTemp: state.weather.averageTemp ?? undefined
+                  } : undefined}
                   isFirstTimeOrNewTrip={isFirstTimeUser}
                 />
               </PackingListProvider>

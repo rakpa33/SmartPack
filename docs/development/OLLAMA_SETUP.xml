@@ -1,0 +1,288 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document>
+  <metadata>
+    <title>SmartPack - Ollama AI Integration Setup</title>
+    <type>development_documentation</type>
+    <purpose>
+      - Step-by-step Ollama installation and setup instructions
+      - Local development environment configuration
+      - Model installation and testing procedures
+      - Backend integration and API configuration
+    </purpose>
+    <category>setup_guide</category>
+    <status>complete</status>
+    <last_updated>July 2025</last_updated>
+  </metadata>
+
+  <section name="overview">
+    <title>Overview</title>
+    <content>SmartPack now uses <strong>Ollama</strong> for AI-powered packing list generation instead of mock data. This provides intelligent, context-aware suggestions based on your trip details, weather, and custom prompts.</content>
+  </section>
+
+  <section name="prerequisites">
+    <title>Prerequisites</title>
+    <ordered_list>
+      <item><strong>Ollama</strong> installed and running locally</item>
+      <item><strong>LLM model</strong> downloaded (recommended: llama3.1:8b)</item>
+      <item><strong>Node.js dependencies</strong> installed</item>
+    </ordered_list>
+  </section>
+
+  <section name="quick_setup">
+    <title>Quick Setup</title>
+
+    <subsection name="install_ollama">
+      <title>1. Install Ollama</title>
+
+      <subsubsection name="windows">
+        <title>Windows:</title>
+        <code_block format="bash">
+          <![CDATA[
+# Download from https://ollama.ai/download
+# Or use winget:
+winget install Ollama.Ollama
+          ]]>
+        </code_block>
+      </subsubsection>
+
+      <subsubsection name="macos">
+        <title>macOS:</title>
+        <code_block format="bash">
+          <![CDATA[
+# Download from https://ollama.ai/download
+# Or use Homebrew:
+brew install ollama
+          ]]>
+        </code_block>
+      </subsubsection>
+
+      <subsubsection name="linux">
+        <title>Linux:</title>
+        <code_block format="bash">
+          <![CDATA[
+curl -fsSL https://ollama.ai/install.sh | sh
+          ]]>
+        </code_block>
+      </subsubsection>
+    </subsection>
+
+    <subsection name="download_model">
+      <title>2. Download a Model</title>
+      <code_block format="bash">
+        <![CDATA[
+# Start Ollama service (if not auto-started)
+ollama serve
+
+# Download the recommended model (in a new terminal)
+ollama pull llama3.1:8b
+
+# Alternative smaller model for testing:
+# ollama pull llama3:8b
+
+# Alternative larger model for better quality:
+# ollama pull llama3.1:13b
+        ]]>
+      </code_block>
+    </subsection>
+
+    <subsection name="verify_installation">
+      <title>3. Verify Installation</title>
+      <code_block format="bash">
+        <![CDATA[
+# Test that Ollama is running
+curl http://localhost:11434/api/version
+
+# Test model generation
+ollama run llama3.1:8b "Generate a packing list for a 3-day beach vacation"
+        ]]>
+      </code_block>
+    </subsection>
+
+    <subsection name="configure_smartpack">
+      <title>4. Configure SmartPack</title>
+      <content>The app is already configured to use `http://localhost:11434` by default. You can customize settings in `.env`:</content>
+      
+      <code_block format="env">
+        <![CDATA[
+OLLAMA_HOST=http://localhost:11434
+OLLAMA_MODEL=llama3.1:8b
+        ]]>
+      </code_block>
+    </subsection>
+
+    <subsection name="install_dependencies_run">
+      <title>5. Install Dependencies & Run</title>
+      <code_block format="bash">
+        <![CDATA[
+# Install the new dependencies
+npm install
+
+# Start the backend server
+npm run lambda:dev
+
+# In another terminal, start the frontend
+npm run dev
+        ]]>
+      </code_block>
+    </subsection>
+  </section>
+
+  <section name="how_it_works">
+    <title>How It Works</title>
+
+    <subsection name="ai_powered_packing_lists">
+      <title>AI-Powered Packing Lists</title>
+      <content>When you submit a trip form, SmartPack:</content>
+      <ordered_list>
+        <item><strong>Analyzes</strong> your trip details (destinations, dates, travel modes, preferences)</item>
+        <item><strong>Considers</strong> weather forecasts for your destinations</item>
+        <item><strong>Generates</strong> a comprehensive packing checklist using Ollama</item>
+        <item><strong>Provides</strong> intelligent suggestions based on trip type, duration, and climate</item>
+      </ordered_list>
+    </subsection>
+
+    <subsection name="custom_ai_suggestions">
+      <title>Custom AI Suggestions</title>
+      <content>In the Suggestions Panel, you can:</content>
+      <ordered_list>
+        <item><strong>Enter custom prompts</strong> like "business meetings", "hiking", "photography gear"</item>
+        <item><strong>Get targeted suggestions</strong> based on your specific needs</item>
+        <item><strong>Add items</strong> directly to your main packing list</item>
+        <item><strong>Refresh</strong> for new suggestions anytime</item>
+      </ordered_list>
+    </subsection>
+
+    <subsection name="fallback_system">
+      <title>Fallback System</title>
+      <content>If Ollama is not available:</content>
+      <list>
+        <item>The system automatically falls back to the previous rule-based logic</item>
+        <item>You'll see a notification that AI is unavailable</item>
+        <item>All core functionality remains working</item>
+      </list>
+    </subsection>
+  </section>
+
+  <section name="performance_tips">
+    <title>Performance Tips</title>
+
+    <subsection name="model_selection">
+      <title>Model Selection</title>
+      <list>
+        <item><strong>llama3.1:8b</strong> - Best balance of speed and quality (recommended)</item>
+        <item><strong>llama3:8b</strong> - Faster, slightly lower quality</item>
+        <item><strong>llama3.1:13b</strong> - Higher quality, requires more resources</item>
+        <item><strong>mistral:7b</strong> - Alternative option, good performance</item>
+      </list>
+    </subsection>
+
+    <subsection name="resource_usage">
+      <title>Resource Usage</title>
+      <list>
+        <item><strong>RAM</strong>: 8GB+ recommended for 8B models</item>
+        <item><strong>CPU</strong>: Modern multi-core processor preferred</item>
+        <item><strong>GPU</strong>: Optional, will speed up generation significantly</item>
+      </list>
+    </subsection>
+
+    <subsection name="optimization">
+      <title>Optimization</title>
+      <code_block format="bash">
+        <![CDATA[
+# For better performance on limited hardware:
+ollama pull llama3:8b
+
+# For GPU acceleration (if available):
+# Ollama automatically detects and uses GPU
+        ]]>
+      </code_block>
+    </subsection>
+  </section>
+
+  <section name="troubleshooting">
+    <title>Troubleshooting</title>
+
+    <subsection name="ollama_not_running">
+      <title>Ollama Not Running</title>
+      <code_block format="bash">
+        <![CDATA[
+# Check if Ollama is running
+curl http://localhost:11434/api/version
+
+# Start Ollama if needed
+ollama serve
+        ]]>
+      </code_block>
+    </subsection>
+
+    <subsection name="model_not_available">
+      <title>Model Not Available</title>
+      <code_block format="bash">
+        <![CDATA[
+# List installed models
+ollama list
+
+# Pull missing model
+ollama pull llama3.1:8b
+        ]]>
+      </code_block>
+    </subsection>
+
+    <subsection name="network_issues">
+      <title>Network Issues</title>
+      <code_block format="bash">
+        <![CDATA[
+# Check if port 11434 is accessible
+netstat -an | grep 11434
+
+# Try different host in .env
+OLLAMA_HOST=http://127.0.0.1:11434
+        ]]>
+      </code_block>
+    </subsection>
+
+    <subsection name="performance_issues">
+      <title>Performance Issues</title>
+      <code_block format="bash">
+        <![CDATA[
+# Use smaller model
+ollama pull llama3:8b
+
+# Update .env
+OLLAMA_MODEL=llama3:8b
+        ]]>
+      </code_block>
+    </subsection>
+  </section>
+
+  <section name="api_endpoints">
+    <title>API Endpoints</title>
+    <content>The backend now provides:</content>
+    <list>
+      <item>`POST /generate` - Generate complete packing list using AI</item>
+      <item>`POST /suggestions` - Get AI suggestions for custom prompts</item>
+      <item>`GET /health` - Check API status</item>
+    </list>
+    <content>Both endpoints automatically fall back to rule-based logic if Ollama is unavailable.</content>
+  </section>
+
+  <section name="development_notes">
+    <title>Development Notes</title>
+    <list>
+      <item>The system uses <strong>temperature 0.3</strong> for packing lists (more consistent)</item>
+      <item>The system uses <strong>temperature 0.4</strong> for custom suggestions (more creative)</item>
+      <item><strong>JSON validation</strong> ensures reliable parsing of AI responses</item>
+      <item><strong>Error handling</strong> provides graceful degradation</item>
+    </list>
+  </section>
+
+  <section name="future_enhancements">
+    <title>Future Enhancements</title>
+    <list>
+      <item>Support for additional models (OpenAI, Anthropic)</item>
+      <item>Model fine-tuning for travel-specific knowledge</item>
+      <item>Caching layer for faster repeated queries</item>
+      <item>User feedback integration for improved suggestions</item>
+    </list>
+  </section>
+</document>

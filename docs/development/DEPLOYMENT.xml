@@ -1,0 +1,639 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document>
+  <metadata>
+    <title>SmartPack Deployment Guide</title>
+    <purpose>Comprehensive production deployment procedures for SmartPack</purpose>
+    <lastUpdated>2025-01-31</lastUpdated>
+    <documentType>deployment-guide</documentType>
+  </metadata>
+  
+  <documentation-header>
+    <comment>
+      This file contains comprehensive deployment guidelines for SmartPack production environments. Keep this comment at the top; do not overwrite or remove it when updating the document. 
+      
+      DOCUMENT PURPOSE:
+      - Provide step-by-step production deployment procedures 
+      - Document infrastructure requirements and AWS setup 
+      - Define environment configuration and secrets management 
+      - Establish monitoring, backup, and maintenance procedures 
+      - Serve as operational runbook for deployment teams 
+      
+      HOW TO UPDATE:
+      1. INFRASTRUCTURE CHANGES: Update immediately when AWS resources or architecture changes 
+      2. DEPLOYMENT STEPS: Modify procedures when deployment process evolves 
+      3. ENVIRONMENT CONFIG: Update when new environment variables or secrets are added 
+      4. MONITORING SETUP: Revise when new monitoring tools or alerts are configured 
+      5. SECURITY UPDATES: Modify when security requirements or procedures change 
+      6. ROLLBACK PROCEDURES: Update when recovery processes are tested or changed 
+      
+      FORMATTING RULES:
+      - Use clear step-by-step numbered instructions 
+      - Include all required commands with exact syntax 
+      - Provide verification steps after major deployment phases 
+      - Document all environment variables and their purposes 
+      - Include troubleshooting sections for common deployment issues 
+      - Link to related documentation (architecture, security, troubleshooting) 
+      - Use consistent terminology for AWS services and resources
+    </comment>
+  </documentation-header>
+
+  <clarifying-questions>
+    <important>IMPORTANT: This document contains fictional AWS infrastructure that needs to be revised based on actual implementation plans. The following questions need answers:</important>
+    <questions>
+      <question>AWS Account: Do you have an AWS account set up for SmartPack deployment?</question>
+      <question>Domain: Do you have a registered domain name for production?</question>
+      <question>AWS Services: Which AWS services do you actually plan to use (S3, CloudFront, Lambda, API Gateway)?</question>
+      <question>Deployment Strategy: Do you want serverless (Lambda) or container-based deployment?</question>
+      <question>Environment Variables: What are the actual environment variables needed for the Lambda function?</question>
+      <question>Budget Constraints: What are the AWS cost considerations for this deployment?</question>
+      <question>CI/CD: Do you want automated deployment or manual deployment procedures?</question>
+      <question>Monitoring: What level of monitoring and alerting do you need?</question>
+    </questions>
+  </clarifying-questions>
+
+  <current-deployment-status>
+    <ready-for-deployment>
+      <item>Lambda Function: Express.js app with serverless-http wrapper</item>
+      <item>Frontend Build: React app builds to /dist folder via Vite</item>
+      <item>Development Environment: Working locally with hot reload</item>
+      <item>API Integration: Frontend connects to localhost:3000 backend</item>
+    </ready-for-deployment>
+    
+    <needs-configuration>
+      <item>AWS Account Setup: IAM roles, policies, and service configurations</item>
+      <item>Domain Registration: Production domain name and SSL certificates</item>
+      <item>Environment Variables: Production API URLs and configuration</item>
+      <item>Build Scripts: Deployment automation and CI/CD pipeline</item>
+    </needs-configuration>
+    
+    <not-yet-implemented>
+      <item>AWS Infrastructure: No resources currently deployed</item>
+      <item>Production Environment: No production build deployed anywhere</item>
+      <item>Monitoring/Logging: No CloudWatch or alerting configured</item>
+      <item>Backup/Recovery: No data backup strategies implemented</item>
+    </not-yet-implemented>
+  </current-deployment-status>
+
+  <table-of-contents>
+    <section>Overview</section>
+    <section>Prerequisites</section>
+    <section>Infrastructure Setup</section>
+    <section>Environment Configuration</section>
+    <section>Deployment Procedures</section>
+    <section>Post-Deployment Verification</section>
+    <section>Monitoring &amp; Alerts</section>
+    <section>Backup &amp; Recovery</section>
+    <section>Rollback Procedures</section>
+    <section>Maintenance</section>
+    <section>Troubleshooting</section>
+  </table-of-contents>
+
+  <section name="Overview">
+    <description>SmartPack deployment architecture leverages AWS services for scalable, serverless operation:</description>
+    <components>
+      <component>Frontend: Static React app hosted on AWS S3 + CloudFront</component>
+      <component>Backend: AWS Lambda functions with API Gateway</component>
+      <component>AI Processing: Container-based Lambda for Ollama model</component>
+      <component>Monitoring: CloudWatch + AWS X-Ray</component>
+      <component>Security: WAF + SSL/TLS termination</component>
+    </components>
+  </section>
+
+  <section name="Prerequisites">
+    <subsection name="Required Tools">
+      <tool>
+        <name>AWS CLI v2</name>
+        <command>aws --version</command>
+      </tool>
+      <tool>
+        <name>Node.js 18+ and npm</name>
+        <command>node --version</command>
+        <command>npm --version</command>
+      </tool>
+      <tool>
+        <name>AWS CDK</name>
+        <command>npm install -g aws-cdk</command>
+        <command>cdk --version</command>
+      </tool>
+      <tool>
+        <name>Docker</name>
+        <command>docker --version</command>
+        <note>For Lambda container deployment</note>
+      </tool>
+    </subsection>
+    
+    <subsection name="AWS Account Setup">
+      <requirement>AWS Account: Production AWS account with appropriate permissions</requirement>
+      <requirement>IAM User: Deployment user with required policies</requirement>
+      <requirement>AWS CLI: Configured with production credentials</requirement>
+      <requirement>Domain: Registered domain for production URL (optional)</requirement>
+    </subsection>
+    
+    <subsection name="Required IAM Permissions">
+      <policy><![CDATA[
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "lambda:*",
+        "apigateway:*",
+        "s3:*",
+        "cloudfront:*",
+        "cloudwatch:*",
+        "iam:CreateRole",
+        "iam:AttachRolePolicy",
+        "iam:PassRole"
+      ],
+      "Resource": "*"
+    }
+  ]
+}
+      ]]></policy>
+    </subsection>
+  </section>
+
+  <section name="Infrastructure Setup">
+    <subsection name="S3 Bucket Configuration">
+      <step name="Frontend Hosting Bucket">
+        <command>aws s3 mb s3://smartpack-frontend-prod --region us-east-1</command>
+        <command>aws s3 website s3://smartpack-frontend-prod --index-document index.html --error-document index.html</command>
+        <command>aws s3api put-bucket-policy --bucket smartpack-frontend-prod --policy file://bucket-policy.json</command>
+        
+        <bucket-policy><![CDATA[
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "PublicReadGetObject",
+      "Effect": "Allow",
+      "Principal": "*",
+      "Action": "s3:GetObject",
+      "Resource": "arn:aws:s3:::smartpack-frontend-prod/*"
+    }
+  ]
+}
+        ]]></bucket-policy>
+      </step>
+    </subsection>
+    
+    <subsection name="CloudFront Distribution">
+      <command>aws cloudfront create-distribution --distribution-config file://cloudfront-config.json</command>
+      
+      <cloudfront-config><![CDATA[
+{
+  "CallerReference": "smartpack-prod-$(date +%s)",
+  "Comment": "SmartPack Production CDN",
+  "DefaultCacheBehavior": {
+    "TargetOriginId": "smartpack-s3-origin",
+    "ViewerProtocolPolicy": "redirect-to-https",
+    "TrustedSigners": {
+      "Enabled": false,
+      "Quantity": 0
+    },
+    "ForwardedValues": {
+      "QueryString": false,
+      "Cookies": {
+        "Forward": "none"
+      }
+    },
+    "MinTTL": 0,
+    "DefaultTTL": 86400,
+    "MaxTTL": 31536000
+  },
+  "Origins": {
+    "Quantity": 1,
+    "Items": [
+      {
+        "Id": "smartpack-s3-origin",
+        "DomainName": "smartpack-frontend-prod.s3.amazonaws.com",
+        "S3OriginConfig": {
+          "OriginAccessIdentity": ""
+        }
+      }
+    ]
+  },
+  "Enabled": true,
+  "PriceClass": "PriceClass_100"
+}
+      ]]></cloudfront-config>
+    </subsection>
+    
+    <subsection name="Lambda Function Setup">
+      <step name="API Lambda Function">
+        <command>zip -r smartpack-api.zip . -x "*.git*" "node_modules/*" "*.md"</command>
+        <command><![CDATA[
+aws lambda create-function \
+  --function-name smartpack-api-prod \
+  --runtime nodejs18.x \
+  --role arn:aws:iam::ACCOUNT_ID:role/smartpack-lambda-role \
+  --handler index.handler \
+  --zip-file fileb://smartpack-api.zip \
+  --timeout 30 \
+  --memory-size 512
+        ]]></command>
+      </step>
+      
+      <step name="AI Processing Lambda (Container)">
+        <command>docker build -t smartpack-ai .</command>
+        <command>docker tag smartpack-ai:latest ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/smartpack-ai:latest</command>
+        <command><![CDATA[
+aws ecr get-login-password --region us-east-1 | \
+  docker login --username AWS --password-stdin ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com
+        ]]></command>
+        <command>docker push ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/smartpack-ai:latest</command>
+        <command><![CDATA[
+aws lambda create-function \
+  --function-name smartpack-ai-prod \
+  --code ImageUri=ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/smartpack-ai:latest \
+  --role arn:aws:iam::ACCOUNT_ID:role/smartpack-lambda-role \
+  --timeout 300 \
+  --memory-size 3008
+        ]]></command>
+      </step>
+    </subsection>
+    
+    <subsection name="API Gateway Configuration">
+      <command>aws apigateway create-rest-api --name smartpack-api-prod --description "SmartPack Production API"</command>
+      <command>export API_ID=&lt;api-id-from-previous-command&gt;</command>
+      <command>aws apigateway create-resource --rest-api-id $API_ID --parent-id &lt;root-resource-id&gt; --path-part generate</command>
+      <command>aws apigateway put-method --rest-api-id $API_ID --resource-id &lt;generate-resource-id&gt; --http-method POST --authorization-type NONE</command>
+      <command>aws apigateway create-deployment --rest-api-id $API_ID --stage-name prod</command>
+    </subsection>
+  </section>
+
+  <section name="Environment Configuration">
+    <subsection name="Environment Variables">
+      <step name="Lambda Function Environment Variables">
+        <command><![CDATA[
+aws lambda update-function-configuration \
+  --function-name smartpack-api-prod \
+  --environment Variables='{
+    "NODE_ENV":"production",
+    "OLLAMA_HOST":"http://localhost:11434",
+    "AI_MODEL":"llama3.1:8b",
+    "LOG_LEVEL":"info",
+    "CORS_ORIGIN":"https://your-domain.com"
+  }'
+        ]]></command>
+        
+        <command><![CDATA[
+aws lambda update-function-configuration \
+  --function-name smartpack-ai-prod \
+  --environment Variables='{
+    "NODE_ENV":"production",
+    "MODEL_NAME":"llama3.1:8b",
+    "MAX_TOKENS":"2048",
+    "TEMPERATURE":"0.7"
+  }'
+        ]]></command>
+      </step>
+    </subsection>
+    
+    <subsection name="Secrets Management">
+      <command><![CDATA[
+aws secretsmanager create-secret \
+  --name smartpack/prod/config \
+  --secret-string '{
+    "apiKey": "your-api-key",
+    "weatherApiKey": "your-weather-api-key",
+    "databaseUrl": "your-database-url"
+  }'
+      ]]></command>
+    </subsection>
+    
+    <subsection name="SSL/TLS Certificate">
+      <command><![CDATA[
+aws acm request-certificate \
+  --domain-name smartpack.yourdomain.com \
+  --validation-method DNS \
+  --region us-east-1
+      ]]></command>
+      <note>Must be in us-east-1 for CloudFront</note>
+    </subsection>
+  </section>
+
+  <section name="Deployment Procedures">
+    <subsection name="Frontend Deployment">
+      <step name="Build and Deploy React App">
+        <command>npm install</command>
+        <command>npm run build</command>
+        <command>aws s3 sync ./dist s3://smartpack-frontend-prod --delete</command>
+        <command>aws cloudfront create-invalidation --distribution-id &lt;distribution-id&gt; --paths "/*"</command>
+      </step>
+      
+      <step name="Automated Frontend Deployment Script">
+        <script><![CDATA[
+#!/bin/bash
+# deploy-frontend.sh
+set -e
+
+echo "Building SmartPack frontend..."
+npm run build
+
+echo "Deploying to S3..."
+aws s3 sync ./dist s3://smartpack-frontend-prod --delete
+
+echo "Invalidating CloudFront cache..."
+INVALIDATION_ID=$(aws cloudfront create-invalidation \
+  --distribution-id <distribution-id> \
+  --paths "/*" \
+  --query 'Invalidation.Id' \
+  --output text)
+
+echo "Waiting for invalidation to complete..."
+aws cloudfront wait invalidation-completed \
+  --distribution-id <distribution-id> \
+  --id $INVALIDATION_ID
+
+echo "Frontend deployment complete!"
+        ]]></script>
+      </step>
+    </subsection>
+    
+    <subsection name="Backend Deployment">
+      <step name="API Lambda Deployment">
+        <command>npm install --production</command>
+        <command>zip -r smartpack-api-$(date +%Y%m%d-%H%M%S).zip . -x "*.git*" "*.md" "test/*" "docs/*"</command>
+        <command>aws lambda update-function-code --function-name smartpack-api-prod --zip-file fileb://smartpack-api-$(date +%Y%m%d-%H%M%S).zip</command>
+        <command>aws lambda update-function-configuration --function-name smartpack-api-prod --timeout 30 --memory-size 512</command>
+      </step>
+      
+      <step name="AI Lambda Deployment">
+        <command>docker build -t smartpack-ai:$(date +%Y%m%d-%H%M%S) .</command>
+        <command>docker tag smartpack-ai:$(date +%Y%m%d-%H%M%S) ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/smartpack-ai:$(date +%Y%m%d-%H%M%S)</command>
+        <command>docker push ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/smartpack-ai:$(date +%Y%m%d-%H%M%S)</command>
+        <command>aws lambda update-function-code --function-name smartpack-ai-prod --image-uri ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/smartpack-ai:$(date +%Y%m%d-%H%M%S)</command>
+      </step>
+    </subsection>
+    
+    <subsection name="Complete Deployment Script">
+      <script><![CDATA[
+#!/bin/bash
+# deploy-all.sh
+set -e
+
+echo "Starting SmartPack production deployment..."
+
+# Deploy frontend
+echo "Deploying frontend..."
+./deploy-frontend.sh
+
+# Deploy backend
+echo "Deploying backend..."
+./deploy-backend.sh
+
+# Run post-deployment tests
+echo "Running deployment verification..."
+./verify-deployment.sh
+
+echo "Deployment complete!"
+      ]]></script>
+    </subsection>
+  </section>
+
+  <section name="Post-Deployment Verification">
+    <subsection name="Health Check Tests">
+      <command>curl -f https://your-api-gateway-url/prod/health</command>
+      <command><![CDATA[
+curl -X POST https://your-api-gateway-url/prod/generate \
+  -H "Content-Type: application/json" \
+  -d '{
+    "trip": {
+      "name": "Test Deployment",
+      "startDate": "2025-08-01",
+      "endDate": "2025-08-03",
+      "destinations": ["Paris, France"]
+    },
+    "weather": [{
+      "location": "Paris, France",
+      "temperature": 22,
+      "conditions": "Sunny",
+      "precipitation": 0
+    }]
+  }'
+      ]]></command>
+    </subsection>
+    
+    <subsection name="Frontend Verification">
+      <command>curl -f https://your-domain.com</command>
+      <note>Manual testing in browser recommended</note>
+    </subsection>
+    
+    <subsection name="Performance Testing">
+      <command>ab -n 100 -c 10 https://your-api-gateway-url/prod/health</command>
+      <command><![CDATA[
+aws cloudwatch get-metric-statistics \
+  --namespace AWS/Lambda \
+  --metric-name Duration \
+  --dimensions Name=FunctionName,Value=smartpack-api-prod \
+  --start-time $(date -u -d '1 hour ago' +%Y-%m-%dT%H:%M:%S) \
+  --end-time $(date -u +%Y-%m-%dT%H:%M:%S) \
+  --period 300 \
+  --statistics Average,Maximum
+      ]]></command>
+    </subsection>
+  </section>
+
+  <section name="Monitoring &amp; Alerts">
+    <subsection name="CloudWatch Dashboards">
+      <command>aws cloudwatch put-dashboard --dashboard-name SmartPack-Production --dashboard-body file://dashboard-config.json</command>
+    </subsection>
+    
+    <subsection name="Lambda Monitoring">
+      <metric>Duration: Monitor function execution time</metric>
+      <metric>Error Rate: Track failed invocations</metric>
+      <metric>Concurrent Executions: Monitor concurrency limits</metric>
+      <metric>Memory Usage: Track memory utilization</metric>
+    </subsection>
+    
+    <subsection name="CloudFront Monitoring">
+      <metric>Origin Latency: Monitor S3 response times</metric>
+      <metric>Cache Hit Rate: Track CDN efficiency</metric>
+      <metric>Error Rate: Monitor 4xx/5xx errors</metric>
+    </subsection>
+    
+    <subsection name="Alert Configuration">
+      <command><![CDATA[
+aws cloudwatch put-metric-alarm \
+  --alarm-name smartpack-high-error-rate \
+  --alarm-description "SmartPack API high error rate" \
+  --metric-name Errors \
+  --namespace AWS/Lambda \
+  --statistic Sum \
+  --period 300 \
+  --threshold 10 \
+  --comparison-operator GreaterThanThreshold \
+  --evaluation-periods 2 \
+  --alarm-actions arn:aws:sns:us-east-1:ACCOUNT_ID:smartpack-alerts
+      ]]></command>
+    </subsection>
+  </section>
+
+  <section name="Backup &amp; Recovery">
+    <subsection name="Database Backup">
+      <script><![CDATA[
+#!/bin/bash
+# backup-database.sh
+BACKUP_NAME="smartpack-backup-$(date +%Y%m%d-%H%M%S)"
+
+# Create database snapshot
+aws rds create-db-snapshot \
+  --db-snapshot-identifier $BACKUP_NAME \
+  --db-instance-identifier smartpack-prod
+
+echo "Database backup created: $BACKUP_NAME"
+      ]]></script>
+    </subsection>
+    
+    <subsection name="Configuration Backup">
+      <command>aws lambda get-function-configuration --function-name smartpack-api-prod &gt; lambda-config-backup.json</command>
+      <command>aws apigateway get-rest-api --rest-api-id $API_ID &gt; api-config-backup.json</command>
+    </subsection>
+    
+    <subsection name="Recovery Procedures">
+      <procedure>Lambda Function Recovery: Redeploy from last known good deployment package</procedure>
+      <procedure>Frontend Recovery: Redeploy from last successful build</procedure>
+      <procedure>Configuration Recovery: Restore from exported configuration files</procedure>
+      <procedure>Database Recovery: Restore from latest snapshot</procedure>
+    </subsection>
+  </section>
+
+  <section name="Rollback Procedures">
+    <subsection name="Frontend Rollback">
+      <script><![CDATA[
+#!/bin/bash
+# rollback-frontend.sh
+
+# List recent S3 sync operations
+aws s3api list-object-versions \
+  --bucket smartpack-frontend-prod \
+  --prefix index.html
+
+# Restore previous version
+aws s3api copy-object \
+  --copy-source smartpack-frontend-prod/index.html?versionId=<previous-version-id> \
+  --bucket smartpack-frontend-prod \
+  --key index.html
+
+# Invalidate CloudFront
+aws cloudfront create-invalidation \
+  --distribution-id <distribution-id> \
+  --paths "/*"
+      ]]></script>
+    </subsection>
+    
+    <subsection name="Backend Rollback">
+      <command>aws lambda list-versions-by-function --function-name smartpack-api-prod</command>
+      <command>aws lambda update-alias --function-name smartpack-api-prod --name LIVE --function-version &lt;previous-version&gt;</command>
+    </subsection>
+    
+    <subsection name="Emergency Rollback">
+      <script><![CDATA[
+#!/bin/bash
+# emergency-rollback.sh
+echo "Executing emergency rollback..."
+
+# Rollback frontend
+./rollback-frontend.sh
+
+# Rollback backend
+./rollback-backend.sh
+
+# Verify rollback
+./verify-deployment.sh
+
+echo "Emergency rollback complete!"
+      ]]></script>
+    </subsection>
+  </section>
+
+  <section name="Maintenance">
+    <subsection name="Regular Maintenance Tasks">
+      <weekly-tasks>
+        <task>Update Dependencies: Review and update npm packages</task>
+        <task>Security Scan: Run security vulnerability scans</task>
+        <task>Performance Review: Analyze CloudWatch metrics</task>
+        <task>Backup Verification: Test backup restoration procedures</task>
+      </weekly-tasks>
+      
+      <monthly-tasks>
+        <task>Cost Analysis: Review AWS costs and optimize</task>
+        <task>Capacity Planning: Analyze usage trends and scale accordingly</task>
+        <task>Security Review: Update IAM policies and access controls</task>
+        <task>Disaster Recovery Test: Full DR procedure testing</task>
+      </monthly-tasks>
+    </subsection>
+    
+    <subsection name="Automated Maintenance">
+      <script><![CDATA[
+#!/bin/bash
+# update-dependencies.sh
+echo "Checking for dependency updates..."
+npm audit
+npm update
+
+echo "Running tests after updates..."
+npm test
+
+echo "Dependency maintenance complete!"
+      ]]></script>
+    </subsection>
+  </section>
+
+  <section name="Troubleshooting">
+    <subsection name="Common Deployment Issues">
+      <issue name="Lambda Deployment Failures">
+        <symptoms>Function update fails with timeout or memory errors</symptoms>
+        <solutions>
+          <command>aws logs tail /aws/lambda/smartpack-api-prod --follow</command>
+          <command>aws lambda update-function-configuration --function-name smartpack-api-prod --memory-size 1024 --timeout 60</command>
+        </solutions>
+      </issue>
+      
+      <issue name="CloudFront Cache Issues">
+        <symptoms>Old content served after deployment</symptoms>
+        <solutions>
+          <command>aws cloudfront create-invalidation --distribution-id &lt;distribution-id&gt; --paths "/*"</command>
+          <command>aws cloudfront get-invalidation --distribution-id &lt;distribution-id&gt; --id &lt;invalidation-id&gt;</command>
+        </solutions>
+      </issue>
+      
+      <issue name="API Gateway CORS Issues">
+        <symptoms>Frontend can't access API due to CORS errors</symptoms>
+        <solutions>
+          <command><![CDATA[
+aws apigateway put-method-response \
+  --rest-api-id $API_ID \
+  --resource-id <resource-id> \
+  --http-method POST \
+  --status-code 200 \
+  --response-parameters method.response.header.Access-Control-Allow-Origin=false
+          ]]></command>
+        </solutions>
+      </issue>
+    </subsection>
+    
+    <subsection name="Monitoring and Debugging">
+      <command>aws logs tail /aws/lambda/smartpack-api-prod --follow</command>
+      <command>aws logs filter-log-events --log-group-name /aws/lambda/smartpack-api-prod --start-time $(date -d '1 hour ago' +%s)000 --filter-pattern "ERROR"</command>
+      <command>aws xray get-trace-summaries --time-range-type TimeRangeByStartTime --start-time $(date -d '1 hour ago' +%s) --end-time $(date +%s)</command>
+    </subsection>
+    
+    <subsection name="Performance Optimization">
+      <optimization>Lambda Cold Start: Use provisioned concurrency for consistent performance</optimization>
+      <optimization>Memory Allocation: Monitor CloudWatch metrics to optimize memory settings</optimization>
+      <optimization>Bundle Size: Minimize deployment package size for faster cold starts</optimization>
+      <optimization>Connection Pooling: Implement connection reuse for external services</optimization>
+    </subsection>
+  </section>
+
+  <see-also>
+    <link>ARCHITECTURE.md - System architecture and infrastructure overview</link>
+    <link>SECURITY.md - Security configurations and best practices</link>
+    <link>TROUBLESHOOTING.md - Detailed troubleshooting procedures</link>
+    <link>API.md - API documentation and testing</link>
+    <link>DEVLOG.md - Development history and deployment changes</link>
+  </see-also>
+</document>

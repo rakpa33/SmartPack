@@ -1,0 +1,417 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document>
+  <metadata>
+    <title>SmartPack Development Roadmap</title>
+    <purpose>Define project phases, development milestones, feature deliverables, implementation priorities, technology stack decisions, architectural goals, timeline and progress tracking for stakeholders, and serve as reference for development planning and resource allocation</purpose>
+    <lastUpdated>2025-08-08</lastUpdated>
+    <documentType>development-roadmap</documentType>
+  </metadata>
+
+  <content>
+    <section id="overview">
+      <title>SmartPack – Roadmap</title>
+      <subsection id="project-details">
+        <title>Project Overview</title>
+        <field name="App Name">SmartPack</field>
+        <field name="Technology Stack">React + TypeScript + Vite + Tailwind CSS + Headless UI</field>
+        <field name="AI/Backend">AWS Lambda (Express/Node) + Ollama (self-hosted or local)</field>
+        <field name="Weather">Open-Meteo API (client-side)</field>
+        <field name="Target">Mobile-first responsive web application for single-user travel packing</field>
+      </subsection>
+    </section>
+
+    <section id="phase1">
+      <title>Phase 1: Environment Setup &amp; Foundation</title>
+      
+      <subsection id="step1">
+        <title>Step 1: Verify Environment Prerequisites</title>
+        <field name="Estimated Time">30 minutes</field>
+        
+        <tasks>
+          <task>Ensure Node.js (LTS) and npm are installed</task>
+          <task>Verify AWS CLI is installed and configured</task>
+          <task>Confirm Ollama is installed and running (locally for dev/test)</task>
+          <task>(Optional) Create AWS S3 bucket for future frontend deployment</task>
+        </tasks>
+
+        <deliverables>
+          <deliverable>Confirmed local and cloud environment readiness</deliverable>
+          <deliverable>Ollama API running and accessible on localhost</deliverable>
+        </deliverables>
+      </subsection>
+
+      <subsection id="step2">
+        <title>Step 2: Create React Vite Project Foundation</title>
+        <field name="Estimated Time">45 minutes</field>
+
+        <tasks>
+          <task>Scaffold new Vite React TypeScript project</task>
+          <codeblock>
+            <![CDATA[
+npm create vite@latest SmartPack -- --template react-ts
+cd SmartPack
+npm install
+            ]]>
+          </codeblock>
+          <task>Install Tailwind CSS and initialize config</task>
+          <codeblock>
+            <![CDATA[
+npm install -D tailwindcss postcss autoprefixer
+npx tailwindcss init -p
+            ]]>
+          </codeblock>
+          <task>Set up Headless UI</task>
+          <codeblock>
+            <![CDATA[
+npm install @headlessui/react
+            ]]>
+          </codeblock>
+          <task>Set up Prettier, ESLint, and add basic config</task>
+          <task>Update index.css with Tailwind's base styles</task>
+          <task>Set up basic project structure:</task>
+          <codeblock>
+            <![CDATA[
+src/
+├── components/
+├── pages/
+├── hooks/
+├── utils/
+├── types/
+└── styles/
+            ]]>
+          </codeblock>
+        </tasks>
+
+        <deliverables>
+          <deliverable>Vite React project with Tailwind and Headless UI ready</deliverable>
+          <deliverable>ESLint/Prettier configured</deliverable>
+          <deliverable>Initial folder structure</deliverable>
+        </deliverables>
+      </subsection>
+    </section>
+
+    <section id="phase2">
+      <title>Phase 2: UI/UX Core Layout &amp; Navigation</title>
+
+      <subsection id="step3">
+        <title>Step 3: Main Layout &amp; Responsive Design</title>
+        <field name="Estimated Time">60 minutes</field>
+
+        <tasks>
+          <task>Create a mobile-first layout using Tailwind</task>
+          <task>Implement 3-column design for desktop, stacked layout for mobile (Trip Details, Packing Checklist, AI Suggestions)</task>
+          <task>Add global navigation/header</task>
+          <task>Set up dark mode toggle (Tailwind dark variant)</task>
+          <task>Add placeholder content and test with Headless UI modal/dialog</task>
+        </tasks>
+
+        <key-components>
+          <component>MainLayout.tsx</component>
+          <component>DarkModeToggle.tsx</component>
+          <component>AppHeader.tsx</component>
+        </key-components>
+
+        <deliverables>
+          <deliverable>Responsive layout working across devices</deliverable>
+          <deliverable>Initial content placeholders</deliverable>
+          <deliverable>Dark mode toggle (basic)</deliverable>
+        </deliverables>
+      </subsection>
+
+      <subsection id="step4">
+        <title>Step 4: Trip Details Form &amp; State Management</title>
+        <field name="Estimated Time">60 minutes</field>
+
+        <tasks>
+          <task>Build a stepper/form for user input: name, dates, destination, travel mode, preferences</task>
+          <task>Use Headless UI for accessible dialog/steps if needed</task>
+          <task>Store form state using React context or top-level state</task>
+          <task>Persist to localStorage for reload support</task>
+        </tasks>
+
+        <key-components>
+          <component>TripForm.tsx</component>
+          <component>useTripForm.ts (custom hook/context)</component>
+        </key-components>
+
+        <deliverables>
+          <deliverable>Functional multi-step trip form</deliverable>
+          <deliverable>LocalStorage persistence of trip data</deliverable>
+          <deliverable>Accessibility compliance (labels, focus management)</deliverable>
+        </deliverables>
+      </subsection>
+
+      <subsection id="step5">
+        <title>Step 5: Packing Checklist UI</title>
+        <field name="Estimated Time">60 minutes</field>
+
+        <tasks>
+          <task>Create checklist component with categories</task>
+          <task>Allow checking/unchecking, adding, removing, editing items</task>
+          <task>Persist checklist to localStorage</task>
+          <task>Display trip summary in left column</task>
+          <task>Translate and display submitted TripForm data in the Trip Details component/section</task>
+        </tasks>
+
+        <key-components>
+          <component>PackingList.tsx</component>
+          <component>ChecklistItem.tsx</component>
+          <component>TripDetails.tsx</component>
+        </key-components>
+
+        <deliverables>
+          <deliverable>Interactive, persistent checklist</deliverable>
+          <deliverable>Edits reflected in real-time</deliverable>
+          <deliverable>Trip Details section displays submitted trip data (name, dates, destination, travel mode, etc.)</deliverable>
+          <deliverable>UX validated by integration/E2E tests</deliverable>
+        </deliverables>
+      </subsection>
+    </section>
+
+    <section id="phase3">
+      <title>Phase 3: AI &amp; Weather Integration</title>
+
+      <subsection id="step6">
+        <title>Step 6: Weather API Integration</title>
+        <field name="Estimated Time">45 minutes</field>
+
+        <tasks>
+          <task>Fetch weather data from Open-Meteo API client-side on trip form submit</task>
+          <task>Display relevant weather info in UI</task>
+          <task>Use weather data as context for AI packing list generation</task>
+        </tasks>
+
+        <deliverables>
+          <deliverable>Weather shown in trip summary</deliverable>
+          <deliverable>Weather data accessible to backend AI call</deliverable>
+        </deliverables>
+      </subsection>
+
+      <subsection id="step7">
+        <title>Step 7: AWS Lambda Backend for Packing List Generation</title>
+        <field name="Estimated Time">90 minutes</field>
+
+        <tasks>
+          <task>Scaffold a simple Express app in lambda/ folder</task>
+          <task>Set up a /generate route to accept trip + weather data</task>
+          <task>Use serverless-http to deploy Express app to Lambda (API Gateway)</task>
+          <task>Connect backend to Ollama (on local network for now)</task>
+          <task>Return generated checklist to frontend for display</task>
+        </tasks>
+
+        <key-components>
+          <component>lambda/app.ts</component>
+          <component>lambda/serverless.yml</component>
+        </key-components>
+
+        <deliverables>
+          <deliverable>Deployed AWS Lambda backend</deliverable>
+          <deliverable>/generate API endpoint returning mocked or Ollama-generated data</deliverable>
+        </deliverables>
+      </subsection>
+
+      <subsection id="step8">
+        <title>Step 8: AI Suggestions Panel</title>
+        <field name="Estimated Time">45 minutes</field>
+
+        <tasks>
+          <task>Build UI for entering custom refinement prompts</task>
+          <task>On submit, call /generate endpoint with updated context</task>
+          <task>Display additional AI-suggested checklist items</task>
+          <task>Enable quick add of suggestions to main checklist</task>
+        </tasks>
+
+        <key-components>
+          <component>SuggestionsPanel.tsx</component>
+        </key-components>
+
+        <deliverables>
+          <deliverable>Functional suggestions panel</deliverable>
+          <deliverable>User can refine and regenerate list</deliverable>
+        </deliverables>
+      </subsection>
+
+      <subsection id="step9">
+        <title>Step 9: Feature Refinement &amp; Edge Case Testing</title>
+        <field name="Estimated Time">60 minutes</field>
+
+        <tasks>
+          <task>Review and refine feature behavior and business logic</task>
+          <task>Test edge cases for text input validation (city names, trip details, custom prompts)</task>
+          <task>Validate form submission flows with unusual inputs</task>
+          <task>Test error handling for network failures and API timeouts</task>
+          <task>Verify state persistence across browser refreshes and navigation</task>
+          <task>Ensure graceful degradation when backend is unavailable</task>
+          <task>Test Unicode and international character support in all text fields</task>
+          <task>Validate maximum input lengths and special character handling</task>
+        </tasks>
+
+        <key-areas>
+          <area>Input validation and sanitization</area>
+          <area>Error boundary testing</area>
+          <area>Network resilience</area>
+          <area>State management edge cases</area>
+          <area>Cross-browser compatibility testing</area>
+        </key-areas>
+
+        <deliverables>
+          <deliverable>Robust feature behavior under edge conditions</deliverable>
+          <deliverable>Comprehensive input validation</deliverable>
+          <deliverable>Enhanced error handling and user feedback</deliverable>
+        </deliverables>
+      </subsection>
+
+      <subsection id="step10">
+        <title>Step 10: Security Hardening &amp; Validation</title>
+        <field name="Estimated Time">45 minutes</field>
+
+        <tasks>
+          <task>Implement input sanitization for all user-generated content</task>
+          <task>Add Content Security Policy (CSP) headers</task>
+          <task>Validate API request/response data structures</task>
+          <task>Ensure no sensitive data is logged or exposed in client-side code</task>
+          <task>Test for XSS vulnerabilities in text inputs and suggestions</task>
+          <task>Validate that localStorage data cannot be manipulated to break the app</task>
+          <task>Review and secure any external API calls (weather, geocoding)</task>
+          <task>Implement rate limiting considerations for backend API calls</task>
+        </tasks>
+
+        <key-components>
+          <component>Input validation utilities</component>
+          <component>API request/response validation</component>
+          <component>Security headers configuration</component>
+          <component>Error logging sanitization</component>
+        </key-components>
+
+        <deliverables>
+          <deliverable>Hardened application against common web vulnerabilities</deliverable>
+          <deliverable>Secure data handling throughout the application</deliverable>
+          <deliverable>Protected API endpoints and data validation</deliverable>
+        </deliverables>
+      </subsection>
+    </section>
+
+    <section id="phase4">
+      <title>Phase 4: Testing, QA, &amp; Accessibility</title>
+
+      <subsection id="step11">
+        <title>Step 11: Integration &amp; E2E Testing</title>
+        <field name="Estimated Time">75 minutes</field>
+
+        <tasks>
+          <task>Write Vitest/RTL integration tests for form and checklist</task>
+          <task>Write Playwright E2E test covering full flow: trip form → weather → checklist</task>
+          <task>Validate all test outputs against GitHub Copilot suggestions</task>
+          <task>Add accessibility checks (axe-core, Playwright assertions)</task>
+        </tasks>
+
+        <key-components>
+          <component>src/**tests**/</component>
+          <component>playwright/</component>
+        </key-components>
+
+        <deliverables>
+          <deliverable>Integration and E2E tests for core flows</deliverable>
+          <deliverable>Basic accessibility validation</deliverable>
+        </deliverables>
+      </subsection>
+    </section>
+
+    <section id="phase5">
+      <title>Phase 5: Polish &amp; Deployment</title>
+
+      <subsection id="step12">
+        <title>Step 12: UI Polish &amp; Enhancements</title>
+        <field name="Estimated Time">60 minutes</field>
+
+        <tasks>
+          <task>Refine color palette and typography for Clean &amp; Modern look</task>
+          <task>Add focus-visible/focus-ring support for keyboard nav</task>
+          <task>Add minor micro-interactions (animations, transitions)</task>
+          <task>Make sure dark mode is robust and visually clear</task>
+          <task>Tweak mobile and desktop breakpoints</task>
+        </tasks>
+
+        <deliverables>
+          <deliverable>Polished, professional-looking UI</deliverable>
+          <deliverable>Enhanced accessibility and UX</deliverable>
+        </deliverables>
+      </subsection>
+
+      <subsection id="step13">
+        <title>Step 13: Build &amp; Deploy</title>
+        <field name="Estimated Time">60 minutes</field>
+
+        <tasks>
+          <task>Build production bundle (npm run build)</task>
+          <task>Deploy static frontend to AWS S3</task>
+          <task>Set up CloudFront for CDN (if desired, optional for MVP)</task>
+          <task>Deploy backend to Lambda using Serverless Framework</task>
+          <task>Final smoke test of deployed app</task>
+        </tasks>
+
+        <deliverables>
+          <deliverable>Live SmartPack app (frontend and backend)</deliverable>
+          <deliverable>End-to-end user testing in production</deliverable>
+        </deliverables>
+      </subsection>
+    </section>
+
+    <section id="phase6">
+      <title>Phase 6: Documentation &amp; Success Criteria</title>
+
+      <subsection id="step14">
+        <title>Step 14: Documentation &amp; Handover</title>
+        <field name="Estimated Time">30 minutes</field>
+
+        <tasks>
+          <task>Write concise README.md (setup, dev, deploy instructions)</task>
+          <task>Add code comments and docstrings for complex logic</task>
+          <task>Document known issues and future enhancements</task>
+          <task>Review code for Copilot/AI-readability (future maintainers)</task>
+        </tasks>
+
+        <deliverables>
+          <deliverable>Complete, up-to-date documentation</deliverable>
+          <deliverable>Easy onboarding for future improvements</deliverable>
+        </deliverables>
+      </subsection>
+    </section>
+
+    <section id="success-criteria">
+      <title>Success Criteria</title>
+
+      <subsection id="functional-requirements">
+        <title>Functional Requirements</title>
+        <requirements>
+          <requirement>Step-by-step trip entry and editing</requirement>
+          <requirement>Weather is fetched and displayed</requirement>
+          <requirement>Packing checklist generated, editable, persistent</requirement>
+          <requirement>AI/LLM suggestions for refinement</requirement>
+          <requirement>All user data local (no auth, no cloud sync)</requirement>
+        </requirements>
+      </subsection>
+
+      <subsection id="technical-requirements">
+        <title>Technical Requirements</title>
+        <requirements>
+          <requirement>TypeScript throughout</requirement>
+          <requirement>Headless UI + Tailwind CSS for accessibility and modern look</requirement>
+          <requirement>Tests written at each dev phase</requirement>
+          <requirement>Fully static frontend, serverless backend</requirement>
+          <requirement>Deployed to AWS S3 and Lambda</requirement>
+        </requirements>
+      </subsection>
+
+      <subsection id="user-experience">
+        <title>User Experience</title>
+        <requirements>
+          <requirement>Mobile-first and desktop responsive</requirement>
+          <requirement>Clean, friendly UI with dark mode</requirement>
+          <requirement>High accessibility (labels, focus, color contrast)</requirement>
+          <requirement>Fast, reliable, and easy to use</requirement>
+        </requirements>
+      </subsection>
+    </section>
+  </content>
+</document>

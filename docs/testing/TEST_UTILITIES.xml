@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document>
+  <metadata>
+    <title>SmartPack Test Utilities</title>
+    <purpose>Quick reference for SmartPack test utilities and helper functions. Centralized test helper function reference, mock patterns and common testing scenarios, integration with @test-utils path alias.</purpose>
+    <lastUpdated>2025-08-08</lastUpdated>
+    <documentType>testing-utilities</documentType>
+  </metadata>
+
+  <content>
+    <section title="Quick Start">
+      <code language="tsx"><![CDATA[import { renderWithProviders } from '@test-utils';
+import { screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+
+// Standard component test
+const user = userEvent.setup();
+renderWithProviders(<Component />);
+await user.click(screen.getByRole('button', { name: /submit/i }));]]></code>
+    </section>
+
+    <section title="Testing Standards">
+      <emphasis>IMPORTANT</emphasis>: Always follow the current standards in `TESTING_STANDARDS.md` and `TESTING_GUIDE.md`
+    </section>
+
+    <section title="Available Utilities">
+      <subsection title="Accessibility Testing with Jest-Axe">
+        <subsubsection title="Vitest-Compatible Pattern (Resolved 2025-07-29)">
+          <code language="tsx"><![CDATA[import { axe } from 'jest-axe';
+
+// Use this pattern instead of expect.extend({ toHaveNoViolations })
+const expectNoA11yViolations = async (container: HTMLElement) => {
+  const results = await axe(container);
+  expect(results.violations).toEqual([]);
+};
+
+// In your tests:
+test('should be accessible', async () => {
+  renderWithProviders(<Component />);
+  await expectNoA11yViolations(document.body);
+});]]></code>
+
+          <note title="Why This Pattern">
+            <list>
+              <item>Full TypeScript compatibility with Vitest</item>
+              <item>Same accessibility validation as jest-axe</item>
+              <item>Clear error messages showing specific violations</item>
+              <item>Avoids MatcherFunction vs RawMatcherFn type conflicts</item>
+            </list>
+          </note>
+
+          <note title="Implementation Status">
+            Applied to all component tests (TripForm, TripDetails, SuggestionsPanel, MainLayout, integration tests)
+          </note>
+        </subsubsection>
+      </subsection>
+
+      <subsection title="renderWithProviders(ui, options)">
+        <description>Renders components with all necessary providers (TripForm, PackingList, Router).</description>
+        
+        <code language="tsx"><![CDATA[import { renderWithProviders } from '@test-utils';
+
+// Basic usage
+renderWithProviders(<Component />);
+
+// With initial state
+renderWithProviders(<Component />, {
+  initialEntries: ['/specific-route'],
+  tripState: { tripName: 'Test Trip' },
+});]]></code>
+      </subsection>
+
+      <subsection title="Test Data Factories">
+        <description>Located in `src/test-utils/` - use for consistent test data generation.</description>
+        
+        <code language="tsx"><![CDATA[import { createMockTrip, createMockWeather } from '@test-utils';
+
+const mockTrip = createMockTrip({
+  name: 'Paris Adventure',
+  destinations: ['Paris, France'],
+  startDate: '2025-06-01',
+  endDate: '2025-06-07',
+});]]></code>
+      </subsection>
+    </section>
+
+    <section title="Migration Status">
+      <description>This project uses modern 2024/2025 testing standards:</description>
+      <list>
+        <item><strong>Path Aliases</strong>: Use `@test-utils`, `@components` instead of relative paths</item>
+        <item><strong>Centralized Utilities</strong>: All test helpers in `src/test-utils/`</item>
+        <item><strong>Modern Patterns</strong>: Vitest + React Testing Library + Playwright</item>
+        <item><strong>Type Safety</strong>: Full TypeScript support in all test files</item>
+      </list>
+    </section>
+
+    <section title="File Locations">
+      <list>
+        <item><strong>Test Utilities</strong>: `src/test-utils/` (use path alias `@test-utils`)</item>
+        <item><strong>Unit Tests</strong>: `src/__tests__/unit/`</item>
+        <item><strong>Integration Tests</strong>: `src/__tests__/integration/`</item>
+        <item><strong>E2E Tests</strong>: `playwright/`</item>
+        <item><strong>Documentation</strong>: `docs/testing/`</item>
+      </list>
+    </section>
+
+    <section title="Related Documentation">
+      <list>
+        <item><link>TESTING_GUIDE.md</link> - Comprehensive testing documentation</item>
+        <item><link>TESTING_STANDARDS.md</link> - Testing standards and patterns</item>
+        <item><link>FILE_ORGANIZATION.md</link> - Project file structure</item>
+      </list>
+    </section>
+
+    <footer>
+      <note>This replaces the legacy `tests/README.md` file with modern path alias patterns.</note>
+    </footer>
+  </content>
+</document>

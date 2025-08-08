@@ -3,6 +3,10 @@ import type { TripFormState } from '../hooks/TripFormTypes';
 import type { TripFormErrors } from '../utils/tripFormValidation';
 import { validateTripForm } from '../utils/tripFormValidation';
 import { geocodeCity } from '../utils/geocode';
+import { fetchWeather } from '../utils/weather';
+import { generatePackingList } from '../services/apiService';
+import type { WeatherData } from '../services/apiService';
+import type { TripFormData } from '../types';
 
 interface TripDetailsEditFormProps {
   tripName?: string;
@@ -29,12 +33,13 @@ export const TripDetailsEditForm: React.FC<TripDetailsEditFormProps> = ({
     tripName,
     startDate,
     endDate,
-    destinations,
+    destinations: destinations.length > 0 ? destinations : [''],
     travelModes,
     preferences,
     step: 2,
   });
   const [touched, setTouched] = useState<{ [k: string]: boolean }>({});
+  const [isSaving, setIsSaving] = useState(false);
 
   const errors: TripFormErrors = validateTripForm(editForm);
 
@@ -96,12 +101,13 @@ export const TripDetailsEditForm: React.FC<TripDetailsEditFormProps> = ({
 
   const isFormValid =
     !errors.tripName &&
-    editForm.destinations.every((_, i) => !errors.destinations?.[i]) &&
+    editForm.destinations.length > 0 &&
+    editForm.destinations.every((_, i) => !errors.destinations?.[i] || errors.destinations[i] === '') &&
     !errors.travelModes &&
     !errors.startDate &&
     !errors.endDate;
 
-  const handleSave = () => {
+  const handleSave = async () => {
     setTouched({
       tripName: true,
       startDate: true,
@@ -110,7 +116,79 @@ export const TripDetailsEditForm: React.FC<TripDetailsEditFormProps> = ({
       ...Object.fromEntries(editForm.destinations.map((_, i) => [`destinations_${i}`, true])),
     });
     if (isFormValid) {
-      onSave(editForm);
+      setIsSaving(true);
+      console.log('📋 Saving trip details and generating packing list...');
+      
+      // Fetch weather for the first destination if we have dates
+      let weatherData: TripFormState['weather'] = undefined;
+      let weatherDataForAPI: WeatherData[] = [];
+      
+      if (editForm.destinations.length > 0 && editForm.startDate && editForm.endDate) {
+        try {
+          const firstDestination = editForm.destinations[0];
+          const geo = await geocodeCity(firstDestination);
+          if (geo && geo.lat && geo.lon) {
+            const rawWeather = await fetchWeather(geo.lat, geo.lon, editForm.startDate, editForm.endDate);
+            if (rawWeather) {
+              // Convert to match TripFormState weather type
+              weatherData = {
+                temperature: rawWeather.temperature,
+                temperatureMin: rawWeather.temperatureMin,
+                temperatureMax: rawWeather.temperatureMax,
+                weathercode: rawWeather.weathercode ?? undefined,
+                weathercodeEnd: rawWeather.weathercodeEnd ?? undefined,
+                averageTemp: rawWeather.averageTemp,
+                summary: rawWeather.summary
+              };
+              console.log('✅ Weather fetched:', weatherData);
+              
+              // Prepare weather data for API
+              weatherDataForAPI = [{
+                location: firstDestination,
+                temperature: rawWeather.averageTemp || rawWeather.temperatureMax || 20,
+                conditions: rawWeather.summary || 'Clear',
+                precipitation: 0
+              }];
+            }
+          }
+        } catch (error) {
+          console.error('Failed to fetch weather:', error);
+          // Continue without weather data
+        }
+      }
+      
+      // Generate packing list with Ollama
+      let generatedPackingList = undefined;
+      try {
+        console.log('🤖 Calling Ollama to generate packing list...');
+        
+        // Convert trip state to API format
+        const tripData: TripFormData = {
+          name: editForm.tripName,
+          startDate: editForm.startDate,
+          endDate: editForm.endDate,
+          destinations: editForm.destinations.filter(d => d?.trim()),
+          travelModes: editForm.travelModes,
+          tripDetails: `Travel preferences: ${editForm.preferences?.join(', ') || 'general travel'}. Weather: ${weatherData?.summary || 'unknown conditions'}.`
+        };
+        
+        // Call API to generate packing list
+        const result = await generatePackingList(tripData, weatherDataForAPI);
+        generatedPackingList = result;
+        console.log('✅ Packing list generated successfully:', result);
+      } catch (error) {
+        console.error('Failed to generate packing list:', error);
+        // Continue without packing list - user can try again later
+      }
+      
+      // Save with weather data and generated packing list
+      const formWithWeatherAndPacking: TripFormState = {
+        ...editForm,
+        weather: weatherData || editForm.weather,
+        generatedPackingList: generatedPackingList || editForm.generatedPackingList
+      };
+      onSave(formWithWeatherAndPacking);
+      setIsSaving(false);
     }
   };
 
@@ -237,7 +315,16 @@ export const TripDetailsEditForm: React.FC<TripDetailsEditFormProps> = ({
 
       <div className="flex justify-end gap-2">
         <button type="button" className="btn btn-secondary" onClick={onCancel}>Cancel</button>
-        <button type="submit" className="btn btn-primary" disabled={!isFormValid}>Save</button>
+        <button type="submit" className="btn btn-primary" disabled={!isFormValid || isSaving}>
+          {isSaving ? (
+            <span className="flex items-center gap-2">
+              <span className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></span>
+              Saving & Generating...
+            </span>
+          ) : (
+            'Save'
+          )}
+        </button>
       </div>
     </form>
   );

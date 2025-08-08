@@ -43,7 +43,24 @@
       "Bash(cat:*)",
       "Bash(timeout 10s npm run lambda:dev)",
       "Bash(pkill:*)",
-      "mcp__Ref__ref_read_url"
+      "mcp__Ref__ref_read_url",
+      "Bash(git log:*)",
+      "Bash(restart-backend.bat)",
+      "Bash(cmd:*)",
+      "Bash(for dir in docs .claude .github SmartPack/lambda SmartPack/scripts docs/development docs/api docs/testing .claude/agents .claude/docs)",
+      "Bash(do if [ -d \"$dir\" ])",
+      "Bash([ ! -f \"$dir/CLAUDE.md\" ])",
+      "Bash(then echo \"Missing: $dir/CLAUDE.md\")",
+      "Bash(fi)",
+      "Bash(done)",
+      "mcp__serena__read_memory",
+      "Bash(test:*)",
+      "Bash(del \"C:\\Users\\Rachel\\Desktop\\SmartPack\\docs\\development\\ROADMAP.md\")",
+      "Bash(del \"C:\\Users\\Rachel\\Desktop\\SmartPack\\docs\\testing\\TEST_UTILITIES.md\")",
+      "Bash(del \"C:\\Users\\Rachel\\Desktop\\SmartPack\\docs\\testing\\TESTING_STANDARDS.md\")",
+      "Bash(del \"C:\\Users\\Rachel\\Desktop\\SmartPack\\docs\\testing\\TESTING_GUIDELINES.md\")",
+      "Bash(del \"C:\\Users\\Rachel\\Desktop\\SmartPack\\docs\\testing\\TESTING_GUIDE.md\")",
+      "Bash(git add:*)"
     ],
     "deny": []
   }

@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xml-usage-guide version="1.0" for="claude-ai">
+  <metadata>
+    <title>XML Documentation Usage Guide for Claude</title>
+    <purpose>Guide for using XML-formatted documentation for faster parsing and better context understanding</purpose>
+    <created>2025-08-07</created>
+  </metadata>
+
+  <overview>
+    <description>
+      All SmartPack documentation has been converted from Markdown to XML format with semantic tags.
+      This enables Claude to parse information more efficiently and understand context better.
+    </description>
+    <benefits>
+      <benefit priority="high">Faster parsing with structured tags</benefit>
+      <benefit priority="high">Better context understanding through semantic markup</benefit>
+      <benefit priority="medium">Hierarchical organization for complex relationships</benefit>
+      <benefit priority="medium">Attribute support for metadata without cluttering content</benefit>
+      <benefit priority="low">Validation capability against schemas</benefit>
+    </benefits>
+  </overview>
+
+  <file-structure>
+    <category name="Project Instructions">
+      <file path="CLAUDE.xml" type="primary">
+        <description>Main project memory, agent system, quality standards</description>
+        <key-tags>project-instructions, critical-protocols, agent-system, quality-standards</key-tags>
+        <when-to-use>Starting new sessions, understanding project requirements</when-to-use>
+      </file>
+    </category>
+
+    <category name="Active Session Tracking">
+      <file path=".claude/scratchpad.xml" type="session">
+        <description>Active session context, worktrees, progress tracking</description>
+        <key-tags>active-session, active-worktrees, implementation-priorities</key-tags>
+        <when-to-use>Tracking current work, understanding session context</when-to-use>
+      </file>
+    </category>
+
+    <category name="Agent Definitions">
+      <directory path=".claude/agents/">
+        <description>Individual agent capabilities and protocols</description>
+        <file-pattern>smartpack-*.xml</file-pattern>
+        <key-tags>agent, protocols, specialization, handoff-protocols</key-tags>
+        <when-to-use>Understanding specific agent roles and responsibilities</when-to-use>
+      </directory>
+    </category>
+
+    <category name="Navigation Files">
+      <file path="SmartPack/CLAUDE.xml" type="navigation">
+        <description>Main project navigation and architecture</description>
+        <when-to-use>Understanding project structure and available commands</when-to-use>
+      </file>
+      <file path="SmartPack/src/CLAUDE.xml" type="navigation">
+        <description>Source directory structure and file purposes</description>
+        <when-to-use>Navigating source code organization</when-to-use>
+      </file>
+      <file path="SmartPack/src/components/CLAUDE.xml" type="navigation">
+        <description>Component inventory and patterns</description>
+        <when-to-use>Finding and understanding React components</when-to-use>
+      </file>
+      <file path="SmartPack/src/hooks/CLAUDE.xml" type="navigation">
+        <description>Hooks documentation and usage patterns</description>
+        <when-to-use>Understanding custom React hooks</when-to-use>
+      </file>
+    </category>
+
+    <category name="Development Documentation">
+      <file path="docs/development/DEVLOG.xml" type="history">
+        <description>Chronological development history</description>
+        <when-to-use>Understanding past decisions and implementations</when-to-use>
+      </file>
+      <file path="docs/development/TROUBLESHOOTING.xml" type="reference">
+        <description>Issue resolution database</description>
+        <when-to-use>Finding solutions to known problems</when-to-use>
+      </file>
+    </category>
+
+    <category name="Worktree Documentation">
+      <directory path=".claude/active-worktrees/">
+        <description>Active bug fixes and feature implementations</description>
+        <file-pattern>*.xml</file-pattern>
+        <when-to-use>Understanding current work items and their status</when-to-use>
+      </directory>
+    </category>
+  </file-structure>
+
+  <xml-parsing-tips>
+    <tip priority="high">
+      <title>Use Tag Names for Quick Navigation</title>
+      <description>XML tags provide semantic meaning - look for specific tags like 'critical-protocols', 'ship-critical-issues', etc.</description>
+      <example>To find critical issues, look for &lt;ship-critical-issues&gt; tags</example>
+    </tip>
+
+    <tip priority="high">
+      <title>Leverage Attributes for Metadata</title>
+      <description>Attributes contain important metadata like priority, status, and dates</description>
+      <example>&lt;worktree id="bug-fix" status="READY-FOR-FIX" priority="SHIP-CRITICAL"&gt;</example>
+    </tip>
+
+    <tip priority="medium">
+      <title>Follow Hierarchical Structure</title>
+      <description>XML hierarchy shows relationships - child elements belong to parent contexts</description>
+      <example>Protocols contain steps, steps contain actions</example>
+    </tip>
+
+    <tip priority="medium">
+      <title>Check Status Attributes</title>
+      <description>Many elements have status attributes showing current state</description>
+      <example>status="completed", status="in-progress", status="pending"</example>
+    </tip>
+  </xml-parsing-tips>
+
+  <common-queries>
+    <query id="find-critical-issues">
+      <question>What are the current ship-blocking issues?</question>
+      <answer>Check .claude/scratchpad.xml for &lt;ship-critical-issues&gt; tags</answer>
+    </query>
+
+    <query id="find-agent-roles">
+      <question>What agent should handle this task?</question>
+      <answer>Check CLAUDE.xml &lt;agent-system&gt; section or individual agent XML files in .claude/agents/</answer>
+    </query>
+
+    <query id="find-protocols">
+      <question>What protocols must be followed?</question>
+      <answer>Check CLAUDE.xml &lt;critical-protocols&gt; section for mandatory procedures</answer>
+    </query>
+
+    <query id="find-active-work">
+      <question>What work is currently in progress?</question>
+      <answer>Check .claude/scratchpad.xml &lt;active-worktrees&gt; section</answer>
+    </query>
+
+    <query id="find-components">
+      <question>What components are available?</question>
+      <answer>Check SmartPack/src/components/CLAUDE.xml for component inventory</answer>
+    </query>
+  </common-queries>
+
+  <conversion-tools>
+    <tool name="md-to-xml-converter.js">
+      <location>scripts/md-to-xml-converter.js</location>
+      <usage>node scripts/md-to-xml-converter.js input.md output.xml [--agent]</usage>
+      <description>Convert individual markdown files to XML</description>
+    </tool>
+
+    <tool name="batch-md-to-xml.js">
+      <location>scripts/batch-md-to-xml.js</location>
+      <usage>node scripts/batch-md-to-xml.js</usage>
+      <description>Batch convert all project markdown files to XML</description>
+    </tool>
+
+    <tool name="convert-worktrees.js">
+      <location>scripts/convert-worktrees.js</location>
+      <usage>node scripts/convert-worktrees.js</usage>
+      <description>Convert active worktree documentation to XML</description>
+    </tool>
+  </conversion-tools>
+
+  <best-practices>
+    <practice priority="high">
+      <title>Always Use XML Files When Available</title>
+      <description>XML files provide better structure and faster parsing than markdown</description>
+    </practice>
+
+    <practice priority="high">
+      <title>Update Both Formats During Transition</title>
+      <description>Until full migration, update both .md and .xml files when making changes</description>
+    </practice>
+
+    <practice priority="medium">
+      <title>Use Semantic Tags for New Content</title>
+      <description>When adding new content, use meaningful tag names that describe the content</description>
+    </practice>
+
+    <practice priority="medium">
+      <title>Maintain Consistent Structure</title>
+      <description>Follow existing XML patterns for consistency across documentation</description>
+    </practice>
+
+    <practice priority="low">
+      <title>Consider Schema Validation</title>
+      <description>For critical files, consider creating XSD schemas for validation</description>
+    </practice>
+  </best-practices>
+
+  <migration-status>
+    <completed>
+      <item>All agent definition files (.claude/agents/*.xml)</item>
+      <item>Main project instructions (CLAUDE.xml)</item>
+      <item>Navigation files (SmartPack/**/CLAUDE.xml)</item>
+      <item>Development documentation (docs/**/*.xml)</item>
+      <item>Worktree management docs (.claude/docs/**/*.xml)</item>
+      <item>Active worktree files (.claude/active-worktrees/*.xml)</item>
+      <item>Scratchpad (.claude/scratchpad.xml)</item>
+    </completed>
+
+    <statistics>
+      <total-converted>48+ files</total-converted>
+      <formats-available>Both .md and .xml for most files</formats-available>
+      <recommendation>Use XML files for all Claude interactions</recommendation>
+    </statistics>
+  </migration-status>
+
+  <usage-examples>
+    <example id="reading-project-instructions">
+      <description>Understanding project requirements</description>
+      <command>Read CLAUDE.xml and look for &lt;critical-protocols&gt; and &lt;quality-standards&gt; sections</command>
+    </example>
+
+    <example id="finding-active-bugs">
+      <description>Checking current bugs being fixed</description>
+      <command>Read .claude/scratchpad.xml and look for &lt;active-worktrees&gt; with status attributes</command>
+    </example>
+
+    <example id="understanding-agent-roles">
+      <description>Finding the right agent for a task</description>
+      <command>Read CLAUDE.xml &lt;agent-usage-guidelines&gt; or specific agent XML in .claude/agents/</command>
+    </example>
+
+    <example id="checking-component-inventory">
+      <description>Finding available React components</description>
+      <command>Read SmartPack/src/components/CLAUDE.xml for complete component list</command>
+    </example>
+  </usage-examples>
+</xml-usage-guide>

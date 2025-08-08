@@ -1,0 +1,463 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document>
+  <metadata>
+    <title>SmartPack Testing Standards (2024/2025)</title>
+    <purpose>Establish 2024/2025 industry-standard testing practices, define testing philosophy and core principles, provide reference patterns and anti-patterns, ensure consistency across testing implementations, document framework-specific best practices.</purpose>
+    <lastUpdated>2025-07-29</lastUpdated>
+    <documentType>testing-standards</documentType>
+    <nextReview>2026-01-01</nextReview>
+  </metadata>
+
+  <content>
+    <section title="Overview">
+      <description>This document establishes the testing standards for SmartPack based on current industry best practices as of July 2025. All new tests must follow these standards, and existing tests should be migrated during refactoring.</description>
+    </section>
+
+    <section title="Core Principles">
+      <subsection title="Testing Philosophy">
+        <list>
+          <item><strong>Test user-visible behavior</strong> over implementation details</item>
+          <item><strong>Write tests that resemble how users interact</strong> with the application</item>
+          <item><strong>Prefer integration tests</strong> over isolated unit tests where practical</item>
+          <item><strong>Ensure accessibility compliance</strong> in all UI tests</item>
+        </list>
+      </subsection>
+
+      <subsection title="Sources & Authority">
+        <list>
+          <item><link>Vitest Official Guide</link> - Current v3.x standards</item>
+          <item><link>React Testing Library Guiding Principles</link></item>
+          <item><link>Kent C. Dodds - Common Mistakes with RTL</link> (2024)</item>
+          <item><link>Playwright Best Practices</link> (2024)</item>
+        </list>
+      </subsection>
+    </section>
+
+    <section title="File Naming & Organization">
+      <subsection title="Correct Naming Conventions">
+        <code><![CDATA[src/
+  components/
+    TripForm.tsx
+    TripForm.test.tsx     # Unit/component tests
+  utils/
+    validation.ts
+    validation.test.ts    # Utility function tests
+  __tests__/
+    integration/
+      user-journey.integration.test.ts  # Integration tests
+    e2e/
+      critical-path.e2e.test.ts         # E2E tests (if not using Playwright directory)]]></code>
+      </subsection>
+
+      <subsection title="Avoid These Patterns">
+        <code><![CDATA[TripForm.next.single.click.test.tsx    # Overly descriptive
+TripFormValidation.unit.test.ts        # Redundant .unit suffix
+MainLayout.a11y.test.tsx               # Separate accessibility files
+localStorage.persistence.test.tsx      # Overly descriptive]]></code>
+      </subsection>
+
+      <subsection title="File Extension Rules">
+        <list>
+          <item>`.test.ts` - Pure TypeScript/JavaScript logic tests</item>
+          <item>`.test.tsx` - React component tests</item>
+          <item>`.integration.test.ts` - Cross-component integration tests</item>
+          <item>`.e2e.test.ts` - End-to-end user journey tests</item>
+        </list>
+      </subsection>
+    </section>
+
+    <section title="Test Structure & Organization">
+      <subsection title="Standard Test Structure">
+        <code language="tsx"><![CDATA[// ComponentName.test.tsx
+import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { axe } from 'jest-axe';
+import { ComponentName } from './ComponentName';
+
+// Vitest-compatible accessibility helper
+const expectNoA11yViolations = async (container: HTMLElement) => {
+  const results = await axe(container);
+  expect(results.violations).toEqual([]);
+};
+
+describe('ComponentName', () => {
+  // Setup helpers
+  function renderComponent(props = {}) {
+    const user = userEvent.setup();
+    render(<ComponentName {...props} />);
+    return { user };
+  }
+
+  describe('when rendering', () => {
+    it('should display required elements', () => {
+      renderComponent();
+      expect(
+        screen.getByRole('button', { name: /submit/i })
+      ).toBeInTheDocument();
+    });
+
+    it('should be accessible', async () => {
+      render(<ComponentName />);
+      await expectNoA11yViolations(document.body);
+    });
+  });
+
+  describe('when user interacts', () => {
+    it('should handle form submission', async () => {
+      const { user } = renderComponent();
+      
+      await user.type(
+        screen.getByRole('textbox', { name: /name/i }),
+        'Test Value'
+      );
+      await user.click(screen.getByRole('button', { name: /submit/i }));
+      
+      expect(screen.getByText(/success/i)).toBeInTheDocument();
+    });
+  });
+});]]></code>
+      </subsection>
+
+      <subsection title="Describe Block Conventions">
+        <list>
+          <item>`describe('ComponentName', () => {})` - Main component block</item>
+          <item>`describe('when [condition]', () => {})` - Behavioral grouping</item>
+          <item>`describe('given [state]', () => {})` - State-based grouping</item>
+        </list>
+      </subsection>
+
+      <subsection title="Test Case Naming">
+        <list>
+          <item>`it('should [expected behavior]', () => {})` - Behavioral expectation</item>
+          <item>Use present tense, active voice</item>
+          <item>Be specific about the expected outcome</item>
+        </list>
+      </subsection>
+    </section>
+
+    <section title="Query & Assertion Standards">
+      <subsection title="Use screen API (Required)">
+        <code language="tsx"><![CDATA[// Correct
+render(<Component />);
+expect(screen.getByRole('button', { name: /submit/i })).toBeInTheDocument();
+
+// Avoid
+const { getByRole } = render(<Component />);
+expect(getByRole('button', { name: /submit/i })).toBeInTheDocument();]]></code>
+      </subsection>
+
+      <subsection title="Query Priority Order">
+        <list type="ordered">
+          <item>`getByRole()` - Preferred for interactive elements</item>
+          <item>`getByLabelText()` - Form inputs</item>
+          <item>`getByPlaceholderText()` - When label isn't available</item>
+          <item>`getByText()` - For content verification</item>
+          <item>`getByDisplayValue()` - Form inputs with values</item>
+          <item>`getByAltText()` - Images</item>
+          <item>`getByTitle()` - Last resort</item>
+          <item>`getByTestId()` - Only when semantic queries fail</item>
+        </list>
+      </subsection>
+
+      <subsection title="Use Jest-DOM Matchers">
+        <code language="tsx"><![CDATA[// Correct - Descriptive error messages
+expect(button).toBeDisabled();
+expect(input).toHaveValue('expected value');
+expect(element).toBeVisible();
+
+// Avoid - Poor error messages
+expect(button.disabled).toBe(true);
+expect(input.value).toBe('expected value');
+expect(element.style.display).not.toBe('none');]]></code>
+      </subsection>
+
+      <subsection title="Query Variants Usage">
+        <list>
+          <item>`get*` - Element must exist (throws if not found)</item>
+          <item>`query*` - Only for asserting non-existence (`toBeNull()`)</item>
+          <item>`find*` - For async elements (awaited)</item>
+        </list>
+      </subsection>
+    </section>
+
+    <section title="User Interaction Standards">
+      <subsection title="Use @testing-library/user-event (Required)">
+        <code language="tsx"><![CDATA[import userEvent from '@testing-library/user-event';
+
+const { user } = renderComponent();
+
+// Correct - Simulates real user behavior
+await user.type(input, 'hello world');
+await user.click(button);
+await user.selectOptions(select, 'option1');
+
+// Avoid - Low-level events
+fireEvent.change(input, { target: { value: 'hello world' } });
+fireEvent.click(button);]]></code>
+      </subsection>
+    </section>
+
+    <section title="Test Categories & When to Use">
+      <subsection title="Unit Tests (ComponentName.test.tsx)">
+        <list>
+          <item><strong>Purpose</strong>: Test individual component behavior</item>
+          <item><strong>Scope</strong>: Single component, mocked dependencies</item>
+          <item><strong>Location</strong>: Co-located with component</item>
+          <item><strong>Example</strong>: Form validation, button states, conditional rendering</item>
+        </list>
+      </subsection>
+
+      <subsection title="Integration Tests (__tests__/integration/)">
+        <list>
+          <item><strong>Purpose</strong>: Test component interactions and data flow</item>
+          <item><strong>Scope</strong>: Multiple components, real context providers</item>
+          <item><strong>Location</strong>: `src/__tests__/integration/`</item>
+          <item><strong>Example</strong>: Form submission workflow, context state updates</item>
+        </list>
+      </subsection>
+
+      <subsection title="E2E Tests (playwright/)">
+        <list>
+          <item><strong>Purpose</strong>: Test complete user journeys</item>
+          <item><strong>Scope</strong>: Full application, real backend/APIs</item>
+          <item><strong>Location</strong>: `playwright/` directory</item>
+          <item><strong>Example</strong>: Complete trip planning flow, data persistence</item>
+        </list>
+      </subsection>
+    </section>
+
+    <section title="Context & Provider Testing">
+      <subsection title="Standard Provider Setup">
+        <code language="tsx"><![CDATA[// tests/test-utils.tsx
+export function renderWithProviders(
+  ui: ReactElement,
+  options: {
+    initialTripState?: Partial<TripFormState>;
+    initialPackingState?: Partial<PackingListState>;
+  } = {}
+) {
+  const AllProviders = ({ children }: { children: ReactNode }) => (
+    <TripFormProvider initialState={options.initialTripState}>
+      <PackingListProvider initialState={options.initialPackingState}>
+        <MemoryRouter>{children}</MemoryRouter>
+      </PackingListProvider>
+    </TripFormProvider>
+  );
+
+  return render(ui, { wrapper: AllProviders, ...options });
+}]]></code>
+      </subsection>
+    </section>
+
+    <section title="Accessibility Testing Standards">
+      <subsection title="Integrated Accessibility Tests (Updated 2025-07-29)">
+        <code language="tsx"><![CDATA[import { axe } from 'jest-axe';
+
+// Vitest-compatible accessibility pattern
+const expectNoA11yViolations = async (container: HTMLElement) => {
+  const results = await axe(container);
+  expect(results.violations).toEqual([]);
+};
+
+// Include in every component test
+it('should be accessible', async () => {
+  render(<Component />);
+  await expectNoA11yViolations(document.body);
+});]]></code>
+
+        <note>This pattern resolves TypeScript compatibility issues with Vitest while maintaining full jest-axe functionality.</note>
+      </subsection>
+
+      <subsection title="Accessibility Test Requirements">
+        <list>
+          <item>Every component test must include accessibility verification</item>
+          <item>Use semantic HTML and ARIA attributes testing</item>
+          <item>Test keyboard navigation where applicable</item>
+          <item>Verify color contrast in visual regression tests</item>
+        </list>
+      </subsection>
+    </section>
+
+    <section title="Async Testing Standards">
+      <subsection title="Proper Async Handling">
+        <code language="tsx"><![CDATA[// Correct - Use findBy* for async elements
+expect(await screen.findByText(/loading complete/i)).toBeInTheDocument();
+
+// Correct - Use waitFor for state changes
+await waitFor(() => {
+  expect(screen.getByText(/error message/i)).toBeInTheDocument();
+});
+
+// Avoid - Empty waitFor callbacks
+await waitFor(() => {});
+expect(someAssertion).toBeTruthy();]]></code>
+      </subsection>
+
+      <subsection title="waitFor Guidelines">
+        <list>
+          <item>One assertion per `waitFor` callback</item>
+          <item>No side effects inside `waitFor`</item>
+          <item>Use `findBy*` when possible instead of `waitFor(() => getBy*)`</item>
+        </list>
+      </subsection>
+    </section>
+
+    <section title="Test Cleanup & Setup">
+      <subsection title="Standard Setup Pattern">
+        <code language="tsx"><![CDATA[describe('ComponentName', () => {
+  beforeEach(() => {
+    // Clear localStorage to prevent test contamination
+    localStorage.clear();
+    
+    // Reset all mocks
+    vi.clearAllMocks();
+  });
+
+  afterEach(() => {
+    // Cleanup is automatic with @testing-library/react
+    // Only add custom cleanup if needed
+  });
+});]]></code>
+      </subsection>
+    </section>
+
+    <section title="Mocking Standards">
+      <subsection title="Strategic Mocking">
+        <code language="tsx"><![CDATA[// Mock external dependencies
+vi.mock('../services/api', () => ({
+  fetchData: vi.fn().mockResolvedValue(mockData),
+}));
+
+// Mock complex hooks for unit tests
+vi.mock('../hooks/useComplexHook', () => ({
+  useComplexHook: vi.fn(() => ({
+    data: mockData,
+    loading: false
+  })),
+}));
+
+// Avoid over-mocking internal logic
+// Let real implementations run for integration tests]]></code>
+      </subsection>
+    </section>
+
+    <section title="Performance & CI Standards">
+      <subsection title="Test Performance">
+        <list>
+          <item>Keep test suites under 30 seconds for unit tests</item>
+          <item>Use `vi.useFakeTimers()` for time-dependent tests</item>
+          <item>Minimize DOM queries by reusing elements</item>
+          <item>Use `screen.debug()` sparingly in CI</item>
+        </list>
+      </subsection>
+
+      <subsection title="CI Configuration">
+        <code language="javascript"><![CDATA[// vitest.config.ts
+export default defineConfig({
+  test: {
+    environment: 'jsdom',
+    setupFiles: './vitest.setup.ts',
+    globals: true,
+    mockReset: true,
+    include: ['src/**/*.{test,spec}.{js,ts,jsx,tsx}'],
+    exclude: ['playwright/**', '**/*.e2e.*'],
+    coverage: {
+      reporter: ['text', 'json', 'html'],
+      exclude: ['**/*.test.*', '**/*.spec.*'],
+    },
+  },
+});]]></code>
+      </subsection>
+    </section>
+
+    <section title="Migration Guidelines">
+      <subsection title="Priority Order for Refactoring">
+        <list type="ordered">
+          <item><strong>High Priority</strong>: Tests with anti-patterns affecting reliability</item>
+          <item><strong>Medium Priority</strong>: Naming convention violations</item>
+          <item><strong>Low Priority</strong>: Style and consistency improvements</item>
+        </list>
+      </subsection>
+
+      <subsection title="Migration Checklist">
+        <checklist>
+          <item>Update file naming to standard conventions</item>
+          <item>Convert to `screen` API usage</item>
+          <item>Add accessibility testing</item>
+          <item>Use `@testing-library/user-event` instead of `fireEvent`</item>
+          <item>Implement proper async testing patterns</item>
+          <item>Add proper TypeScript types</item>
+        </checklist>
+      </subsection>
+    </section>
+
+    <section title="Common Anti-Patterns to Avoid">
+      <subsection title="Query Anti-Patterns">
+        <code language="tsx"><![CDATA[// Don't destructure render
+const { getByRole } = render(<Component />);
+
+// Don't use container queries
+const { container } = render(<Component />);
+const button = container.querySelector('.btn');
+
+// Don't use manual assertions
+expect(button.disabled).toBe(true);
+
+// Don't use query* for existence checks
+expect(screen.queryByRole('alert')).toBeInTheDocument();]]></code>
+      </subsection>
+
+      <subsection title="Async Anti-Patterns">
+        <code language="tsx"><![CDATA[// Don't use act() unnecessarily
+act(() => {
+  render(<Component />);
+});
+
+// Don't use empty waitFor
+await waitFor(() => {});
+
+// Don't put side effects in waitFor
+await waitFor(() => {
+  fireEvent.click(button);
+  expect(element).toBeVisible();
+});]]></code>
+      </subsection>
+    </section>
+
+    <section title="Quick Reference Checklist">
+      <subsection title="Every Test Should Have">
+        <checklist>
+          <item>Descriptive test name starting with "should"</item>
+          <item>Proper describe block organization</item>
+          <item>`screen` API usage</item>
+          <item>Jest-DOM matchers</item>
+          <item>User-event for interactions</item>
+          <item>Accessibility verification</item>
+          <item>Proper async handling</item>
+          <item>Clean setup/teardown</item>
+        </checklist>
+      </subsection>
+
+      <subsection title="Avoid in Tests">
+        <checklist>
+          <item>Implementation details testing</item>
+          <item>Overly specific test IDs</item>
+          <item>Manual DOM manipulation</item>
+          <item>Synchronous assertions for async behavior</item>
+          <item>Multiple assertions in waitFor</item>
+          <item>Hardcoded delays or timeouts</item>
+        </checklist>
+      </subsection>
+    </section>
+
+    <section title="Additional Resources">
+      <list>
+        <item><link>SmartPack Testing Guidelines</link> - Project-specific helpers</item>
+        <item><link>Testing Troubleshooting</link> - Common issues and solutions</item>
+        <item><link>React Testing Library Docs</link></item>
+        <item><link>Vitest API Reference</link></item>
+        <item><link>Jest-DOM Matchers</link></item>
+      </list>
+    </section>
+  </content>
+</document>

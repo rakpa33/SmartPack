@@ -1,0 +1,494 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document>
+  <metadata>
+    <title>Architecture Overview for SmartPack</title>
+    <purpose>Central architecture reference following arc42 template industry standard</purpose>
+    <template>arc42</template>
+    <lastUpdated>2025-01-31</lastUpdated>
+    <documentType>architecture</documentType>
+    <sections>12</sections>
+  </metadata>
+  
+  <documentation-header>
+    <comment>
+      This file provides comprehensive system architecture documentation for SmartPack following the arc42 template industry standard.
+      Keep this comment at the top; do not overwrite or remove it when updating the document.
+      
+      DOCUMENT PURPOSE:
+      - Central architecture reference following arc42 template (12 sections)
+      - Technical decision documentation with rationale and consequences
+      - System structure, components, and integration patterns
+      - Quality requirements with industry-standard metrics (WCAG 2.1, Web Vitals, OWASP)
+      - Risk assessment and technical debt tracking
+      
+      WHEN TO UPDATE:
+      1. MAJOR CHANGES: Component additions/removals, new integrations, architectural decisions
+      2. QUALITY UPDATES: New requirements, testing strategies, performance targets
+      3. DEPLOYMENT CHANGES: Infrastructure updates, environment modifications
+      4. TECHNOLOGY DECISIONS: Stack changes, library additions, tool updates
+      5. CROSS-REFERENCES: Update links when other docs are restructured
+      
+      UPDATE GUIDELINES:
+      - Follow arc42 section structure (1-12) - do not reorganize sections
+      - Update ADRs (Section 9) for significant technical decisions with Status/Decision/Rationale/Consequences
+      - Keep quality requirements (Section 1.2) aligned with actual implementation and industry standards
+      - Update building block view (Section 5) when component structure changes
+      - Maintain visual diagrams in sync with actual system structure
+      - Reference specific files, components, and external documentation
+      
+      QUALITY STANDARDS:
+      - All requirements must be SMART (Specific, Measurable, Achievable, Relevant, Time-bound)
+      - Include industry references (WCAG 2.1 AA, Google Web Vitals, OWASP guidelines)
+      - Provide implementation details with specific tools and thresholds
+      - Link to detailed implementation in DEVLOG.md and TROUBLESHOOTING.md
+      
+      CROSS-REFERENCE MAINTENANCE:
+      - Update "See Also" section when prompt files or documentation structure changes
+      - Validate external links and industry standard references quarterly
+      - Ensure consistency with CHECKLIST.md progress tracking and ROADMAP.md phases
+      - Keep glossary (Section 12) current with project terminology
+      
+      HOW TO USE FOR AI ASSISTANCE:
+      - Reference this document for system understanding before making changes
+      - Use ADRs to understand why decisions were made before proposing alternatives
+      - Check quality requirements before implementing features to ensure compliance
+      - Consult building block view for component relationships and dependencies
+    </comment>
+  </documentation-header>
+
+  <section id="1" name="introduction-and-goals">
+    <subsection id="1.1" name="requirements-overview">
+      <description>SmartPack is a mobile-first, single-user travel packing application that provides AI-powered packing recommendations based on trip details and weather conditions.</description>
+      <key-features>
+        <feature>Intelligent packing list generation using local AI (Ollama)</feature>
+        <feature>Weather-aware recommendations via Open-Meteo API</feature>
+        <feature>Persistent storage using browser localStorage</feature>
+        <feature>Responsive design for mobile and desktop use</feature>
+      </key-features>
+    </subsection>
+    
+    <subsection id="1.2" name="quality-goals">
+      <description>The following quality requirements are aligned with industry standards and define testable scenarios with clear success metrics:</description>
+      <quality-requirements>
+        <requirement id="A11Y-1" attribute="Accessibility">
+          <description>Meet WCAG 2.1 AA for color-contrast, keyboard nav, alt-text, ARIA roles, focus order, error messages. Automated axe-core scan must report 0 critical issues in CI.</description>
+          <reference>W3C WCAG 2.1 standard</reference>
+        </requirement>
+        <requirement id="UX-1" attribute="User Experience Consistency">
+          <description>All components follow SmartPack Design System with mobile-first responsive design, 44px touch targets, consistent validation patterns, and real-time feedback (750ms debounce).</description>
+          <reference>Apple HIG, Material Design principles</reference>
+        </requirement>
+        <requirement id="PERF-1" attribute="Performance">
+          <description>Largest Contentful Paint (LCP) ≤ 2.5s at 75th-percentile on home-Wi-Fi (Cable/3G in WebPageTest).</description>
+          <reference>Google Web Vitals threshold</reference>
+        </requirement>
+        <requirement id="REL-1" attribute="Reliability / Graceful Degradation">
+          <description>If /generate fails (network or Ollama) → show cached list within 1s and banner "AI offline". Local data persists across refresh/tab close via localStorage.</description>
+          <reference>Industry standard for SPA resilience</reference>
+        </requirement>
+        <requirement id="SEC-1" attribute="Privacy &amp; Security">
+          <description>No third-party analytics. All trip data stored only in localStorage. Add Content-Security-Policy: default-src 'self'. Follow OWASP guidance for safe client-storage.</description>
+          <reference>OWASP HTML5 Security Cheat Sheet</reference>
+        </requirement>
+        <requirement id="MAINT-1" attribute="Maintainability &amp; Code Quality">
+          <description>Codebase must: ≥ 80% line &amp; branch coverage (Vitest), Pass ESLint + Prettier in CI, Have clear comments per Copilot rules, Merged PRs auto-deploy within 1h.</description>
+          <reference>Industry best practices for CI/CD</reference>
+        </requirement>
+      </quality-requirements>
+    </subsection>
+    
+    <subsection id="1.3" name="maintainability-implementation">
+      <implementation-areas>
+        <area name="Coverage">Keep global ≥ 80%. Exclude generated/vendor code with /* istanbul ignore file */ comments.</area>
+        <area name="Static Analysis">ESLint strict + TypeScript noImplicitAny, Prettier auto-format; CI fails on lint errors.</area>
+        <area name="Testing Pyramid">Many unit tests (RTL), some integration (Supertest), handful of E2E (Playwright).</area>
+        <area name="CI Time-to-Prod">GitHub Actions → S3 &amp; Lambda deploy ≤ 60 min after merge.</area>
+        <area name="Code Review">PR template: check tests added, coverage unchanged, a11y queries used, no console.logs.</area>
+      </implementation-areas>
+    </subsection>
+    
+    <subsection id="1.4" name="stakeholders">
+      <stakeholder-list>
+        <stakeholder role="End Users" expectations="Fast, accurate packing suggestions" influence="High"/>
+        <stakeholder role="Developers" expectations="Clean, testable, well-documented code" influence="High"/>
+        <stakeholder role="DevOps" expectations="Simple deployment, minimal infrastructure" influence="Medium"/>
+      </stakeholder-list>
+    </subsection>
+  </section>
+
+  <section id="2" name="architecture-constraints">
+    <subsection id="2.1" name="technical-constraints">
+      <constraint>Browser Compatibility: Modern browsers with ES2020+ support</constraint>
+      <constraint>Data Storage: localStorage only (no cloud sync)</constraint>
+      <constraint>AI Processing: Local Ollama instance required for full functionality</constraint>
+      <constraint>API Dependencies: Open-Meteo API for weather data</constraint>
+    </subsection>
+    
+    <subsection id="2.2" name="organizational-constraints">
+      <constraint>Team Size: Single developer project</constraint>
+      <constraint>Technology Stack: React + TypeScript + Vite ecosystem</constraint>
+      <constraint>Deployment: Static hosting with serverless backend</constraint>
+    </subsection>
+    
+    <subsection id="2.3" name="conventions">
+      <constraint>Code Quality: TypeScript strict mode, comprehensive testing</constraint>
+      <constraint>Documentation: README-driven development, inline code documentation</constraint>
+      <constraint>Version Control: Git with conventional commits</constraint>
+    </subsection>
+  </section>
+
+  <section id="3" name="system-context-scope">
+    <subsection id="3.1" name="business-context">
+      <diagram>
+        [User] --uses--> [SmartPack App] --fetches--> [Open-Meteo API]
+                              |
+                         --queries--> [Local Ollama AI]
+      </diagram>
+      <external-entities>
+        <entity name="Users">Travelers planning packing lists</entity>
+        <entity name="Open-Meteo API">Weather data provider</entity>
+        <entity name="Ollama Service">Local AI inference engine</entity>
+      </external-entities>
+    </subsection>
+    
+    <subsection id="3.2" name="technical-context">
+      <component>Frontend: Single-page application served statically</component>
+      <component>Backend: Express.js Lambda for AI processing</component>
+      <component>Storage: Browser localStorage (no external databases)</component>
+      <component>AI: Local Ollama instance running llama3.1:8b model</component>
+    </subsection>
+  </section>
+
+  <section id="4" name="solution-strategy">
+    <subsection id="4.1" name="technology-decisions">
+      <decisions>
+        <decision name="Local AI (Ollama)" rationale="Privacy, no API costs, offline capability" trade-offs="Setup complexity, hardware requirements"/>
+        <decision name="localStorage" rationale="Simple deployment, no backend needed" trade-offs="Limited storage, no sync across devices"/>
+        <decision name="React + TypeScript" rationale="Developer productivity, type safety" trade-offs="Bundle size, build complexity"/>
+        <decision name="Tailwind CSS" rationale="Rapid UI development, consistency" trade-offs="CSS bundle size, learning curve"/>
+      </decisions>
+    </subsection>
+    
+    <subsection id="4.2" name="quality-achievement">
+      <strategy aspect="Privacy">Local-only AI processing and data storage</strategy>
+      <strategy aspect="Performance">Client-side rendering, optimized bundles</strategy>
+      <strategy aspect="Reliability">Fallback data when AI unavailable</strategy>
+      <strategy aspect="Maintainability">TypeScript, testing pyramid, documentation</strategy>
+    </subsection>
+  </section>
+
+  <section id="5" name="building-block-view">
+    <subsection id="5.1" name="system-overview">
+      <diagram>
+        ┌─────────────────────────────────────────────────────────┐
+        │                    SmartPack System                    │
+        ├─────────────────────┬───────────────────────────────────┤
+        │   Frontend (SPA)    │      Backend (Lambda)            │
+        │                     │                                   │
+        │ • React UI          │ • Express.js API                  │
+        │ • Trip Planning     │ • AI Integration                  │
+        │ • Packing Lists     │ • Weather Processing              │
+        │ • Local Storage     │ • Ollama Client                   │
+        └─────────────────────┴───────────────────────────────────┘
+      </diagram>
+    </subsection>
+    
+    <subsection id="5.2" name="frontend-components">
+      <core-components>
+        <component name="TripForm">Multi-step trip planning with validation</component>
+        <component name="MainLayout">Three-column responsive layout</component>
+        <component name="PackingList">Dynamic checklist with CRUD operations</component>
+        <component name="SuggestionsPanel">AI-powered recommendation interface</component>
+        <component name="TripDetails">Trip information display with editing</component>
+      </core-components>
+      <supporting-components>
+        <component name="Context Providers">State management for trip and checklist data</component>
+        <component name="Hooks">Custom hooks for localStorage, weather API, and AI services</component>
+        <component name="Utils">Validation, formatting, and helper functions</component>
+      </supporting-components>
+    </subsection>
+    
+    <subsection id="5.3" name="backend-services">
+      <api-layer>
+        <service name="Health Check Endpoint">System status verification</service>
+        <service name="Generate Endpoint">AI-powered packing list creation</service>
+        <service name="Suggestions Endpoint">Custom AI recommendations</service>
+      </api-layer>
+      <ai-integration-layer>
+        <service name="Ollama Client">Local AI model communication</service>
+        <service name="Prompt Engineering">Context-aware prompt generation</service>
+        <service name="Fallback Service">Mock data when AI unavailable</service>
+      </ai-integration-layer>
+    </subsection>
+  </section>
+
+  <section id="6" name="runtime-view">
+    <subsection id="6.1" name="primary-use-case">
+      <title>Generate Packing List</title>
+      <sequence-diagram>
+        <participants>
+          <participant id="U">User</participant>
+          <participant id="F">Frontend</participant>
+          <participant id="B">Backend</participant>
+          <participant id="O">Ollama</participant>
+          <participant id="W">Weather API</participant>
+        </participants>
+        <steps>
+          <step from="U" to="F">Enter trip details</step>
+          <step from="F" to="W">Fetch weather data</step>
+          <step from="W" to="F">Weather response</step>
+          <step from="F" to="B">POST /generate (trip + weather)</step>
+          <step from="B" to="O">Generate suggestions</step>
+          <step from="O" to="B">AI recommendations</step>
+          <step from="B" to="F">Categorized checklist</step>
+          <step from="F" to="F">Save to localStorage</step>
+          <step from="F" to="U">Display packing list</step>
+        </steps>
+      </sequence-diagram>
+    </subsection>
+    
+    <subsection id="6.2" name="error-handling">
+      <scenario name="AI Service Unavailable">
+        <step>User requests suggestions</step>
+        <step>Backend attempts Ollama connection</step>
+        <step>Connection fails (timeout/error)</step>
+        <step>Backend returns fallback mock data</step>
+        <step>Frontend displays suggestions with "fallback" indicator</step>
+      </scenario>
+      <scenario name="Weather API Failure">
+        <step>User enters destination</step>
+        <step>Weather API request fails</step>
+        <step>Frontend shows generic weather placeholder</step>
+        <step>AI still generates suggestions without weather context</step>
+      </scenario>
+    </subsection>
+    
+    <subsection id="6.3" name="ux-ui-design-system">
+      <implementation date="2025-01-27" enhanced="2025-01-30">
+        <description>SmartPack implements a comprehensive design system ensuring consistent user experience across all components with WCAG 2.1 AA compliance</description>
+        
+        <design-tokens>
+          <token type="Color System">State-based colors (green success, red error, blue primary, amber warning)</token>
+          <token type="Typography Scale">Consistent hierarchy (text-sm font-medium for labels, text-xs for help)</token>
+          <token type="Spacing System">Progressive enhancement (space-y-6 md:space-y-8), gap-2 for icon spacing</token>
+          <token type="Touch Targets">44px minimum for mobile accessibility compliance</token>
+        </design-tokens>
+        
+        <interactive-standards date="2025-01-30">
+          <standard>WCAG 3:1 Contrast: All interactive elements meet minimum contrast requirements</standard>
+          <standard>Visual Affordance: 2px borders minimum, shadow hierarchy for depth perception</standard>
+          <standard>Button Hierarchy: Primary (bg-blue-50), Secondary (bg-white), Utility (bg-gray-50)</standard>
+          <standard>Consistent Treatment: Unified design language across all clickable components</standard>
+        </interactive-standards>
+        
+        <component-patterns>
+          <pattern>Real-Time Validation: 750ms debounced feedback with loading states</pattern>
+          <pattern>Mobile-First Responsive: Single-column mobile, progressive desktop enhancement</pattern>
+          <pattern>Accessibility-First: WCAG 2.1 AA compliance with proper ARIA attributes, Nielsen Norman clickability principles</pattern>
+          <pattern>Success States: Visual feedback with green borders and CheckCircleIcon</pattern>
+        </component-patterns>
+        
+        <architecture>
+          <file>UX_UI_DESIGN_SYSTEM.md - Implementation patterns</file>
+          <file>UX_UI_ASSESSMENT_GUIDE.md - Quality assurance</file>
+          <file>TripDetails.tsx - Reference implementation</file>
+          <consistency>
+            <item>Form validation patterns</item>
+            <item>Button hierarchy standards (Primary/Secondary/Utility)</item>
+            <item>Interactive element WCAG compliance</item>
+            <item>Icon spacing consistency (gap-2 pattern)</item>
+            <item>Loading state animations</item>
+            <item>Error messaging patterns</item>
+          </consistency>
+        </architecture>
+        
+        <quality-gates>
+          <gate>Component assessment using UX_UI_ASSESSMENT_GUIDE.md</gate>
+          <gate>Mobile-first responsive validation</gate>
+          <gate>Accessibility testing with axe-core and WCAG 2.1 AA compliance</gate>
+          <gate>Touch target compliance verification</gate>
+          <gate>Interactive element contrast ratio validation (3:1 minimum)</gate>
+        </quality-gates>
+      </implementation>
+    </subsection>
+  </section>
+
+  <section id="7" name="deployment-view">
+    <subsection id="7.1" name="development-environment">
+      <diagram>
+        ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
+        │   Frontend      │    │    Backend      │    │  Ollama Service │
+        │                 │    │                 │    │                 │
+        │ localhost:5173  │◄──►│ localhost:3000  │◄──►│ localhost:11434 │
+        │ (Vite Dev)      │    │ (Express)       │    │ (AI Model)      │
+        └─────────────────┘    └─────────────────┘    └─────────────────┘
+      </diagram>
+    </subsection>
+    
+    <subsection id="7.2" name="production-environment">
+      <status>Planned</status>
+      <diagram>
+        ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
+        │   Static Host   │    │  AWS Lambda     │    │  Cloud Instance │
+        │                 │    │                 │    │                 │
+        │ S3 + CloudFront │◄──►│ Express Handler │◄──►│ Ollama Service  │
+        │ (React SPA)     │    │ (API Gateway)   │    │ (Docker)        │
+        └─────────────────┘    └─────────────────┘    └─────────────────┘
+      </diagram>
+    </subsection>
+    
+    <subsection id="7.3" name="infrastructure-requirements">
+      <development>
+        <requirement>Node.js 18+ (Frontend build tools)</requirement>
+        <requirement>Ollama service running locally</requirement>
+        <requirement>Modern browser (ES2020+ support)</requirement>
+      </development>
+      <production>
+        <requirement>Static hosting (S3, Netlify, Vercel)</requirement>
+        <requirement>Serverless runtime (AWS Lambda)</requirement>
+        <requirement>Docker container for Ollama (cloud instance)</requirement>
+      </production>
+    </subsection>
+  </section>
+
+  <section id="8" name="cross-cutting-concepts">
+    <subsection id="8.1" name="domain-model">
+      <entities>
+        <entity name="Trip">Dates, destinations, travel modes, details</entity>
+        <entity name="ChecklistItem">Text, category, completion status, AI-generated flag</entity>
+        <entity name="Category">Name, items collection, UI organization</entity>
+        <entity name="Weather">Location, temperature, conditions, precipitation</entity>
+      </entities>
+    </subsection>
+    
+    <subsection id="8.2" name="user-experience-patterns">
+      <pattern>Progressive Enhancement: Core functionality works without AI</pattern>
+      <pattern>Mobile-First Design: Touch-friendly interfaces, responsive layouts</pattern>
+      <pattern>Accessibility: WCAG 2.1 AA compliance, semantic HTML, ARIA labels</pattern>
+      <pattern>Performance: Lazy loading, code splitting, optimized bundles</pattern>
+    </subsection>
+    
+    <subsection id="8.3" name="security-concepts">
+      <concept>Data Privacy: All data remains on user's device</concept>
+      <concept>Input Validation: Client and server-side validation</concept>
+      <concept>API Security: Rate limiting, request sanitization</concept>
+      <concept>Error Handling: No sensitive information in error messages</concept>
+    </subsection>
+    
+    <subsection id="8.4" name="testing-strategy">
+      <diagram>
+        E2E Tests (Playwright)     ←→ User Workflows
+        Integration Tests (RTL)    ←→ Component Interactions
+        Unit Tests (Vitest)        ←→ Business Logic
+      </diagram>
+    </subsection>
+  </section>
+
+  <section id="9" name="architecture-decisions">
+    <adr id="ADR-001" name="Local AI Processing">
+      <status>Accepted</status>
+      <decision>Use local Ollama instance instead of cloud AI APIs</decision>
+      <rationale>Privacy, cost control, offline capability</rationale>
+      <consequences>Setup complexity, hardware requirements</consequences>
+    </adr>
+    
+    <adr id="ADR-002" name="localStorage for Persistence">
+      <status>Accepted</status>
+      <decision>Use browser localStorage instead of backend database</decision>
+      <rationale>Simplified deployment, privacy, no backend costs</rationale>
+      <consequences>No cross-device sync, storage limitations</consequences>
+    </adr>
+    
+    <adr id="ADR-003" name="React + TypeScript Stack">
+      <status>Accepted</status>
+      <decision>React with TypeScript for frontend development</decision>
+      <rationale>Developer productivity, type safety, ecosystem</rationale>
+      <consequences>Bundle size, build complexity</consequences>
+    </adr>
+  </section>
+
+  <section id="10" name="quality-requirements">
+    <subsection id="10.1" name="implementation-details">
+      <note>The core quality requirements are defined in Section 1.2 above. This section provides implementation guidance and additional context.</note>
+    </subsection>
+    
+    <subsection id="10.2" name="accessibility-implementation">
+      <requirement id="A11Y-1">
+        <item>WCAG 2.1 AA Compliance: All contrast ratios ≥ 4.5:1, keyboard navigation support</item>
+        <item>Screen Reader Support: Semantic HTML, ARIA labels, proper heading hierarchy</item>
+        <item>Automated Testing: jest-axe integration with Vitest-compatible patterns, 0 critical issues tolerance</item>
+        <item>Testing Tools: jest-axe (Vitest-compatible pattern), Playwright accessibility assertions</item>
+        <item>Implementation Status (2025-07-29): All major components have working accessibility tests</item>
+      </requirement>
+    </subsection>
+    
+    <subsection id="10.3" name="performance-implementation">
+      <requirement id="PERF-1">
+        <item>Web Vitals Monitoring: LCP ≤ 2.5s measured via WebPageTest at 75th percentile</item>
+        <item>Bundle Optimization: Code splitting, tree shaking, dynamic imports for routes</item>
+        <item>Resource Optimization: Image compression, font optimization, preload critical resources</item>
+        <item>Measurement Tools: Lighthouse CI, WebPageTest API, Core Web Vitals Chrome extension</item>
+      </requirement>
+    </subsection>
+    
+    <subsection id="10.4" name="reliability-implementation">
+      <requirement id="REL-1">
+        <item>Graceful Degradation: Cached data display with clear offline indicators</item>
+        <item>Data Persistence: localStorage with error handling and corruption recovery</item>
+        <item>Network Resilience: Retry logic, timeout handling, connection status detection</item>
+        <item>Testing Strategy: Playwright network simulation, localStorage persistence tests</item>
+      </requirement>
+    </subsection>
+    
+    <subsection id="10.5" name="security-implementation">
+      <requirement id="SEC-1">
+        <item>Privacy by Design: No third-party analytics, no data transmission to external services</item>
+        <item>Content Security Policy: Strict CSP headers preventing XSS and data exfiltration</item>
+        <item>Client-side Security: Input sanitization, safe localStorage usage patterns</item>
+        <item>Compliance Tools: OWASP ZAP scans, Lighthouse privacy audits, CSP validation</item>
+      </requirement>
+    </subsection>
+    
+    <subsection id="10.6" name="maintainability-implementation">
+      <requirement id="MAINT-1">
+        <item>Code Coverage: ≥80% line and branch coverage with Istanbul exclusion comments</item>
+        <item>Static Analysis: ESLint strict + TypeScript noImplicitAny, Prettier auto-format</item>
+        <item>CI/CD Pipeline: GitHub Actions with automated testing, linting, and deployment</item>
+        <item>Code Review Process: PR templates ensuring quality gates are met before merge</item>
+      </requirement>
+    </subsection>
+  </section>
+
+  <section id="11" name="risks-technical-debt">
+    <subsection id="11.1" name="technical-risks">
+      <risks>
+        <risk name="Ollama setup complexity" probability="High" impact="Medium" mitigation="Comprehensive setup documentation"/>
+        <risk name="localStorage size limits" probability="Medium" impact="Low" mitigation="Data cleanup strategies"/>
+        <risk name="Browser compatibility" probability="Low" impact="Medium" mitigation="Progressive enhancement"/>
+      </risks>
+    </subsection>
+    
+    <subsection id="11.2" name="technical-debt">
+      <debt>Missing Production Deployment: No production infrastructure defined</debt>
+      <debt>Limited Error Monitoring: No centralized error tracking</debt>
+      <debt>Manual Testing: E2E tests require manual Ollama setup</debt>
+    </subsection>
+  </section>
+
+  <section id="12" name="glossary">
+    <terms>
+      <term name="Ollama">Local AI inference platform for running LLMs</term>
+      <term name="llama3.1:8b">8-billion parameter language model</term>
+      <term name="Open-Meteo">Free weather API service</term>
+      <term name="localStorage">Browser API for client-side data storage</term>
+      <term name="SPA">Single Page Application</term>
+      <term name="PWA">Progressive Web Application</term>
+      <term name="RTL">React Testing Library</term>
+    </terms>
+  </section>
+
+  <see-also>
+    <link>ROADMAP.md</link>
+    <link>copilotdocs/COMMANDS.md</link>
+  </see-also>
+</document>

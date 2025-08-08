@@ -13,11 +13,19 @@ const ollama = new Ollama({ host: process.env.OLLAMA_HOST || 'http://localhost:1
 // Create Express app
 const app = express();
 
-// Configure middleware
+// Configure middleware - Allow multiple Vite ports
 app.use(cors({
-  origin: 'http://localhost:5173', // Vite default port
+  origin: function (origin, callback) {
+    // Allow requests from any localhost port for development
+    if (!origin || origin.startsWith('http://localhost:')) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   methods: ['GET', 'POST', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true
 }));
 app.use(express.json());
 

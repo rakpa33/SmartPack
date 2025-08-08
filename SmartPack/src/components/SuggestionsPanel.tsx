@@ -81,13 +81,7 @@ export const SuggestionsPanel: React.FC = () => {
 
         // Add new suggestions to existing ones
         setSuggestions(prev => [...prev, ...newSuggestions]);
-        setLastResponseType(response.aiGenerated !== false ? 'ai' : 'fallback');
-
-        // Show a brief success message if using fallback
-        if (response.aiGenerated === false && response.fallbackReason) {
-          setError(`Note: Using fallback suggestions. ${response.fallbackReason}`);
-          setTimeout(() => setError(null), 5000);
-        }
+        setLastResponseType('ai');
       }
 
       // Clear the prompt after successful submission
@@ -157,7 +151,7 @@ export const SuggestionsPanel: React.FC = () => {
 
         // Replace all suggestions with fresh ones
         setSuggestions(newSuggestions);
-        setLastResponseType(response.aiGenerated !== false ? 'ai' : 'fallback');
+        setLastResponseType('ai');
       }
     } catch (err) {
       setError('Failed to refresh suggestions. Please try again.');

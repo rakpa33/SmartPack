@@ -1,0 +1,421 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document>
+  <metadata>
+    <title>SmartPack Troubleshooting Guide</title>
+    <purpose>Document known issues, their root causes, solutions, and prevention strategies. Provide comprehensive issue database with symptoms, root causes, and verified solutions. Debugging procedures for common development workflow problems. Historical problem tracking with resolution status and prevention strategies. Quick reference for AI assistance and developer onboarding. Cross-reference hub linking to COMMANDS.md, DEVLOG.md, and external resources</purpose>
+    <lastUpdated>2025-08-08</lastUpdated>
+    <documentType>troubleshooting-guide</documentType>
+  </metadata>
+
+  <content>
+    <section id="navigation">
+      <title>Navigation</title>
+      <nav-links>
+        <link href="#latest-issues">Latest Issues</link>
+        <link href="#resolved-issues">Resolved Issues</link>
+        <link href="#common-patterns">Common Patterns</link>
+      </nav-links>
+    </section>
+
+    <section id="latest-issues">
+      <title>Latest Issues</title>
+
+      <issue id="save-button-ai-generation" status="SHIP-BLOCKER" date="2025-08-05">
+        <title>Save Button Does Not Trigger AI Generation</title>
+        <symptom>User fills form, clicks "Save", sees columns appear but no AI-generated content</symptom>
+        
+        <actual-user-flow>
+          <step>Fill trip form completely</step>
+          <step>Click "Save" button (expecting AI generation)</step>
+          <step>Form saves, columns/navigation appear</step>
+          <step>No AI content generated - still shows placeholder data</step>
+        </actual-user-flow>
+
+        <user-expectation>"Save" should trigger immediate AI generation</user-expectation>
+        <current-reality>"Save" only saves form data, requires separate "Generate Smart Packing List" button</current-reality>
+
+        <root-cause>
+          <cause>UX disconnect between user expectations and technical implementation</cause>
+          <cause>TripDetailsWithGeneration shows separate generation section below saved form</cause>
+          <cause>Users don't realize they need a second action after saving</cause>
+          <cause>Possible state synchronization issues preventing generation button from appearing</cause>
+        </root-cause>
+
+        <impact>SHIP-BLOCKER - App appears completely non-functional to users despite backend working</impact>
+
+        <verified-working>
+          <working-item>Backend server runs correctly on port 3000</working-item>
+          <working-item>Ollama integration confirmed (llama3.1:8b model)</working-item>
+          <working-item>API endpoints return proper AI-generated data when tested directly</working-item>
+          <working-item>Health check endpoint functional</working-item>
+        </verified-working>
+
+        <diagnostic-steps>
+          <step>Check if "Generate Smart Packing List" button is enabled/clickable</step>
+          <step>Monitor browser Network tab for API calls to localhost:3000</step>
+          <step>Check console for API errors or state update issues</step>
+          <step>Verify TripDetailsWithGeneration component is being used</step>
+          <step>Check PackingListContext for data propagation</step>
+        </diagnostic-steps>
+
+        <investigation-path>
+          <step>After user clicks "Save", check if "Generate Smart Packing List" section appears below trip details</step>
+          <step>Verify TripDetailsWithGeneration component is being used in MainLayout.tsx (FIXED)</step>
+          <step>Check if canGenerate condition is met after saving (state.tripName, destinations, travelModes populated)</step>
+          <step>Debug state synchronization between TripDetails save and TripDetailsWithGeneration display</step>
+          <step>Consider UX improvement: Make "Save" button automatically trigger AI generation</step>
+        </investigation-path>
+
+        <workaround>None - users cannot access core functionality</workaround>
+
+        <prevention>
+          <prevention-item>Implement end-to-end integration tests for complete data flow</prevention-item>
+          <prevention-item>Add visual indicators for backend connection status</prevention-item>
+          <prevention-item>Include fallback UI states for all API operations</prevention-item>
+        </prevention>
+
+        <status>ACTIVE INVESTIGATION in backend-investigation worktree</status>
+        <dependencies>Likely blocked by form-validation-fix worktree completion</dependencies>
+      </issue>
+
+      <issue id="undefined-css-classes" status="SHIP-CRITICAL" date="2025-08-05">
+        <title>Undefined CSS Classes Breaking Visual Functionality</title>
+        <symptom>Components appear unstyled or completely broken in the browser despite code looking correct</symptom>
+
+        <root-cause>Components using undefined CSS classes that aren't available in Tailwind CSS or project styles</root-cause>
+        <impact>SHIP-BLOCKER - Visual functionality completely broken, creates perception of broken app</impact>
+
+        <affected-components>
+          <component>ChecklistItem.tsx: Uses form-checkbox (undefined)</component>
+          <component>Multiple components: Use btn, btn-sm, btn-primary, btn-error (undefined)</component>
+          <component>TripDetailsEditForm.tsx: Uses input-bordered (undefined)</component>
+        </affected-components>
+
+        <diagnostic-steps>
+          <step>Search codebase for custom CSS class usage (grep for className.*btn, form-checkbox, etc.)</step>
+          <step>Check browser DevTools for missing CSS classes (red styling warnings)</step>
+          <step>Verify Tailwind config includes all used classes</step>
+          <step>Look for mix of Tailwind and undefined custom classes</step>
+        </diagnostic-steps>
+
+        <solution>
+          <step>Replace form-checkbox with proper Tailwind checkbox classes</step>
+          <step>Replace all btn classes with actual Tailwind button styles</step>
+          <step>Fix input-bordered usage with proper Tailwind input classes</step>
+          <step>Standardize button styles across all components</step>
+        </solution>
+
+        <prevention>
+          <prevention-item>Use only defined Tailwind CSS classes or create proper custom CSS</prevention-item>
+          <prevention-item>Include CSS class validation in development workflow</prevention-item>
+          <prevention-item>Regular visual design audits to catch styling issues early</prevention-item>
+        </prevention>
+
+        <timeline-impact>Must fix for shipping - affects all user interactions</timeline-impact>
+        <status>IDENTIFIED - Requires immediate implementation</status>
+      </issue>
+
+      <issue id="chrome-autocomplete-false-positive" status="RESOLVED" date="2025-08-05">
+        <title>Chrome Autocomplete False Positive</title>
+        <issue-type>Conflicting test results showing Chrome autocomplete failure</issue-type>
+        <symptoms>Three different agents reported contradictory Chrome compatibility assessments</symptoms>
+        <root-cause>Testing methodology differences between agents - automated vs manual testing discrepancies</root-cause>
+        <resolution>Comprehensive cross-browser testing with both automated and manual verification proved functionality working correctly</resolution>
+        <key-learning>Always verify with multiple testing approaches - automated tests can give false positives</key-learning>
+        <testing-artifacts>definitive-chrome-test-20250805.cjs, manual-verification-script-20250805.cjs</testing-artifacts>
+        <confidence>Very High (99%) - Multiple testing methodologies confirm Chrome works perfectly</confidence>
+        <status>RESOLVED - Chrome location autocomplete confirmed working</status>
+      </issue>
+    </section>
+
+    <section id="resolved-issues">
+      <title>Resolved Issues</title>
+
+      <issue id="file-organization" status="RESOLVED" date="2025-08-05">
+        <title>File Organization Issues</title>
+        <symptom>Manual validation artifacts scattered in wrong directories (manual-validation-*.png in root)</symptom>
+        <root-cause>Agents creating validation files in convenient but incorrect locations</root-cause>
+
+        <diagnostic-steps>
+          <step>Check for validation artifacts in main SmartPack/ directory</step>
+          <step>Look for temp files outside of designated temp-test-artifacts/ folder</step>
+        </diagnostic-steps>
+
+        <solution>Move all validation artifacts to temp-test-artifacts/ directory</solution>
+        <prevention>Updated gitignore patterns and agent guidelines</prevention>
+        <status>RESOLVED - All artifacts properly organized</status>
+      </issue>
+
+      <issue id="local-claude-navigation" status="CLARIFIED" date="2025-08-05">
+        <title>Local CLAUDE.md Navigation Files</title>
+        <important>Local CLAUDE.md files in subdirectories are INTENTIONAL navigation aids, NOT duplicates</important>
+
+        <purpose>
+          <purpose-item>SmartPack/CLAUDE.md: Main project navigation and commands</purpose-item>
+          <purpose-item>SmartPack/src/CLAUDE.md: Source directory guide</purpose-item>
+          <purpose-item>SmartPack/src/components/CLAUDE.md: Component inventory</purpose-item>
+          <purpose-item>SmartPack/src/hooks/CLAUDE.md: Hooks documentation</purpose-item>
+        </purpose>
+
+        <benefits>
+          <benefit>Quick directory understanding without deep exploration</benefit>
+          <benefit>Reduced token usage via concise file listings</benefit>
+          <benefit>Pattern and convention documentation</benefit>
+          <benefit>Efficient agent navigation breadcrumbs</benefit>
+        </benefits>
+
+        <action>PRESERVE these files - they are critical for agent efficiency</action>
+        <note>Integrity auditor has been updated to protect these files</note>
+        <status>PROTECTED - Navigation system in place</status>
+      </issue>
+
+      <issue id="save-button-permanently-disabled" status="RESOLVED" date="2025-08-05">
+        <title>Save Button Permanently Disabled</title>
+        <symptom>Save button remains disabled even when form appears complete</symptom>
+        <root-cause>Default destinations parameter initialized with [''] (array with empty string) in TripDetailsEditForm.tsx</root-cause>
+
+        <diagnostic-steps>
+          <step>Form validation logic inspection revealed destinations=[''] fails validation</step>
+          <step>validateTripForm() checks each destination with !d.trim()</step>
+          <step>Empty string fails this check, causing permanent validation failure</step>
+        </diagnostic-steps>
+
+        <solution>Change destinations = [''] to destinations = [] on line 22</solution>
+        <prevention>Always initialize arrays empty rather than with empty strings</prevention>
+        <impact>Ship-blocking bug that prevented core user workflow</impact>
+        <status>RESOLVED - Fix merged to main branch</status>
+      </issue>
+
+      <issue id="git-line-endings" status="RESOLVED" date="2025-08-05">
+        <title>Git Line Ending (CRLF/LF) Issues on Windows</title>
+        <symptom>"LF will be replaced by CRLF" warnings preventing commits, or errors about line endings when trying to commit files</symptom>
+        <root-cause>Git configured with core.autocrlf=true on Windows causes conversion warnings; special files like "nul" can block Git operations</root-cause>
+
+        <diagnostic-steps>
+          <step>Check Git config: git config --list | grep autocrlf</step>
+          <step>Look for "nul" files: git status shows errors about "SmartPack/nul"</step>
+          <step>Check for .gitattributes file defining line ending rules</step>
+          <step>Verify if warnings appear on every commit attempt</step>
+        </diagnostic-steps>
+
+        <solution>
+          <step>Create .gitattributes file in project root to enforce consistent line endings</step>
+          <codeblock>
+            <![CDATA[
+* text=auto
+*.js text eol=lf
+*.jsx text eol=lf
+*.ts text eol=lf
+*.tsx text eol=lf
+*.json text eol=lf
+*.md text eol=lf
+            ]]>
+          </codeblock>
+          <step>Configure Git: git config core.autocrlf input</step>
+          <step>Remove problematic files: rm -f nul ../nul</step>
+          <step>Add to .gitignore: Add nul and NUL to prevent future issues</step>
+          <step>Normalize repository: git add --renormalize .</step>
+        </solution>
+
+        <prevention>
+          <prevention-item>Always include .gitattributes in new projects</prevention-item>
+          <prevention-item>Use core.autocrlf=input on Windows development machines</prevention-item>
+          <prevention-item>Add Windows special filenames to .gitignore</prevention-item>
+          <prevention-item>Document Git configuration in project setup instructions</prevention-item>
+        </prevention>
+
+        <status>RESOLVED (2025-08-05) - Permanent fix with .gitattributes</status>
+      </issue>
+    </section>
+
+    <section id="common-issues">
+      <title>Common Issues</title>
+
+      <subsection id="ux-ui-consistency">
+        <title>UX/UI Consistency &amp; Design System Issues</title>
+
+        <issue id="inconsistent-form-styling">
+          <title>Inconsistent Form Field Styling Across Components</title>
+          <symptom>Form fields in different components have different border colors, sizing, spacing, or validation states</symptom>
+          <root-cause>Components not following established design system patterns, missing or incorrectly applied Tailwind classes</root-cause>
+
+          <diagnostic-steps>
+            <step>Compare component implementations against UX_UI_DESIGN_SYSTEM.md</step>
+            <step>Check for consistent use of state-based color coding: border-green-500 (valid), border-red-500 (error), border-gray-300 (default)</step>
+            <step>Verify touch target compliance: all interactive elements should have min-h-[44px]</step>
+            <step>Validate ARIA attribute usage: aria-describedby, aria-invalid, role="alert"</step>
+          </diagnostic-steps>
+
+          <solution>
+            <step>Reference Design System: Use UX_UI_DESIGN_SYSTEM.md as implementation guide</step>
+            <step>Apply Standard Input Pattern:</step>
+            <codeblock language="tsx">
+              <![CDATA[
+<input
+  className={`w-full px-3 py-2 border rounded-md text-sm bg-white dark:bg-gray-800 min-h-[44px] focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors ${validationStateClasses}`}
+/>
+              ]]>
+            </codeblock>
+            <step>Implement Validation States: Use established color system for success/error states</step>
+            <step>Test Responsive Behavior: Verify mobile-first layouts work across breakpoints</step>
+          </solution>
+
+          <prevention>
+            <prevention-item>Always reference UX_UI_DESIGN_SYSTEM.md when implementing form components</prevention-item>
+            <prevention-item>Use TripDetails.tsx as reference implementation for form patterns</prevention-item>
+            <prevention-item>Include UX review in component acceptance criteria</prevention-item>
+          </prevention>
+
+          <status>RESOLVED - 2025-01-27, Design system documented and applied to TripDetails form</status>
+        </issue>
+
+        <issue id="touch-target-issues">
+          <title>Touch Target Size Issues on Mobile Devices</title>
+          <symptom>Buttons or interactive elements difficult to tap on mobile devices, users missing tap targets</symptom>
+          <root-cause>Interactive elements smaller than 44px minimum touch target requirement</root-cause>
+
+          <diagnostic-steps>
+            <step>Inspect element in browser dev tools and check computed height</step>
+            <step>Test on actual mobile device or browser responsive mode</step>
+            <step>Verify all buttons, checkboxes, and input fields meet 44px minimum</step>
+            <step>Check spacing between adjacent interactive elements</step>
+          </diagnostic-steps>
+
+          <solution>
+            <step>Apply Minimum Touch Targets: Add min-h-[44px] to all interactive elements</step>
+            <step>Enhance Button Padding: Use px-3 py-2 minimum for comfortable touch areas</step>
+            <step>Test Responsive Spacing: Ensure adequate spacing between elements</step>
+            <codeblock language="tsx">
+              <![CDATA[
+<button className="min-h-[44px] px-4 py-2 text-sm font-medium">
+  Action Button
+</button>
+              ]]>
+            </codeblock>
+          </solution>
+
+          <prevention>
+            <prevention-item>Include mobile device testing in component development</prevention-item>
+            <prevention-item>Use established button classes from UX_UI_DESIGN_SYSTEM.md</prevention-item>
+            <prevention-item>Apply Apple Human Interface Guidelines (44px minimum)</prevention-item>
+          </prevention>
+
+          <status>RESOLVED - 2025-01-27, Touch target standards established and applied</status>
+        </issue>
+      </subsection>
+
+      <subsection id="testing-qa">
+        <title>Testing &amp; Quality Assurance Issues</title>
+
+        <issue id="test-execution-hanging">
+          <title>Test Execution Hanging or Not Completing</title>
+          <symptom>Tests start but never complete, terminal shows "queued" or stops responding, or npm test hangs indefinitely</symptom>
+          <root-cause>Integration tests may have environment setup issues, infinite loops, or unresolved promises</root-cause>
+
+          <diagnostic-steps>
+            <step>Check if Node.js processes are hanging: tasklist | find "node.exe"</step>
+            <step>Monitor test output for specific patterns: "queued", stalled durations, or missing completion messages</step>
+            <step>Verify test timeout settings in vitest.config.ts or individual test files</step>
+            <step>Check for unresolved async operations or missing await statements</step>
+          </diagnostic-steps>
+
+          <solution>
+            <step>Immediate: Kill hanging processes: taskkill /F /IM node.exe</step>
+            <step>Targeted Testing: Run specific test files instead of full suite: npm test -- --run specific-file.test.tsx</step>
+            <step>Timeout Controls: Add explicit timeouts: npm test -- --run --reporter=verbose --timeout=30000</step>
+            <step>Unit vs Integration: Prefer unit tests for quick validation: npm test -- --run src/__tests__/unit</step>
+          </solution>
+
+          <prevention>
+            <prevention-item>Always monitor test execution for completion</prevention-item>
+            <prevention-item>Use timeouts for integration tests: { timeout: 10000 } in test config</prevention-item>
+            <prevention-item>Kill hanging processes before starting new tests</prevention-item>
+            <prevention-item>Prefer unit tests for rapid feedback during development</prevention-item>
+          </prevention>
+
+          <status>ONGOING - Integration tests still have environmental issues as of 2025-07-29</status>
+        </issue>
+      </subsection>
+
+      <subsection id="ollama-ai-integration">
+        <title>Ollama AI Integration Issues</title>
+
+        <issue id="ollama-not-generating">
+          <title>Ollama AI not generating responses</title>
+          <symptom>Server falls back to mock data, AI generation fails</symptom>
+
+          <diagnostic-steps>
+            <step>Check Ollama service: ollama serve (should be running on port 11434)</step>
+            <step>Verify model availability: ollama list (should show llama3.1:8b)</step>
+            <step>Test Ollama directly: ollama run llama3.1:8b "test prompt"</step>
+            <step>Check server logs for AI generation attempts and error messages</step>
+          </diagnostic-steps>
+
+          <common-solutions>
+            <solution>Install Ollama: Download from official Ollama website</solution>
+            <solution>Pull model: ollama pull llama3.1:8b</solution>
+            <solution>Start service: ollama serve (runs on localhost:11434)</solution>
+            <solution>Check environment variables: OLLAMA_HOST, OLLAMA_MODEL</solution>
+          </common-solutions>
+        </issue>
+
+        <issue id="backend-connectivity">
+          <title>"Failed to get AI suggestions" error</title>
+          <symptom>SuggestionsPanel shows error when trying to generate recommendations</symptom>
+          <root-cause>Backend server not properly running or accessible</root-cause>
+
+          <diagnostic-steps>
+            <step>Check if backend is running: tasklist | findstr "node"</step>
+            <step>Test health endpoint: curl http://localhost:3000/health</step>
+            <step>Verify process: npm run lambda:dev should show server startup</step>
+            <step>Check port availability: netstat -ano | findstr :3000</step>
+          </diagnostic-steps>
+
+          <solution>
+            <solution-item>Always use npm run lambda:dev (not direct node commands)</solution-item>
+            <solution-item>Ensure both frontend (5173) and backend (3000) are running</solution-item>
+            <solution-item>Test backend health before AI operations</solution-item>
+          </solution>
+
+          <prevention>Added health check endpoints and proper startup documentation</prevention>
+        </issue>
+      </subsection>
+
+      <subsection id="data-persistence">
+        <title>Data Not Persisting on Page Reload (2025-07-29)</title>
+        <symptom>User data (trip form, packing list items, theme preferences) does not persist when refreshing the page in development mode</symptom>
+        <root-cause>The main.tsx file was configured to clear all localStorage on every development reload with if (import.meta.env.DEV) { window.localStorage.clear(); }</root-cause>
+
+        <solution>Modified the localStorage clearing logic to only clear when specifically requested via URL parameter:</solution>
+        <codeblock language="typescript">
+          <![CDATA[
+// Only clear localStorage in development if specifically requested via URL parameter
+if (
+  import.meta.env.DEV &&
+  new URLSearchParams(window.location.search).has('clearStorage')
+) {
+  console.log('Clearing localStorage for fresh development session...');
+  window.localStorage.clear();
+}
+          ]]>
+        </codeblock>
+
+        <usage>To clear localStorage during development, append ?clearStorage=true to the URL</usage>
+
+        <prevention>
+          <prevention-item>Added comprehensive unit tests for localStorage persistence behavior</prevention-item>
+          <prevention-item>Enhanced PackingList component to show all categories (not just active ones) for better UX</prevention-item>
+          <prevention-item>Added category-specific input fields to improve user experience</prevention-item>
+          <prevention-item>Updated all test files to include localStorage.clear() in beforeEach hooks</prevention-item>
+        </prevention>
+
+        <files-modified>src/main.tsx, src/components/PackingList.tsx, src/__tests__/localStorage.persistence.test.tsx</files-modified>
+        <cross-references>See DEVLOG.md for detailed implementation changes and localStorage test contamination patterns</cross-references>
+      </subsection>
+    </section>
+
+    <section id="add-more-issues">
+      <title>Add more issues as you encounter them!</title>
+    </section>
+  </content>
+</document>

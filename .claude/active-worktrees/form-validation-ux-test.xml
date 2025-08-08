@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document>
+    <metadata>
+        <title>Travel Mode Validation Fix - UX Validation Report</title>
+        <purpose>UX validation report for travel mode validation error display fix</purpose>
+        <lastUpdated>2025-08-05</lastUpdated>
+        <documentType>worktree-audit</documentType>
+        <fixApplied>Travel mode validation error not displaying when user unselects all travel modes</fixApplied>
+    </metadata>
+
+    <section title="Fix Applied">
+        <issue>Travel mode validation error not displaying when user unselects all travel modes</issue>
+        <rootCause>React state batching causing error computation to lag behind touched state updates</rootCause>
+        <solution>Applied `flushSync` to ensure synchronous state updates in `handleTravelModeChange`</solution>
+    </section>
+
+    <section title="Fix Details">
+        <codeChanges>
+            <before>
+                <![CDATA[
+                // BEFORE: Async state updates caused race condition
+                setEditForm(prev => ({...prev, travelModes: newTravelModes }));
+                setTouched(prev => ({...prev, travelModes: true }));
+                ]]>
+            </before>
+            <after>
+                <![CDATA[
+                // AFTER: Synchronous state updates prevent race condition
+                flushSync(() => {
+                    setEditForm(prev => ({...prev, travelModes: newTravelModes }));
+                    setTouched(prev => ({...prev, travelModes: true }));
+                });
+                ]]>
+            </after>
+        </codeChanges>
+    </section>
+
+    <section title="Test Scenario">
+        <userJourney>User loads form → selects "Train" → unselects "Train" → expects validation error</userJourney>
+        
+        <testSteps>
+            <step number="1">Load Form: Navigate to form in worktree (http://localhost:5179)</step>
+            <step number="2">Select Train: Click Train checkbox (should be checked)</step>
+            <step number="3">Unselect Train: Click Train checkbox again (should be unchecked)</step>
+            <step number="4">Verify Error: "Select at least one travel mode" should appear below checkboxes</step>
+        </testSteps>
+
+        <expectedBehavior>
+            <behavior>State Updates: Both `editForm.travelModes` and `touched.travelModes` update synchronously</behavior>
+            <behavior>Error Computation: `validateTripForm` runs with updated state</behavior>
+            <behavior>Error Display: Condition `(touched.travelModes || hasStartedFilling) && errors.travelModes` evaluates correctly</behavior>
+            <behavior>User Feedback: Error message appears immediately when last travel mode is unchecked</behavior>
+        </expectedBehavior>
+    </section>
+
+    <section title="Validation Results">
+        <manualTesting>
+            <testEnvironment>Browser: Chrome/Firefox/Safari</testEnvironment>
+            <testEnvironment>Dev Server: Running on localhost:5179</testEnvironment>
+            <testMethod>Scenario Execution: Execute exact user steps</testMethod>
+            <testMethod>Error Display: Verify error appears when expected</testMethod>
+            <testMethod>Form Submission: Verify form prevents submission when no travel modes selected</testMethod>
+        </manualTesting>
+
+        <edgeCases>
+            <case>Multiple Modes: Select multiple travel modes, then unselect all - error should appear</case>
+            <case>Form Reset: Error should clear when travel mode selected again</case>
+            <case>Initial Load: No error should show when form first loads</case>
+            <case>Other Validations: Other form validations should still work correctly</case>
+        </edgeCases>
+    </section>
+
+    <section title="Success Criteria">
+        <criteria priority="primary">Primary Issue Fixed: Travel mode validation error displays when user unselects all modes</criteria>
+        <criteria priority="regression">No Regressions: Other form validations continue to work</criteria>
+        <criteria priority="ux">User Experience: Clear feedback when travel modes required</criteria>
+        <criteria priority="functionality">Form Behavior: Submit button disabled when validation fails</criteria>
+        <criteria priority="consistency">State Consistency: Form state and validation state remain synchronized</criteria>
+    </section>
+
+    <section title="Ship Readiness Assessment">
+        <status>READY FOR VALIDATION</status>
+        <riskLevel>LOW - Targeted fix addresses specific state synchronization issue</riskLevel>
+        <impact>HIGH - Restores critical form validation functionality</impact>
+        <userValue>Users can now complete forms and understand validation requirements</userValue>
+    </section>
+
+    <section title="UX Validation Protocol">
+        <validationSteps>
+            <step>Test Exact User Scenario: Follow reported scenario precisely</step>
+            <step>Verify Error Display: Confirm error message appears and disappears correctly</step>
+            <step>Test Form Submission: Ensure form submission blocked when invalid</step>
+            <step>Check Other Validations: Verify no regression in other form fields</step>
+            <step>Mobile Testing: Verify fix works on mobile devices</step>
+            <step>Cross-Browser: Test in major browsers</step>
+        </validationSteps>
+    </section>
+
+    <section title="Post-Validation Steps">
+        <postValidation>
+            <step>UX Validation: Confirm fix resolves user-reported issue</step>
+            <step>Commit Changes: Create commit with focused fix</step>
+            <step>Update Documentation: Record fix in TROUBLESHOOTING.md</step>
+            <step>Worktree Closure: Mark worktree ready for cleanup after validation</step>
+            <step>Ship Decision: Include in ship readiness assessment</step>
+        </postValidation>
+    </section>
+
+    <section title="Technical Details">
+        <filesModified>
+            <file>src/components/TripDetailsEditForm.tsx: Added flushSync to handleTravelModeChange</file>
+        </filesModified>
+
+        <importAdded>
+            <![CDATA[
+            import { flushSync } from 'react-dom';
+            ]]>
+        </importAdded>
+
+        <functionModified>
+            <![CDATA[
+            const handleTravelModeChange = (mode: string) => {
+                //... mode calculation logic...
+                
+                flushSync(() => {
+                    setEditForm(prev => ({...prev, travelModes: newTravelModes }));
+                    setTouched(prev => ({...prev, travelModes: true }));
+                });
+                
+                //... logging...
+            };
+            ]]>
+        </functionModified>
+
+        <whyThisFixWorks>
+            <reason>Synchronous Updates: `flushSync` forces React to apply state updates immediately</reason>
+            <reason>Consistent State: Error computation sees updated form state and touched state together</reason>
+            <reason>Race Condition Eliminated: No timing mismatch between state updates</reason>
+            <reason>Minimal Impact: Targeted fix doesn't affect other form functionality</reason>
+            <reason>React Best Practice: Proper use of flushSync for critical state synchronization</reason>
+        </whyThisFixWorks>
+    </section>
+
+    <conclusion>
+        <status>READY FOR UX VALIDATION</status>
+        <summary>Fix applied, build verified, awaiting user scenario testing</summary>
+    </conclusion>
+</document>
