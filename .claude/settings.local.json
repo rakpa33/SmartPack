@@ -60,7 +60,13 @@
       "Bash(del \"C:\\Users\\Rachel\\Desktop\\SmartPack\\docs\\testing\\TESTING_STANDARDS.md\")",
       "Bash(del \"C:\\Users\\Rachel\\Desktop\\SmartPack\\docs\\testing\\TESTING_GUIDELINES.md\")",
       "Bash(del \"C:\\Users\\Rachel\\Desktop\\SmartPack\\docs\\testing\\TESTING_GUIDE.md\")",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "mcp__serena__find_file",
+      "mcp__serena__insert_after_symbol",
+      "mcp__serena__search_for_pattern",
+      "mcp__serena__find_symbol",
+      "mcp__serena__replace_regex",
+      "Bash(sed:*)"
     ],
     "deny": []
   }
